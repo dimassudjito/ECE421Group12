@@ -1,3 +1,12 @@
+### Project workflow discussion
+
+- Do we want to use GitHub?
+- Do we need to create organization in GitHub or just a repo?
+- Multiple branch with PR or one branch?
+- Java-specific questions:
+  - IDE?
+  - Code formatter?
+
 ### Task
 
 1. Rewrite code snippets in the instruction from imperative style to functional style.
