@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author dimas
+ *
+ */
+module StockMarketMonitor {
+}
