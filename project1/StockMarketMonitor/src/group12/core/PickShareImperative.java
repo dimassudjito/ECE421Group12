@@ -2,10 +2,6 @@ package group12.core;
 
 import java.util.function.Predicate;
 
-/**
- * The original code snippet doesn't compile and it's unclear where it should be located.
- * Current changes: create highPriced field and initiate it with shareInfo.
- */
 public class PickShareImperative {
 	private static ShareInfo highPriced;
 
