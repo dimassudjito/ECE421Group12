@@ -14,7 +14,13 @@ public class PickShareFunctional {
     }
 
 	public static void main(String[] args) {
-		ShareInfo highPriced = findHighPriced(Shares.symbols.stream());
+		long startTime = System.nanoTime();
+
+		ShareInfo highPriced = findHighPriced(Shares.symbols.parallelStream());
+
+		long endTime = System.nanoTime();
+
+		System.out.println((endTime-startTime)/1000000);
 		System.out.println("High priced under $500 is " + highPriced);
 	}
 }

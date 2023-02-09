@@ -9,7 +9,7 @@ import java.net.URLConnection;
 
 public class APIFinance {
 	private static final String BASE_URL = "https://www.alphavantage.co/query?";
-	private final static String apiKey = "";
+	private final static String apiKey = "S1QYMYBVKO6BFAKK";
 	
 	public static BigDecimal getPrice(final String symbol) {
 		BigDecimal price = new BigDecimal(0);
