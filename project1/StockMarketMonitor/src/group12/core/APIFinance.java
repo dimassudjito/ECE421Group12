@@ -18,9 +18,7 @@ public class APIFinance {
 	public static BigDecimal getPrice(final String symbol) {
 		boolean success = false;
 		boolean retryRequest = false;
-		int callNum = ThreadLocalRandom.current().nextInt(0, 1000);
 		BigDecimal price = new BigDecimal(-1);
-		System.out.println("Call num: " + callNum);
 		while (true) {
 			if (success) {
 				break;
@@ -29,7 +27,6 @@ public class APIFinance {
 				Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 5000));
 				retryRequest = false;
 				URL url = null;
-				System.out.println("Using API key " + apiKeyNum + " for call " + callNum + " and the url is " + BASE_URL + "function=GLOBAL_QUOTE&symbol=" + symbol + "&apikey=" + apiKeys[apiKeyNum]);
 				url = new URL(BASE_URL + "function=GLOBAL_QUOTE&symbol=" + symbol + "&apikey=" + apiKeys[apiKeyNum]);
 				apiKeyNum = (apiKeyNum + 1) % apiKeys.length;
 				
@@ -41,7 +38,7 @@ public class APIFinance {
 				while ((line = bufferedReader.readLine()) != null) {
 					if (line.contains("price")) {
 						price = new BigDecimal(line.split("\"")[3].trim());
-						System.out.println("Successful! Can leave loop now :) for call " + callNum);
+						// Successful! Can leave loop now :)
 						success = true;
 					} else if (line.contains(tooManyCallsResponse)) {
 						bufferedReader.close();
@@ -50,7 +47,7 @@ public class APIFinance {
 					}
 				}
 				if (retryRequest) {
-					System.out.println("The API complained we're spamming it with too many requests! Call " + callNum);
+					// The API complained we're spamming it with too many requests!
 					Thread.sleep(ThreadLocalRandom.current().nextInt(2000, 8000));
 					// We must loop again and remake this request
 					bufferedReader.close();
@@ -58,19 +55,16 @@ public class APIFinance {
 				}
 				bufferedReader.close();
 				if (!success) {
-					System.out.println("Call " + callNum + " Why the heck did it escape the loop?????");
+					// This happened because the response didn't include a price field. This could be caused by requesting a stock ticker that doesn't exist *cough* FB
 				}
 			} catch (IOException e) {
-				System.out.println("failure sending request for call " + callNum);
+				System.out.println("failure sending request");
 				continue;
-			//} catch (InterruptedException e) {
-			//	Thread.currentThread().interrupt();
 			} catch (Exception e) {
-				System.out.println("Random exception! in call " + callNum);
+				System.out.println("Random exception!");
 				continue;
 			}
 		}
-		System.out.println("The price for " + symbol + " is " + price + " for call " + callNum);
 		return price;
 	}
 }
