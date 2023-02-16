@@ -24,7 +24,6 @@ public class APIFinance {
 				break;
 			}
 			try {
-				Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 5000));
 				retryRequest = false;
 				URL url = null;
 				url = new URL(BASE_URL + "function=GLOBAL_QUOTE&symbol=" + symbol + "&apikey=" + apiKeys[apiKeyNum]);
@@ -48,7 +47,7 @@ public class APIFinance {
 				}
 				if (retryRequest) {
 					// The API complained we're spamming it with too many requests!
-					Thread.sleep(ThreadLocalRandom.current().nextInt(2000, 8000));
+					Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 5000));
 					// We must loop again and remake this request
 					bufferedReader.close();
 					continue;
