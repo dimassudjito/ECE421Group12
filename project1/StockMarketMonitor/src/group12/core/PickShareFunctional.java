@@ -24,7 +24,7 @@ public class PickShareFunctional {
 		System.out.println("Time taken: " + (endTime-startTime)/1000000 + "ms");
 		
 		if (highPriced.isPresent()) {
-			System.out.println("High priced under $500 is " + highPriced);
+			System.out.println("High priced under $500 is " + highPriced.get());
 		} else {
 			System.out.println("Value is currently not available");
 		}
