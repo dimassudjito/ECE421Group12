@@ -1,17 +1,18 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[derive(Clone, Debug, PartialEq)]
-enum NodeColor {
-    Red,
+enum  NodeColour {
+    Red, 
     Black,
 }
-type Tree = Rc<RefCell<TreeNode<u32>>>;
-type RedBlackTree= Option<Tree>;
-struct TreeNode<T> {
-    pub color: NodeColor,
-    pub key: T,
-    pub parent: RedBlackTree,
-    left: RedBlackTree,
-    right: RedBlackTree,
+
+
+enum RedBlackTree<T: Ord> {
+    Node {
+        colour: NodeColour,
+        data: T,
+        left_child: Rc<RedBlackTree<T>>,
+        right_child: Rc<RedBlackTree<T>>,
+    },
+    Empty
 }
