@@ -80,4 +80,54 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         new_parent
     }
 
+
+
+    pub fn rotate_right(self) -> Self {
+
+        let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
+
+        match self {
+            RedBlackTree::Node {colour, data, mut left_child, mut right_child} => {
+                let tr_branch = right_child.clone();
+                let br_branch = match &*left_child.clone() {
+                    RedBlackTree::Node {colour, data, left_child, right_child} => right_child.clone(),
+                    RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
+                };
+                let bl_branch = match &*left_child.clone() {
+                    RedBlackTree::Node {colour, data, left_child, right_child} => left_child.clone(),
+                    RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
+                };
+                
+                let datatemp = &data;
+                let colourtemp = &colour;
+
+                
+                new_parent = match &*left_child.clone() {
+                    RedBlackTree::Node {colour, data, left_child, right_child} =>  {
+                        let t_colour = *colour;
+                        let t_data = *data;
+                        let t_rc = Rc::new(RedBlackTree::Node{
+                            colour: *colourtemp,
+                            data: *datatemp,
+                            left_child: br_branch,
+                            right_child:tr_branch
+                        });
+                        let t_lc = left_child.clone();
+                        RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
+                    }
+                    RedBlackTree::Empty => RedBlackTree::Node {
+                        colour: *colourtemp,
+                        data: *datatemp,
+                        left_child: left_child.clone(),
+                        right_child:right_child.clone()
+                    },
+                };
+
+
+            },
+            RedBlackTree::Empty => {},
+        }
+        new_parent
+    }
+
 }

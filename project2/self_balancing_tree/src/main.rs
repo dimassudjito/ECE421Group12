@@ -27,7 +27,7 @@ fn main() {
         RedBlackTree::Empty => {},
     }
 
-    /////////////////////////////////////
+    ////////////EXAMPLE 1/////////////////
     //     |
     //     5
     //   /   \
@@ -39,9 +39,12 @@ fn main() {
 
     println!("{:#?}", rbt);
     println!("\n");
-    println!("\n\n{:#?}", rbt.rotate_left());
+    // rotate left should form EXAMPLE 2
+    rbt = rbt.rotate_left();
+    
+    println!("\n\n{:#?}", rbt);
 
-       /////////////////////////////////////
+       /////////EXAMPLE 2//////////////////
     //         |
     //         6
     //       /   \
@@ -50,5 +53,8 @@ fn main() {
     //    x    7     
     // 
 
-
+    // rotate right should form EXAMPLE 1
+    rbt = rbt.rotate_right();
+    println!("\n\n{:#?}", rbt);
+    
 }
