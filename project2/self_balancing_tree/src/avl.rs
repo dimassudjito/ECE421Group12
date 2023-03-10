@@ -34,43 +34,43 @@ impl<T: Ord> Tree<T> {
         }
     }
 
-    pub delete_node() {
+    pub fn delete_node() {
         // TODO: Josh
     }
 
-    pub rotation_left_left() {
+    pub fn rotation_left_left() {
         // TODO: Dimas
     }
 
-    pub rotation_left_right() {
+    pub fn rotation_left_right() {
         // TODO: Dimas
     }
 
-    pub rotation_right_left() {
+    pub fn rotation_right_left() {
         // TODO: Josh
     }
 
-    pub rotation_right_right() {
+    pub fn rotation_right_right() {
         // TODO: Josh
     }
 
-    pub leaf_number() {
+    pub fn leaf_number() {
         // TODO: Josh
     }
 
-    pub tree_height() {
+    pub fn tree_height() {
         // TODO: Dimas
     }
 
-    pub print() {
+    pub fn print() {
         // TODO: Dimas
     }
 
-    pub print_inorder() {
+    pub fn print_inorder() {
         // TODO: Josh
     }
 
-    pub is_tree_empty() {
+    pub fn is_tree_empty() {
         // TODO: Dimas
     }
 }
