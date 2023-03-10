@@ -65,7 +65,12 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                         let t_rc = right_child.clone();
                         RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
                     }
-                    RedBlackTree::Empty => RedBlackTree::Empty,
+                    RedBlackTree::Empty => RedBlackTree::Node {
+                        colour: *colourtemp,
+                        data: *datatemp,
+                        left_child: left_child.clone(),
+                        right_child:right_child.clone()
+                    },
                 };
 
 
