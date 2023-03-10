@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 
 #[derive(Debug)]
-enum Tree<T: Ord> {
+enum AVLTree<T: Ord> {
     Node {
         data: T,
         left_child: RefCell<Tree<T>>,
@@ -34,43 +34,86 @@ impl<T: Ord> Tree<T> {
         }
     }
 
-    pub delete_node() {
-        // TODO: Josh
+    pub fn populateTestTree(&self){
+        self.insert_node(1);
+        self.insert_node(5);
+        self.insert_node(2);
+        self.insert_node(6);
+        self.insert_node(3);
+        self.insert_node(4);
     }
 
-    pub rotation_left_left() {
+    pub fn delete_node() {
+        // TODO: Josh
+        match self {
+            Tree::Empty => {
+                panic!("Node does not exist in tree")
+            }
+            Tree::Node { data, left_child, right_child } => {
+                if new_data < *data {
+                    left_child.delete_node(new_data);
+                } else if new_data > *data {
+                    right_child.delete_node(new_data);
+                } else {
+                    return;
+                }
+            }
+        }
+    }
+
+    pub fn rotation_left_left() {
         // TODO: Dimas
     }
 
-    pub rotation_left_right() {
+    pub fn rotation_left_right() {
         // TODO: Dimas
     }
 
-    pub rotation_right_left() {
+    pub fn rotation_right_left() {
         // TODO: Josh
     }
 
-    pub rotation_right_right() {
+    pub fn rotation_right_right() {
         // TODO: Josh
     }
 
-    pub leaf_number() {
+    pub fn leaf_number(&self) {
         // TODO: Josh
+
+        fn dfs(node){
+            if ( node.left.borrow() == AVLTree::Empty &&
+            node.right.borrow() == AVLTree::Empty )
+                return 0
+            else:
+                return dfs(node.left.borrow()) + dfs(node.right.borrow());
+        }
     }
 
-    pub tree_height() {
+    pub fn tree_height() {
         // TODO: Dimas
     }
 
-    pub print() {
+    pub fn print() {
         // TODO: Dimas
     }
 
-    pub print_inorder() {
+    pub fn print_inorder(&self) {
         // TODO: Josh
+        match self {
+            Tree::Node {
+                data,
+                left_child,
+                right_child,
+            } => {
+                left_child.borrow().print_tree();
+                println!("{}", data);
+                right_child.borrow().print_tree();
+            }
+            Tree::Empty => return,
+        }
     }
 
-    pub is_tree_empty() {
+    pub fn is_tree_empty() {
         // TODO: Dimas
     }
 }

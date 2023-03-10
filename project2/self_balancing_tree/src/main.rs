@@ -1,3 +1,11 @@
+mod avl;
+
 fn main() {
-    println!("Hello, world!");
+    joshTestFunc();
+}
+
+fn joshTestFunc(){
+    let avl = AVLTree::Empty;
+
+    avl.populateTestTree();
 }
