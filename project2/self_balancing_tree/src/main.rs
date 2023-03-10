@@ -7,7 +7,37 @@ use std::rc::Rc;
 
 fn main() {
     println!("Hello, world!");
-    let rbt = RedBlackTree::new(5);
 
-    rbt.print_hello_world();
+    /////////////////////////////////////
+
+    let mut lower = RedBlackTree::new(6);
+    match lower {
+        RedBlackTree::Node {colour, data, ref mut left_child, ref mut right_child} => {
+            *left_child = Rc::new(RedBlackTree::new(7));
+            *right_child = Rc::new(RedBlackTree::new(8));
+        },
+        RedBlackTree::Empty => {},
+    }
+    let mut rbt = RedBlackTree::new(5);
+    match rbt {
+        RedBlackTree::Node {colour, data, ref mut left_child, ref mut right_child} => {
+            *left_child = Rc::new(RedBlackTree::Empty);
+            *right_child = Rc::new(lower);
+        },
+        RedBlackTree::Empty => {},
+    }
+
+    /////////////////////////////////////
+    //     |
+    //     5
+    //   /   \
+    //  x     6
+    //      /   \
+    //     7     8
+    //
+    //  Watch out for the following nodes: x, 7, 8, where x is empty.
+    
+    println!("{:#?}", rbt);
+    println!("\n");
+    rbt.rotate_left();
 }
