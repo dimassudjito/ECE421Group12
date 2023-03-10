@@ -1,32 +1,36 @@
 use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Debug)]
-enum Tree<T: Ord> {
+pub enum AVLTree<T: Ord> {
     Node {
         data: T,
-        left_child: RefCell<Tree<T>>,
-        right_child: RefCell<Tree<T>>,
+        left_child: Rc<RefCell<AVLTree<T>>>,
+        right_child: Rc<RefCell<AVLTree<T>>>,
         height: i32
     },
     Empty,
 }
 
-impl<T: Ord> Tree<T> {
+impl<T: Ord> AVLTree<T> {
     pub fn insert_node(&mut self, new_data: T) {
         // TODO: Dimas
         match self {
-            Tree::Empty => {
-                *self = Tree::Node {
+            AVLTree::Empty => {
+                *self = AVLTree::Node {
                     data: new_data,
-                    left_child: Box::new(Tree::Empty),
-                    right_child: Box::new(Tree::Empty),
+                    left_child: Rc::new(RefCell::new(AVLTree::Empty)),
+                    right_child: Rc::new(RefCell::new(AVLTree::Empty)),
+                    height: 1,
                 };
             }
-            Tree::Node { data, left_child, right_child } => {
+            AVLTree::Node { data, left_child, right_child, height } => {
                 if new_data < *data {
-                    left_child.insert_node(new_data);
+                   let mut borrowed_node = left_child.borrow_mut();
+                    (*borrowed_node).insert_node(new_data);
                 } else if new_data > *data {
-                    right_child.insert_node(new_data);
+                    let mut borrowed_node = right_child.borrow_mut();
+                    (*borrowed_node).insert_node(new_data);
                 } else {
                     return;
                 }
@@ -34,43 +38,43 @@ impl<T: Ord> Tree<T> {
         }
     }
 
-    pub delete_node() {
+    pub fn delete_node() {
         // TODO: Josh
     }
 
-    pub rotation_left_left() {
+    pub fn rotation_left_left() {
         // TODO: Dimas
     }
 
-    pub rotation_left_right() {
+    pub fn rotation_left_right() {
         // TODO: Dimas
     }
 
-    pub rotation_right_left() {
+    pub fn rotation_right_left() {
         // TODO: Josh
     }
 
-    pub rotation_right_right() {
+    pub fn rotation_right_right() {
         // TODO: Josh
     }
 
-    pub leaf_number() {
+    pub fn leaf_number() {
         // TODO: Josh
     }
 
-    pub tree_height() {
+    pub fn tree_height() {
         // TODO: Dimas
     }
 
-    pub print() {
+    pub fn print() {
         // TODO: Dimas
     }
 
-    pub print_inorder() {
+    pub fn print_inorder() {
         // TODO: Josh
     }
 
-    pub is_tree_empty() {
+    pub fn is_tree_empty() {
         // TODO: Dimas
     }
 }
