@@ -36,8 +36,19 @@ fn main() {
     //     7     8
     //
     //  Watch out for the following nodes: x, 7, 8, where x is empty.
-    
+
     println!("{:#?}", rbt);
     println!("\n");
-    rbt.rotate_left();
+    println!("\n\n{:#?}", rbt.rotate_left());
+
+       /////////////////////////////////////
+    //         |
+    //         6
+    //       /   \
+    //      5     8
+    //     /  \    
+    //    x    7     
+    // 
+
+
 }

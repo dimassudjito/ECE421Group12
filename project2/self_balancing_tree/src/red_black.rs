@@ -33,8 +33,11 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
     }
 
     pub fn rotate_left(self) -> Self {
-        match &self {
-            RedBlackTree::Node {colour, data, left_child, right_child} => {
+
+        let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
+
+        match self {
+            RedBlackTree::Node {colour, data, mut left_child, mut right_child} => {
                 let tl_branch = left_child.clone();
                 let bl_branch = match &*right_child.clone() {
                     RedBlackTree::Node {colour, data, left_child, right_child} => left_child.clone(),
@@ -44,15 +47,32 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     RedBlackTree::Node {colour, data, left_child, right_child} => right_child.clone(),
                     RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
                 };
+                
+                let datatemp = &data;
+                let colourtemp = &colour;
 
-                println!("{:#?}", tl_branch);
-                println!("{:#?}", bl_branch);
-                println!("{:#?}", br_branch);
+                
+                new_parent = match &*right_child.clone() {
+                    RedBlackTree::Node {colour, data, left_child, right_child} =>  {
+                        let t_colour = *colour;
+                        let t_data = *data;
+                        let t_lc = Rc::new(RedBlackTree::Node{
+                            colour: *colourtemp,
+                            data: *datatemp,
+                            left_child: tl_branch,
+                            right_child:bl_branch
+                        });
+                        let t_rc = right_child.clone();
+                        RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
+                    }
+                    RedBlackTree::Empty => RedBlackTree::Empty,
+                };
+
 
             },
             RedBlackTree::Empty => {},
         }
-        self
+        new_parent
     }
 
 }
