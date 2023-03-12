@@ -40,52 +40,51 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     //     }
     // }
 
-    pub fn delete_node(& self) {
-        // TODO: Josh
-        match self {
-            AVLTree::Empty => {
-                panic!("Node does not exist in tree")
-            }
-            AVLTree::Node { data, left_child, right_child } => {
-                if new_data < *data {
-                    (*left_child.borrow()).delete_node(new_data);
-                } else if new_data > *data {
-                    (*right_child.borrow()).delete_node(new_data);
-                } else {
-                    return;
-                }
-            }
-        }
-    }
+    // pub fn delete_node(& self) {
+    //     // TODO: Josh
+    //     match self {
+    //         AVLTree::Empty => {
+    //             panic!("Node does not exist in tree")
+    //         }
+    //         AVLTree::Node { data, left_child, right_child } => {
+    //             if new_data < *data {
+    //                 (*left_child.borrow()).delete_node(new_data);
+    //             } else if new_data > *data {
+    //                 (*right_child.borrow()).delete_node(new_data);
+    //             } else {
+    //                 return;
+    //             }
+    //         }
+    //     }
+    // }
 
     pub fn rotation_left_left(z: &Rc<AVLTree<T>>) {
-        right_rotate(z);    
+        AVLTree::rotate_right(z);    
     }
 
     pub fn rotation_left_right(y: &Rc<AVLTree<T>>,z: &Rc<AVLTree<T>>) {
         //   z
         //  /
         // y
-
-        left_rotate(y);
-        right_rotate(z);
+        AVLTree::rotate_left(y);
+        AVLTree::rotate_right(z);
     }
 
     pub fn rotation_right_right(z: &Rc<AVLTree<T>>) {
-        left_rotate(z);
+        AVLTree::rotate_left(z);
     }
 
     pub fn rotation_right_left(y: &Rc<AVLTree<T>>,z: &Rc<AVLTree<T>>) {
         //   z
         //    \
         //     y
-        right_rotate(y);
-        left_rotate(z);
+        AVLTree::rotate_right(y);
+        AVLTree::rotate_left(z);
     }
 
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
-        // TODO: Josh  make non public later
+        // TODO: @Josh make non public later
 
         // EX:   z
         //      /
@@ -93,32 +92,26 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         //    / \
         //   x   N
         let z = &(**z_rc);
-        match z{
-            Empty =>{ Rc::clone(z_rc) },
-            Node {
-                left_child:z_right_child,
-                ..
-            }=>{
-                let y_rc = Rc::clone(&z_right_child.borrow());
+        match z {
+            Empty => Rc::clone(z_rc),
+            Node { left_child:z_left_child, .. } => {
+                let y_rc = Rc::clone(&z_left_child.borrow());
                 let y  = &(*y_rc);
                 match y{
-                    Empty=>{ Rc::clone(z_rc)  },
-                    Node {  
-                        right_child:y_left_child,
-                        ..
-                    } => {  
+                    Empty => Rc::clone(z_rc),
+                    Node { right_child: y_right_child, .. } => {  
                         
                         //       y
                         //      / \ 
-                        //     x   z      N
-                        let n = (y_left_child).replace(Rc::clone(z_rc)); 
+                        //     x   z
+                        let n = (y_right_child).replace(Rc::clone(z_rc)); 
                         
                         //       y
                         //      / \ 
                         //     x   z      
                         //        /
                         //       n
-                        z_right_child.replace(n);
+                        z_left_child.replace(n);
 
                         y.update_heights();
                         z.update_heights();
@@ -131,7 +124,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     }
 
     pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
-        // TODO: Josh  make non public later
+        // TODO: @Josh make non public later
 
         // EX:   z
         //        \
@@ -139,24 +132,17 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         //        / \
         //       n   x
         let z = &(**z_rc);
-        match z{
-            Empty =>{ Rc::clone(z_rc) },
-            Node {
-                right_child:z_right_child,
-                ..
-            }=>{
+        match z {
+            Empty => Rc::clone(z_rc),
+            Node { right_child:z_right_child, .. } => {
                 let y_rc = Rc::clone(&z_right_child.borrow());
                 let y  = &(*y_rc);
-                match y{
-                    Empty=>{ Rc::clone(z_rc)  },
-                    Node {  
-                        left_child:y_left_child,
-                        ..
-                    } => {  
-                        
+                match y {
+                    Empty=> Rc::clone(z_rc),
+                    Node { left_child:y_left_child, .. } => {  
                         //       y
                         //      / \ 
-                        //     z   x      n
+                        //     z   x
                         let n = (y_left_child).replace(Rc::clone(z_rc)); 
                         
                         //       y
@@ -177,23 +163,23 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     }
 
     pub fn update_heights(& self){
-        match self{
+        match self {
             Empty => {},
             Node {   
                 left_child,
                 right_child,
                 height,
                 ..
-            } =>{
+            } => {
                 let left_val;
                 let right_val;
-                match &(**left_child.borrow()){
-                    Empty => {left_val = -1}
-                    Node{height,..}=>{left_val = *height.borrow()}
+                match &(**left_child.borrow()) {
+                    Empty => { left_val = -1 },
+                    Node { height, .. } => { left_val = *height.borrow() }
                 }
-                    match  &(**right_child.borrow()){
-                    Empty => {right_val = -1}
-                    Node {height,..}=>{right_val = *height.borrow()}
+                match  &(**right_child.borrow()){
+                    Empty => { right_val = -1 },
+                    Node { height, .. } => { right_val = *height.borrow() }
                 }
                 height.replace(max(left_val,right_val) + 1);
             }
