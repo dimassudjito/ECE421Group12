@@ -40,22 +40,69 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     //     }
     // }
 
-    // pub fn delete_node(& self) {
-    //     // TODO: Josh
+    // pub fn delete_node(node_rc:Rc<AVLTree<T>>,targetValue) -> Rc<AVLTree<T>>{
+    //     // deletes the node with the target value if it exists and returns the root
+
     //     match self {
     //         AVLTree::Empty => {
-    //             panic!("Node does not exist in tree")
+    //             Rc::clone(node_rc);
     //         }
-    //         AVLTree::Node { data, left_child, right_child } => {
-    //             if new_data < *data {
-    //                 (*left_child.borrow()).delete_node(new_data);
-    //             } else if new_data > *data {
-    //                 (*right_child.borrow()).delete_node(new_data);
+    //         AVLTree::Node { value, left_child, right_child } => {
+    //             if targetValue < *value {
+    //                 left_child.replace(AVLTree::delete_node(&left_child.borrow(),targetValue));
+    //             } else if targetValue > *value {
+    //                 right_child.replace(AVLTree::delete_node(&right_child.borrow(),targetValue));
     //             } else {
-    //                 return;
+    //                 let left_node = *left_child.borrow();
+    //                 let right_node = *right_child.borrow();
+    //                 let mut left_is_empty;
+    //                 let mut right_is_empty;
+
+    //                 match left_node{
+    //                     Empty =>{ left_is_empty = True},
+    //                     Node{..} => {left_is_empty = False}
+    //                 }
+    //                 match right_node{
+    //                     Empty =>{ right_is_empty = True},
+    //                     Node{..} => {right_is_empty = False}
+    //                 }
+
+    //                 if  left_is_empty && right_is_empty{
+    //                     // both children are empty
+    //                     //    a                 a
+    //                     //     \                 \
+    //                     //      t       --->     empty
+    //                     //     / \
+    //                     // empty  empty
+    //                     Rc::clone(right_child.borrow())
+    //                 }
+    //                 else if left_is_empty{
+    //                     // only the left is empty
+    //                     //    a                 a
+    //                     //     \                 \
+    //                     //      t       --->      c
+    //                     //     / \
+    //                     // empty  c
+    //                     Rc::clone(right_node.borrow())
+    //                 }
+    //                 else if right_is_empty{
+    //                     // only the right is empty
+    //                     //   a                 a
+    //                     //    \                 \
+    //                     //     t       --->      c
+    //                     //    / \
+    //                     //   c  Empty
+    //                     Rc::clone(left_node.borrow())
+    //                 }
+    //                 else{
+    //                     // both are not empty
+    //                     (*node_rc).data.replace(right_node.data.borrow()); // take the inorder successor's value
+    //                     right_child.replace(AVLTree::delete_node(&right_child.borrow(),targetValue)); // shrink the inorder successor's tree
+    //                 }
     //             }
     //         }
     //     }
+    //     (*node_rc).update_heights()
     // }
 
     pub fn rotation_left_left(z: &Rc<AVLTree<T>>) {
@@ -92,18 +139,24 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         //    / \
         //   x   N
         let z = &(**z_rc);
-        match z {
-            Empty => Rc::clone(z_rc),
-            Node { left_child:z_left_child, .. } => {
+        match z{
+            Empty =>{ Rc::clone(z_rc) },
+            Node {
+                left_child:z_left_child,
+                ..
+            }=>{
                 let y_rc = Rc::clone(&z_left_child.borrow());
                 let y  = &(*y_rc);
                 match y{
-                    Empty => Rc::clone(z_rc),
-                    Node { right_child: y_right_child, .. } => {  
+                    Empty=>{ Rc::clone(z_rc)  },
+                    Node {  
+                        right_child:y_right_child,
+                        ..
+                    } => {  
                         
                         //       y
                         //      / \ 
-                        //     x   z
+                        //     x   z      N
                         let n = (y_right_child).replace(Rc::clone(z_rc)); 
                         
                         //       y
