@@ -113,7 +113,6 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         //   z
         //  /
         // y
-
         AVLTree::rotate_left(y);
         AVLTree::rotate_right(z);
     }
@@ -132,7 +131,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
 
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
-        // TODO: Josh  make non public later
+        // TODO: @Josh make non public later
 
         // EX:   z
         //      /
@@ -178,7 +177,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     }
 
     pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
-        // TODO: Josh  make non public later
+        // TODO: @Josh make non public later
 
         // EX:   z
         //        \
@@ -186,24 +185,17 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         //        / \
         //       n   x
         let z = &(**z_rc);
-        match z{
-            Empty =>{ Rc::clone(z_rc) },
-            Node {
-                right_child:z_right_child,
-                ..
-            }=>{
+        match z {
+            Empty => Rc::clone(z_rc),
+            Node { right_child:z_right_child, .. } => {
                 let y_rc = Rc::clone(&z_right_child.borrow());
                 let y  = &(*y_rc);
-                match y{
-                    Empty=>{ Rc::clone(z_rc)  },
-                    Node {  
-                        left_child:y_left_child,
-                        ..
-                    } => {  
-                        
+                match y {
+                    Empty=> Rc::clone(z_rc),
+                    Node { left_child:y_left_child, .. } => {  
                         //       y
                         //      / \ 
-                        //     z   x      n
+                        //     z   x
                         let n = (y_left_child).replace(Rc::clone(z_rc)); 
                         
                         //       y
@@ -224,23 +216,23 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     }
 
     pub fn update_heights(& self){
-        match self{
+        match self {
             Empty => {},
             Node {   
                 left_child,
                 right_child,
                 height,
                 ..
-            } =>{
+            } => {
                 let left_val;
                 let right_val;
-                match &(**left_child.borrow()){
-                    Empty => {left_val = -1}
-                    Node{height,..}=>{left_val = *height.borrow()}
+                match &(**left_child.borrow()) {
+                    Empty => { left_val = -1 },
+                    Node { height, .. } => { left_val = *height.borrow() }
                 }
-                    match  &(**right_child.borrow()){
-                    Empty => {right_val = -1}
-                    Node {height,..}=>{right_val = *height.borrow()}
+                match  &(**right_child.borrow()){
+                    Empty => { right_val = -1 },
+                    Node { height, .. } => { right_val = *height.borrow() }
                 }
                 height.replace(max(left_val,right_val) + 1);
             }
