@@ -1,5 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::cmp::max;
 
 #[derive(Debug)]
 pub enum AVLTree<T: Ord> {
@@ -26,20 +27,33 @@ impl<T: Ord> AVLTree<T> {
             }
             AVLTree::Node { data, left_child, right_child, height } => {
                 if new_data < *data {
-                   let mut borrowed_node = left_child.borrow_mut();
-                    (*borrowed_node).insert_node(new_data);
+                    (*(left_child.borrow_mut())).insert_node(new_data);
                 } else if new_data > *data {
-                    let mut borrowed_node = right_child.borrow_mut();
-                    (*borrowed_node).insert_node(new_data);
+                    (*(right_child.borrow_mut())).insert_node(new_data);
                 } else {
                     return;
                 }
             }
         }
+
+        // Step 2 - Update the height of the ancestor node
+
+        // Step 3 - Get the balance factor
+
+        // Step 4 - If the node is unbalanced, then try out the 4 cases
+
     }
 
     pub fn delete_node() {
         // TODO: Josh
+    }
+
+    pub fn rotation_left() {
+
+    }
+
+    pub fn rotation_right() {
+        
     }
 
     pub fn rotation_left_left() {
@@ -62,8 +76,18 @@ impl<T: Ord> AVLTree<T> {
         // TODO: Josh
     }
 
-    pub fn tree_height() {
-        // TODO: Dimas
+    pub fn tree_height(self) -> i32 {
+        match self {
+            AVLTree::Empty => 0,
+            AVLTree::Node { data, left_child, right_child, height } => height,
+        }
+    }
+
+    pub fn is_tree_empty(self) -> bool {
+        match self {
+            AVLTree::Empty => true,
+            AVLTree::Node { data, left_child, right_child, height } => false,
+        }
     }
 
     pub fn print() {
@@ -72,9 +96,5 @@ impl<T: Ord> AVLTree<T> {
 
     pub fn print_inorder() {
         // TODO: Josh
-    }
-
-    pub fn is_tree_empty() {
-        // TODO: Dimas
     }
 }
