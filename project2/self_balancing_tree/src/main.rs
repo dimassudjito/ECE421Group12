@@ -56,5 +56,6 @@ fn main() {
     // rotate right should form EXAMPLE 1
     rbt = rbt.rotate_right();
     println!("\n\n{:#?}", rbt);
-    
+    println!("Leaf nodes: {}", rbt.count_leaves());
+    println!("Tree height: {}", rbt.get_height());
 }

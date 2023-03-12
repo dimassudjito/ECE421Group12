@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::cmp::Ord;
+use std::cmp::max;
 use std::marker::Copy;
 use std::fmt::Debug;
 
@@ -29,6 +30,31 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             data: data,
             left_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
             right_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
+        }
+    }
+
+    pub fn count_leaves(&self) -> i32 {
+        // Recursively count leaves
+        match self {
+            RedBlackTree::Node {colour, data, left_child, right_child} => {
+                return left_child.borrow().count_leaves() + right_child.borrow().count_leaves();
+            },
+            RedBlackTree::Empty => {
+                return 1;
+            },
+        }
+    }
+
+    pub fn get_height(&self) -> i32 {
+        // Recursively get height
+        // This counts nodes and not edges (e.g. a tree with one node has height 1, and not 0)
+        match self {
+            RedBlackTree::Node {colour, data, left_child, right_child} => {
+                return max(left_child.borrow().get_height(), right_child.borrow().get_height()) + 1;
+            },
+            RedBlackTree::Empty => {
+                return 1;
+            },
         }
     }
 
