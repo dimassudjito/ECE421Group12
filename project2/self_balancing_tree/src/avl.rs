@@ -40,31 +40,49 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     //     }
     // }
 
-    // pub fn delete_node() {
-    //     // TODO: Josh
-    //     match self {
-    //         AVLTree::Empty => {
-    //             panic!("Node does not exist in tree")
-    //         }
-    //         AVLTree::Node { data, left_child, right_child } => {
-    //             if new_data < *data {
-    //                 left_child.delete_node(new_data);
-    //             } else if new_data > *data {
-    //                 right_child.delete_node(new_data);
-    //             } else {
-    //                 return;
-    //             }
-    //         }
-    //     }
-    // }
+    pub fn delete_node(& self) {
+        // TODO: Josh
+        match self {
+            AVLTree::Empty => {
+                panic!("Node does not exist in tree")
+            }
+            AVLTree::Node { data, left_child, right_child } => {
+                if new_data < *data {
+                    (*left_child.borrow()).delete_node(new_data);
+                } else if new_data > *data {
+                    (*right_child.borrow()).delete_node(new_data);
+                } else {
+                    return;
+                }
+            }
+        }
+    }
 
-    // pub fn rotation_left_left() {
-    //     // TODO: Dimas
-    // }
+    pub fn rotation_left_left(z: &Rc<AVLTree<T>>) {
+        right_rotate(z);    
+    }
 
-    // pub fn rotation_left_right() {
-    //     // TODO: Dimas
-    // }
+    pub fn rotation_left_right(y: &Rc<AVLTree<T>>,z: &Rc<AVLTree<T>>) {
+        //   z
+        //  /
+        // y
+
+        left_rotate(y);
+        right_rotate(z);
+    }
+
+    pub fn rotation_right_right(z: &Rc<AVLTree<T>>) {
+        left_rotate(z);
+    }
+
+    pub fn rotation_right_left(y: &Rc<AVLTree<T>>,z: &Rc<AVLTree<T>>) {
+        //   z
+        //    \
+        //     y
+        right_rotate(y);
+        left_rotate(z);
+    }
+
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
         // TODO: Josh  make non public later
@@ -181,10 +199,6 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
             }
         }
     }
-
-    // pub fn rotation_right_right() {
-    //     // TODO: Josh
-    // }
 
     // pub fn leaf_number(&self) {
     //     // TODO: Josh
