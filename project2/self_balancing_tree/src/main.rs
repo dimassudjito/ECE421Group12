@@ -13,16 +13,16 @@ fn main() {
     let mut lower = RedBlackTree::new(6);
     match lower {
         RedBlackTree::Node {colour, data, ref mut left_child, ref mut right_child} => {
-            *left_child = Rc::new(RedBlackTree::new(7));
-            *right_child = Rc::new(RedBlackTree::new(8));
+            *left_child = Rc::new(RefCell::new(RedBlackTree::new(7)));
+            *right_child = Rc::new(RefCell::new(RedBlackTree::new(8)));
         },
         RedBlackTree::Empty => {},
     }
     let mut rbt = RedBlackTree::new(5);
     match rbt {
         RedBlackTree::Node {colour, data, ref mut left_child, ref mut right_child} => {
-            *left_child = Rc::new(RedBlackTree::Empty);
-            *right_child = Rc::new(lower);
+            *left_child = Rc::new(RefCell::new(RedBlackTree::Empty));
+            *right_child = Rc::new(RefCell::new(lower));
         },
         RedBlackTree::Empty => {},
     }

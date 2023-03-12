@@ -10,13 +10,13 @@ pub enum  NodeColour {
     Black,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum RedBlackTree<T: Ord + Copy + Debug> {
     Node {
         colour: NodeColour,
         data: T,
-        left_child: Rc<RedBlackTree<T>>,
-        right_child: Rc<RedBlackTree<T>>,
+        left_child: Rc<RefCell<RedBlackTree<T>>>,
+        right_child: Rc<RefCell<RedBlackTree<T>>>,
     },
     Empty
 }
@@ -27,8 +27,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         RedBlackTree::<T>::Node {
             colour: NodeColour::Black, 
             data: data,
-            left_child: Rc::new(RedBlackTree::Empty),
-            right_child: Rc::new(RedBlackTree::Empty),
+            left_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
+            right_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
         }
     }
 
@@ -37,39 +37,39 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
 
         match self {
-            RedBlackTree::Node {colour, data, mut left_child, mut right_child} => {
-                let tl_branch = left_child.clone();
-                let bl_branch = match &*right_child.clone() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => left_child.clone(),
-                    RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
+            RedBlackTree::Node {colour, data, left_child, right_child} => {
+                let tl_branch = Rc::clone(&left_child);
+                let bl_branch = match (&*right_child.borrow()) {
+                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 };
-                let br_branch = match &*right_child.clone() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => right_child.clone(),
-                    RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
+                let br_branch = match (&*right_child.borrow()) {
+                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 };
                 
                 let datatemp = &data;
                 let colourtemp = &colour;
 
                 
-                new_parent = match &*right_child.clone() {
+                new_parent = match (&*right_child.borrow()) {
                     RedBlackTree::Node {colour, data, left_child, right_child} =>  {
                         let t_colour = *colour;
                         let t_data = *data;
-                        let t_lc = Rc::new(RedBlackTree::Node{
+                        let t_lc = Rc::new(RefCell::new(RedBlackTree::Node{
                             colour: *colourtemp,
                             data: *datatemp,
                             left_child: tl_branch,
                             right_child:bl_branch
-                        });
-                        let t_rc = right_child.clone();
+                        }));
+                        let t_rc = Rc::clone(&right_child);
                         RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
                     }
                     RedBlackTree::Empty => RedBlackTree::Node {
                         colour: *colourtemp,
                         data: *datatemp,
-                        left_child: left_child.clone(),
-                        right_child:right_child.clone()
+                        left_child: Rc::clone(&left_child),
+                        right_child:Rc::clone(&right_child)
                     },
                 };
 
@@ -87,39 +87,39 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
 
         match self {
-            RedBlackTree::Node {colour, data, mut left_child, mut right_child} => {
-                let tr_branch = right_child.clone();
-                let br_branch = match &*left_child.clone() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => right_child.clone(),
-                    RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
+            RedBlackTree::Node {colour, data, left_child, right_child} => {
+                let tr_branch = Rc::clone(&right_child);
+                let br_branch = match (&*left_child.borrow()) {
+                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 };
-                let bl_branch = match &*left_child.clone() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => left_child.clone(),
-                    RedBlackTree::Empty => Rc::new(RedBlackTree::Empty),
+                let bl_branch = match (&*left_child.borrow()) {
+                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 };
                 
                 let datatemp = &data;
                 let colourtemp = &colour;
 
                 
-                new_parent = match &*left_child.clone() {
+                new_parent = match (&*left_child.borrow()) {
                     RedBlackTree::Node {colour, data, left_child, right_child} =>  {
                         let t_colour = *colour;
                         let t_data = *data;
-                        let t_rc = Rc::new(RedBlackTree::Node{
+                        let t_rc = Rc::new(RefCell::new(RedBlackTree::Node{
                             colour: *colourtemp,
                             data: *datatemp,
                             left_child: br_branch,
                             right_child:tr_branch
-                        });
-                        let t_lc = left_child.clone();
+                        }));
+                        let t_lc = Rc::clone(&left_child);
                         RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
                     }
                     RedBlackTree::Empty => RedBlackTree::Node {
                         colour: *colourtemp,
                         data: *datatemp,
-                        left_child: left_child.clone(),
-                        right_child:right_child.clone()
+                        left_child: Rc::clone(&left_child),
+                        right_child:Rc::clone(&right_child)
                     },
                 };
 
