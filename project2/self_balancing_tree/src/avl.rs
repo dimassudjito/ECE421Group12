@@ -78,29 +78,75 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         match z{
             Empty =>{ Rc::clone(z_rc) },
             Node {
-                left_child:z_left_child,
+                left_child:z_right_child,
                 ..
             }=>{
-                let y_rc = Rc::clone(&z_left_child.borrow());
+                let y_rc = Rc::clone(&z_right_child.borrow());
                 let y  = &(*y_rc);
                 match y{
                     Empty=>{ Rc::clone(z_rc)  },
                     Node {  
-                        right_child:y_right_child,
+                        right_child:y_left_child,
                         ..
                     } => {  
                         
                         //       y
                         //      / \ 
                         //     x   z      N
-                        let n = (y_right_child).replace(Rc::clone(z_rc)); 
+                        let n = (y_left_child).replace(Rc::clone(z_rc)); 
                         
                         //       y
                         //      / \ 
                         //     x   z      
                         //        /
                         //       n
-                        z_left_child.replace(n);
+                        z_right_child.replace(n);
+
+                        y.update_heights();
+                        z.update_heights();
+
+                        y_rc
+                    }
+                }
+            },
+        }
+    }
+
+    pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        // TODO: Josh  make non public later
+
+        // EX:   z
+        //        \
+        //         y
+        //        / \
+        //       n   x
+        let z = &(**z_rc);
+        match z{
+            Empty =>{ Rc::clone(z_rc) },
+            Node {
+                right_child:z_right_child,
+                ..
+            }=>{
+                let y_rc = Rc::clone(&z_right_child.borrow());
+                let y  = &(*y_rc);
+                match y{
+                    Empty=>{ Rc::clone(z_rc)  },
+                    Node {  
+                        left_child:y_left_child,
+                        ..
+                    } => {  
+                        
+                        //       y
+                        //      / \ 
+                        //     z   x      n
+                        let n = (y_left_child).replace(Rc::clone(z_rc)); 
+                        
+                        //       y
+                        //      / \ 
+                        //     z   x      
+                        //      \
+                        //        n
+                        z_right_child.replace(n);
 
                         y.update_heights();
                         z.update_heights();
