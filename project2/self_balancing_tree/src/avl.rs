@@ -6,7 +6,7 @@ use crate::AVLTree::*;
 #[derive(Debug)]
 pub enum AVLTree<T: Ord> {
     Node {
-        data: RefCell<T>,
+        data: RefCell<Rc<T>>,
         left_child: RefCell<Rc<AVLTree<T>>>,
         right_child: RefCell<Rc<AVLTree<T>>>,
         height: RefCell<i32>
@@ -40,93 +40,158 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     //     }
     // }
 
-    // pub fn delete_node(node_rc:Rc<AVLTree<T>>,targetValue) -> Rc<AVLTree<T>>{
-    //     // deletes the node with the target value if it exists and returns the root
+    pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
+        // deletes the node with the target value if it exists and returns the root
 
-    //     match self {
-    //         AVLTree::Empty => {
-    //             Rc::clone(node_rc);
-    //         }
-    //         AVLTree::Node { value, left_child, right_child } => {
-    //             if targetValue < *value {
-    //                 left_child.replace(AVLTree::delete_node(&left_child.borrow(),targetValue));
-    //             } else if targetValue > *value {
-    //                 right_child.replace(AVLTree::delete_node(&right_child.borrow(),targetValue));
-    //             } else {
-    //                 let left_node = *left_child.borrow();
-    //                 let right_node = *right_child.borrow();
-    //                 let mut left_is_empty;
-    //                 let mut right_is_empty;
+        match &**node_rc {
+            AVLTree::Empty => {   return Rc::clone(node_rc);}
+            AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
+                if *targetValue < *Rc::clone(&*data.borrow()) {
+                    let new_node = AVLTree::delete_node(&Rc::clone(&*left_child_ref.borrow()),targetValue);
+                    left_child_ref.replace(new_node);
+                } else if *targetValue > *Rc::clone(&*data.borrow()) {
+                    let new_node = AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()),targetValue);
+                    right_child_ref.replace(new_node);
+                } else {
 
-    //                 match left_node{
-    //                     Empty =>{ left_is_empty = True},
-    //                     Node{..} => {left_is_empty = False}
-    //                 }
-    //                 match right_node{
-    //                     Empty =>{ right_is_empty = True},
-    //                     Node{..} => {right_is_empty = False}
-    //                 }
+                    let left_node = &*Rc::clone(&*left_child_ref.borrow());
+                    let right_node = &*Rc::clone(&*right_child_ref.borrow());
+                    // target node found
+                    match left_node{
+                        Empty =>{
+                            match right_node{
+                            Empty =>{  
+                                // both children are empty
+                                return Rc::clone(&*right_child_ref.borrow());}
+                            Node{..} => { 
+                                // only the left is empty
+                                return Rc::clone(&*right_child_ref.borrow());}
+                            }
+                        },
+                        Node{..} => {
+                            match right_node{
+                                Empty =>{  
+                                    // only the right is empty
+                                    return Rc::clone(&*left_child_ref.borrow());
+                                }
+                                Node{data:right_node_data,..} => {  
+                                    // both are not empty
+                                    data.replace(Rc::clone(&*right_node_data.borrow()));
+                                    let new_right =AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()),&**right_node_data.borrow());
+                                    right_child_ref.replace(new_right);
+                                    (*node_rc).update_heights();
+                                }
+                            }
+                        }
+                    }
+                }
 
-    //                 if  left_is_empty && right_is_empty{
-    //                     // both children are empty
-    //                     //    a                 a
-    //                     //     \                 \
-    //                     //      t       --->     empty
-    //                     //     / \
-    //                     // empty  empty
-    //                     Rc::clone(right_child.borrow())
-    //                 }
-    //                 else if left_is_empty{
-    //                     // only the left is empty
-    //                     //    a                 a
-    //                     //     \                 \
-    //                     //      t       --->      c
-    //                     //     / \
-    //                     // empty  c
-    //                     Rc::clone(right_node.borrow())
-    //                 }
-    //                 else if right_is_empty{
-    //                     // only the right is empty
-    //                     //   a                 a
-    //                     //    \                 \
-    //                     //     t       --->      c
-    //                     //    / \
-    //                     //   c  Empty
-    //                     Rc::clone(left_node.borrow())
-    //                 }
-    //                 else{
-    //                     // both are not empty
-    //                     (*node_rc).data.replace(right_node.data.borrow()); // take the inorder successor's value
-    //                     right_child.replace(AVLTree::delete_node(&right_child.borrow(),targetValue)); // shrink the inorder successor's tree
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     (*node_rc).update_heights()
-    // }
 
-    pub fn rotation_left_left(z: &Rc<AVLTree<T>>) {
-        AVLTree::rotate_right(z);    
+                // balance
+                return AVLTree::delete_node_balance(node_rc);
+            }
+        }
     }
 
-    pub fn rotation_left_right(y: &Rc<AVLTree<T>>,z: &Rc<AVLTree<T>>) {
+    pub fn delete_node_balance(node_rc:&Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        // balances the tree for deletion case
+        match &**node_rc {
+            AVLTree::Empty => {   return Rc::clone(node_rc);}
+            AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
+                // balance
+                let left_node = &*Rc::clone(&*left_child_ref.borrow());
+                let right_node = &*Rc::clone(&*right_child_ref.borrow());
+
+                let left_height = (*left_child_ref.borrow()).get_height() ;
+                let right_height = (*right_child_ref.borrow()).get_height();
+                if (left_height - right_height ).abs() > 1{
+                    // this is an unbalanced node
+                    if left_height > right_height{
+                        // left-<?> case
+                        match left_node{
+                            Empty =>{panic!("Given tree is not a proper AVL tree");}
+                            Node {
+                                left_child: y_left_child_ref, 
+                                right_child:y_right_child_ref,..
+                            }=>{
+                                let y_left_height = (*y_left_child_ref.borrow()).get_height() ;
+                                let y_right_height = (*y_right_child_ref.borrow()).get_height();
+                                if left_height > right_height{
+                                    // left-left case
+                                    return AVLTree::rotation_left_left(node_rc);
+                                }
+                                else{
+                                    // left-right case
+                                    return AVLTree::rotation_left_right(node_rc);
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        // right-<?> case
+                        match right_node{
+                            Empty =>{ panic!("Given tree is not a proper AVL tree");}
+                            Node {
+                                left_child : y_left_child_ref, 
+                                right_child :y_right_child_ref,..
+                            }=>{
+                                let y_left_height = (*y_left_child_ref.borrow()).get_height() ;
+                                let y_right_height = (*y_right_child_ref.borrow()).get_height();
+                                if y_left_height > y_right_height{
+                                    // right-left case
+                                    println!("in right left");
+                                    return AVLTree::rotation_right_left(node_rc);
+                                }
+                                else{
+                                    // right-right case
+                                 
+                                    return AVLTree::rotation_right_right(node_rc);
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    // is a balanced node
+                    return Rc::clone(node_rc);
+                }
+            }
+        }
+    }
+
+    pub fn rotation_left_left(z: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        return AVLTree::rotate_right(z);    
+    }
+
+    pub fn rotation_left_right(z: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
         //   z
         //  /
         // y
-        AVLTree::rotate_left(y);
-        AVLTree::rotate_right(z);
+        match &(**z){
+            Empty=> { panic!("Invalid AVLTree for left right rotation")}
+            Node{left_child,..}=>{
+                let new_left = AVLTree::rotate_left(&(left_child.borrow()));
+                left_child.replace(new_left);
+                return AVLTree::rotate_right(z);
+            }
+        }
     }
 
-    pub fn rotation_right_right(z: &Rc<AVLTree<T>>) {
-        AVLTree::rotate_left(z);
+    pub fn rotation_right_right(z: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        return AVLTree::rotate_left(z);
     }
 
-    pub fn rotation_right_left(y: &Rc<AVLTree<T>>,z: &Rc<AVLTree<T>>) {
+    pub fn rotation_right_left(z: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
         //   z
         //    \
         //     y
-        AVLTree::rotate_right(y);
-        AVLTree::rotate_left(z);
+        match &(**z){
+            Empty=> { panic!("Invalid AVLTree for right left rotation")}
+            Node{right_child,..}=>{
+                let new_right = AVLTree::rotate_right(&(right_child.borrow()));
+                right_child.replace(new_right);
+                return AVLTree::rotate_left(z);
+            }
+        }
     }
 
 
@@ -224,18 +289,16 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                 height,
                 ..
             } => {
-                let left_val;
-                let right_val;
-                match &(**left_child.borrow()) {
-                    Empty => { left_val = -1 },
-                    Node { height, .. } => { left_val = *height.borrow() }
-                }
-                match  &(**right_child.borrow()){
-                    Empty => { right_val = -1 },
-                    Node { height, .. } => { right_val = *height.borrow() }
-                }
+                let left_val = (**left_child.borrow()).get_height();
+                let right_val = (**right_child.borrow()).get_height();
                 height.replace(max(left_val,right_val) + 1);
             }
+        }
+    }
+    fn get_height(&self)-> i32{
+        match self{
+            Empty => { return -1; },
+            Node { height, .. } => { return *height.borrow(); }
         }
     }
 
@@ -269,7 +332,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                 ..
             } => {
                 (*left_child.borrow()).print_inorder();
-                println!("{}", data.borrow());
+                println!("{}", **data.borrow());
                 (*right_child.borrow()).print_inorder();
             }
             AVLTree::Empty => return,
