@@ -328,6 +328,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
             }
         }
     }
+
     fn get_height(&self) -> i32 {
         match self {
             Empty => {
@@ -376,7 +377,10 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
 
-    // pub fn is_tree_empty() {
-    //     // TODO: Dimas
-    // }
+    pub fn is_tree_empty(self) -> bool {
+        match self {
+            AVLTree::Empty => true,
+            AVLTree::Node { .. } => false,
+        }
+    }
 }

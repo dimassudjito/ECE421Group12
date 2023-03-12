@@ -72,7 +72,20 @@ fn test_avl_tree_josh() {
     // root.print_inorder();
 }
 
+fn test_is_tree_empty() {
+    let root = AVLTree::Node {
+        data: RefCell::new(Rc::new("4")),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(0),
+    };
+    let empty_root: AVLTree<&str> = AVLTree::Empty;
+    println!("Non-empty: {:?}", root.is_tree_empty());
+    println!("Non-empty: {:?}", empty_root.is_tree_empty())
+}
+
 fn main() {
     // test_avl_tree();
     test_avl_tree_josh();
+    test_is_tree_empty();
 }
