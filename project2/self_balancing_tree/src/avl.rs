@@ -1,13 +1,15 @@
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::cmp::max;
+use crate::AVLTree::*;
 
 #[derive(Debug)]
 pub enum AVLTree<T: Ord> {
     Node {
-        data: T,
-        left_child: Rc<RefCell<AVLTree<T>>>,
-        right_child: Rc<RefCell<AVLTree<T>>>,
-        height: i32
+        data: RefCell<T>,
+        left_child: RefCell<Rc<AVLTree<T>>>,
+        right_child: RefCell<Rc<AVLTree<T>>>,
+        height: RefCell<i32>
     },
     Empty,
 }
@@ -64,9 +66,121 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     //     // TODO: Dimas
     // }
 
-    // pub fn rotation_right_left() {
-    //     // TODO: Josh
-    // }
+    pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        // TODO: Josh  make non public later
+
+        // EX:   z
+        //      /
+        //     y
+        //    / \
+        //   x   N
+        let z = &(**z_rc);
+        match z{
+            Empty =>{ Rc::clone(z_rc) },
+            Node {
+                left_child:z_right_child,
+                ..
+            }=>{
+                let y_rc = Rc::clone(&z_right_child.borrow());
+                let y  = &(*y_rc);
+                match y{
+                    Empty=>{ Rc::clone(z_rc)  },
+                    Node {  
+                        right_child:y_left_child,
+                        ..
+                    } => {  
+                        
+                        //       y
+                        //      / \ 
+                        //     x   z      N
+                        let n = (y_left_child).replace(Rc::clone(z_rc)); 
+                        
+                        //       y
+                        //      / \ 
+                        //     x   z      
+                        //        /
+                        //       n
+                        z_right_child.replace(n);
+
+                        y.update_heights();
+                        z.update_heights();
+
+                        y_rc
+                    }
+                }
+            },
+        }
+    }
+
+    pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        // TODO: Josh  make non public later
+
+        // EX:   z
+        //        \
+        //         y
+        //        / \
+        //       n   x
+        let z = &(**z_rc);
+        match z{
+            Empty =>{ Rc::clone(z_rc) },
+            Node {
+                right_child:z_right_child,
+                ..
+            }=>{
+                let y_rc = Rc::clone(&z_right_child.borrow());
+                let y  = &(*y_rc);
+                match y{
+                    Empty=>{ Rc::clone(z_rc)  },
+                    Node {  
+                        left_child:y_left_child,
+                        ..
+                    } => {  
+                        
+                        //       y
+                        //      / \ 
+                        //     z   x      n
+                        let n = (y_left_child).replace(Rc::clone(z_rc)); 
+                        
+                        //       y
+                        //      / \ 
+                        //     z   x      
+                        //      \
+                        //        n
+                        z_right_child.replace(n);
+
+                        y.update_heights();
+                        z.update_heights();
+
+                        y_rc
+                    }
+                }
+            },
+        }
+    }
+
+    pub fn update_heights(& self){
+        match self{
+            Empty => {},
+            Node {   
+                left_child,
+                right_child,
+                height,
+                ..
+            } =>{
+                let left_val;
+                let right_val;
+                match &(**left_child.borrow()){
+                    Empty => {left_val = -1}
+                    Node{height,..}=>{left_val = *height.borrow()}
+                }
+                    match  &(**right_child.borrow()){
+                    Empty => {right_val = -1}
+                    Node {height,..}=>{right_val = *height.borrow()}
+                }
+                height.replace(max(left_val,right_val) + 1);
+            }
+        }
+    }
 
     // pub fn rotation_right_right() {
     //     // TODO: Josh
@@ -99,11 +213,11 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                 data,
                 left_child,
                 right_child,
-                height
+                ..
             } => {
-                (*left_child).borrow().print_inorder();
-                println!("{}", data);
-                (*right_child).borrow().print_inorder();
+                (*left_child.borrow()).print_inorder();
+                println!("{}", data.borrow());
+                (*right_child.borrow()).print_inorder();
             }
             AVLTree::Empty => return,
         }
