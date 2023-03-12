@@ -43,6 +43,7 @@ fn main() {
     rbt = rbt.rotate_left();
     
     println!("\n\n{:#?}", rbt);
+    rbt.in_order_traversal();
 
        /////////EXAMPLE 2//////////////////
     //         |
@@ -56,5 +57,5 @@ fn main() {
     // rotate right should form EXAMPLE 1
     rbt = rbt.rotate_right();
     println!("\n\n{:#?}", rbt);
-    
+    rbt.in_order_traversal();
 }
