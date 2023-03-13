@@ -41,10 +41,10 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     // }
 
     pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
-        // deletes the node with the target value if it exists and returns the new root
+        // recursively deletes the node with the target value if it exists and returns the new root
 
         match &**node_rc {
-            AVLTree::Empty => {   return Rc::clone(node_rc);}
+            AVLTree::Empty => { return Rc::clone(node_rc); // Base case}
             AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
                 if *targetValue < *Rc::clone(&*data.borrow()) {
                     let new_node = AVLTree::delete_node(&Rc::clone(&*left_child_ref.borrow()),targetValue);
@@ -76,7 +76,11 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                                 }
                                 Node{data:right_node_data,..} => {  
                                     // both are not empty
+                                    
+                                    // steal right child's value...
                                     data.replace(Rc::clone(&*right_node_data.borrow()));
+
+                                    // delete right child recursively since we just stole it's value
                                     let new_right =AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()),&**right_node_data.borrow());
                                     right_child_ref.replace(new_right);
                                     (*node_rc).update_heights();
@@ -197,7 +201,6 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
         println!("rotating right");
-        // TODO: @Josh make non public later
 
         // EX:   z
         //      /
@@ -244,7 +247,6 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
 
     pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
         println!("rotating left");
-        // TODO: @Josh make non public later
 
         // EX:   z
         //        \
@@ -283,6 +285,8 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     }
 
     pub fn update_heights(& self){
+        // updates the heights of an node based on it's direct children's heights.
+        // IT IS NOT recursive. If the children's heights are incorrect, the height of this node will be as well.
         match self {
             Empty => {},
             Node {   
@@ -298,6 +302,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
     fn get_height(&self)-> i32{
+        // Returns the height of a AVLTree node, including empty nodes
         match self{
             Empty => { return -1; },
             Node { height, .. } => { return *height.borrow(); }
@@ -337,7 +342,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     // }
 
     pub fn print_inorder(&self) {
-        // TODO: Josh
+        // Prints an AVL tree in a inorder traversal
         match self {
             AVLTree::Node {
                 data,
