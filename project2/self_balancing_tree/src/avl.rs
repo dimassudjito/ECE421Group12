@@ -41,7 +41,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     // }
 
     pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
-        // deletes the node with the target value if it exists and returns the root
+        // deletes the node with the target value if it exists and returns the new root
 
         match &**node_rc {
             AVLTree::Empty => {   return Rc::clone(node_rc);}
@@ -85,10 +85,10 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                         }
                     }
                 }
-
-
                 // balance
-                return AVLTree::delete_node_balance(node_rc);
+                let return_node_rc = AVLTree::delete_node_balance(node_rc);
+                (*return_node_rc).update_heights();
+                return return_node_rc
             }
         }
     }
@@ -116,7 +116,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                             }=>{
                                 let y_left_height = (*y_left_child_ref.borrow()).get_height() ;
                                 let y_right_height = (*y_right_child_ref.borrow()).get_height();
-                                if left_height > right_height{
+                                if y_left_height > y_right_height{
                                     // left-left case
                                     return AVLTree::rotation_left_left(node_rc);
                                 }
@@ -196,6 +196,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
 
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        println!("rotating right");
         // TODO: @Josh make non public later
 
         // EX:   z
@@ -242,6 +243,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     }
 
     pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+        println!("rotating left");
         // TODO: @Josh make non public later
 
         // EX:   z
@@ -302,17 +304,29 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
 
-    // pub fn leaf_number(&self) {
-    //     // TODO: Josh
+    pub fn leaf_number(&self) -> i32 {
+        // Returns the number of leaves
+        // Note: an empty tree has no leaves
 
-    //     fn dfs(node){
-    //         if ( node.left.borrow() == AVLTree::Empty &&
-    //         node.right.borrow() == AVLTree::Empty )
-    //             return 0
-    //         else:
-    //             return dfs(node.left.borrow()) + dfs(node.right.borrow());
-    //     }
-    // }
+        match self.get_height(){
+            0 => {
+                // leaf node
+                return 1},
+            -1=> { 
+                // empty node 
+                return 0},
+            _=> { 
+                match self{
+                    Empty=>{
+                        panic!("leaf_number failed")
+                    },
+                    Node{left_child,right_child,..}=>{
+                        return (**left_child.borrow()).leaf_number() + (**right_child.borrow()).leaf_number()
+                    }
+                }
+              }
+        }
+    }
 
     // pub fn tree_height() {
     //     // TODO: Dimas
