@@ -37,9 +37,9 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(n4);
             println!("Enum Root: {:#?}", &rc_root);
 
-            // let new_node = AVLTree::<&str>::delete_node(&rc_root,&"2");
-            // println!("Enum Root: {:#?}", &new_node);
-            // new_node.print_inorder();
+            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"2");
+            println!("Enum Root: {:#?}", &new_node);
+            new_node.print_inorder();
         }
         2 => {
             // right left case
@@ -77,9 +77,9 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(root);
             println!("Enum Root: {:#?}", &rc_root);
 
-            // let new_node = AVLTree::<&str>::delete_node(&rc_root,&"0");
-            // println!("Enum Root: {:#?}", &new_node);
-            // new_node.print_inorder();
+            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"0");
+            println!("Enum Root: {:#?}", &new_node);
+            new_node.print_inorder();
         }
         3 => {
             // right right case
@@ -111,9 +111,9 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(n4);
             println!("Enum Root: {:#?}", &rc_root);
 
-            // let new_node = AVLTree::<&str>::delete_node(&rc_root,&"2");
-            // println!("Enum Root: {:#?}", &new_node);
-            // new_node.print_inorder();
+            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"2");
+            println!("Enum Root: {:#?}", &new_node);
+            new_node.print_inorder();
         }
         4 => {
             // left right case
@@ -151,9 +151,9 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(n3);
             println!("Enum Root: {:#?}", &rc_root);
 
-            // let new_node = AVLTree::<&str>::delete_node(&rc_root,&"4");
-            // println!("Enum Root: {:#?}", &new_node);
-            // new_node.print_inorder();
+            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"4");
+            println!("Enum Root: {:#?}", &new_node);
+            new_node.print_inorder();
         }
         5 => {
             // Testing leaves function
@@ -219,7 +219,7 @@ fn test_insert_node() {
 }
 
 fn main() {
-    // test_avl_tree_josh();
-    test_is_tree_empty();
-    test_insert_node();
+    test_avl_tree_josh(1);
+    // test_is_tree_empty();
+    // test_insert_node();
 }
