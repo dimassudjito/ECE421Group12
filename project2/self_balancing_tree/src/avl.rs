@@ -34,7 +34,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
             } => {
                 if new_data < **data.borrow() {
                     //
-                } else if new_data > *Rc::clone(&*data.borrow()) {
+                } else if new_data < **data.borrow() {
                     //
                 } else {
                     return;

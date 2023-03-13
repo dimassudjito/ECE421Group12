@@ -215,16 +215,16 @@ fn test_insert_node() {
         height: RefCell::new(1),
     };
     root.insert_node("3");
-    root.insert_node("2");
-    root.insert_node("4");
-    root.insert_node("7");
-    root.insert_node("6");
-    root.insert_node("9");
+    // root.insert_node("2");
+    // root.insert_node("4");
+    // root.insert_node("7");
+    // root.insert_node("6");
+    // root.insert_node("9");
     println!("Enum Root: {:#?}", root);
 }
 
 fn main() {
-    test_avl_tree_josh(2);
+    // test_avl_tree_josh(2);
     // test_is_tree_empty();
-    // test_insert_node();
+    test_insert_node();
 }
