@@ -43,6 +43,7 @@ fn main() {
     rbt = rbt.rotate_left();
     
     println!("\n\n{:#?}", rbt);
+    rbt.in_order_traversal();
 
        /////////EXAMPLE 2//////////////////
     //         |
@@ -58,4 +59,6 @@ fn main() {
     println!("\n\n{:#?}", rbt);
     println!("Leaf nodes: {}", rbt.count_leaves());
     println!("Tree height: {}", rbt.get_height());
+    rbt.in_order_traversal();
+
 }

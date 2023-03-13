@@ -33,6 +33,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         }
     }
 
+
     pub fn count_leaves(&self) -> i32 {
         // Recursively count leaves
         match self {
@@ -55,6 +56,16 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             RedBlackTree::Empty => {
                 return 1;
             },
+
+    pub fn in_order_traversal(&self) {
+        // Print traversal of left node, then root, then right node
+        match self {
+            RedBlackTree::Node {colour, data, left_child, right_child} => {
+                left_child.borrow().in_order_traversal();
+                print!("{:?} ", *data);
+                right_child.borrow().in_order_traversal();
+            },
+            RedBlackTree::Empty => {},
         }
     }
 
