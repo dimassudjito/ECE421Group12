@@ -32,6 +32,18 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         }
     }
 
+    pub fn in_order_traversal(&self) {
+        // Print traversal of left node, then root, then right node
+        match self {
+            RedBlackTree::Node {colour, data, left_child, right_child} => {
+                left_child.borrow().in_order_traversal();
+                print!("{:?} ", *data);
+                right_child.borrow().in_order_traversal();
+            },
+            RedBlackTree::Empty => {},
+        }
+    }
+
     pub fn rotate_left(self) -> Self {
 
         let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
