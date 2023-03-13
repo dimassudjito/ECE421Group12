@@ -40,68 +40,68 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
     //     }
     // }
 
-    pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
-        // recursively deletes the node with the target value if it exists and returns the new root
+    // pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
+    //     // recursively deletes the node with the target value if it exists and returns the new root
 
-        match &**node_rc {
-            AVLTree::Empty => { return Rc::clone(node_rc); // Base case}
-            AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
-                if *targetValue < *Rc::clone(&*data.borrow()) {
-                    let new_node =
-                        AVLTree::delete_node(&Rc::clone(&*left_child_ref.borrow()), targetValue);
-                    left_child_ref.replace(new_node);
-                } else if *targetValue > *Rc::clone(&*data.borrow()) {
-                    let new_node =
-                        AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()), targetValue);
-                    right_child_ref.replace(new_node);
-                } else {
-                    let left_node = &*Rc::clone(&*left_child_ref.borrow());
-                    let right_node = &*Rc::clone(&*right_child_ref.borrow());
-                    // target node found
-                    match left_node {
-                        Empty => {
-                            match right_node {
-                                Empty => {
-                                    // both children are empty
-                                    return Rc::clone(&*right_child_ref.borrow());
-                                }
-                                Node { .. } => {
-                                    // only the left is empty
-                                    return Rc::clone(&*right_child_ref.borrow());
-                                }
-                            }
-                        }
-                        Node { .. } => {
-                            match right_node {
-                                Empty => {
-                                    // only the right is empty
-                                    return Rc::clone(&*left_child_ref.borrow());
-                                }
-                                Node {
-                                    data: right_node_data,
-                                    ..
-                                } => {
-                                    // both are not empty
-                                    
-                                    // steal right child's value...
-                                    data.replace(Rc::clone(&*right_node_data.borrow()));
+    //     match &**node_rc {
+    //         AVLTree::Empty => { return Rc::clone(node_rc); // Base case}
+    //         AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
+    //             if *targetValue < *Rc::clone(&*data.borrow()) {
+    //                 let new_node =
+    //                     AVLTree::delete_node(&Rc::clone(&*left_child_ref.borrow()), targetValue);
+    //                 left_child_ref.replace(new_node);
+    //             } else if *targetValue > *Rc::clone(&*data.borrow()) {
+    //                 let new_node =
+    //                     AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()), targetValue);
+    //                 right_child_ref.replace(new_node);
+    //             } else {
+    //                 let left_node = &*Rc::clone(&*left_child_ref.borrow());
+    //                 let right_node = &*Rc::clone(&*right_child_ref.borrow());
+    //                 // target node found
+    //                 match left_node {
+    //                     Empty => {
+    //                         match right_node {
+    //                             Empty => {
+    //                                 // both children are empty
+    //                                 return Rc::clone(&*right_child_ref.borrow());
+    //                             }
+    //                             Node { .. } => {
+    //                                 // only the left is empty
+    //                                 return Rc::clone(&*right_child_ref.borrow());
+    //                             }
+    //                         }
+    //                     }
+    //                     Node { .. } => {
+    //                         match right_node {
+    //                             Empty => {
+    //                                 // only the right is empty
+    //                                 return Rc::clone(&*left_child_ref.borrow());
+    //                             }
+    //                             Node {
+    //                                 data: right_node_data,
+    //                                 ..
+    //                             } => {
+    //                                 // both are not empty
 
-                                    // delete right child recursively since we just stole it's value
-                                    let new_right =AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()),&**right_node_data.borrow());
-                                    right_child_ref.replace(new_right);
-                                    (*node_rc).update_heights();
-                                }
-                            }
-                        }
-                    }
-                }
-                // balance
-                let return_node_rc = AVLTree::delete_node_balance(node_rc);
-                (*return_node_rc).update_heights();
-                return return_node_rc
-            }
-        }
-    }
+    //                                 // steal right child's value...
+    //                                 data.replace(Rc::clone(&*right_node_data.borrow()));
+
+    //                                 // delete right child recursively since we just stole it's value
+    //                                 let new_right =AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()),&**right_node_data.borrow());
+    //                                 right_child_ref.replace(new_right);
+    //                                 (*node_rc).update_heights();
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //             // balance
+    //             let return_node_rc = AVLTree::delete_node_balance(node_rc);
+    //             (*return_node_rc).update_heights();
+    //             return return_node_rc
+    //         }
+    //     }
+    // }
 
     pub fn delete_node_balance(node_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
         // balances the tree for deletion case
@@ -136,7 +136,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                             } => {
                                 let y_left_height = (*y_left_child_ref.borrow()).get_height();
                                 let y_right_height = (*y_right_child_ref.borrow()).get_height();
-                                if y_left_height > y_right_height{
+                                if y_left_height > y_right_height {
                                     // left-left case
                                     return AVLTree::rotation_left_left(node_rc);
                                 } else {
@@ -218,8 +218,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
 
-
-    pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+    pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
         println!("rotating right");
 
         // EX:   z
@@ -264,7 +263,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
 
-    pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>>{
+    pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
         println!("rotating left");
 
         // EX:   z
@@ -309,7 +308,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
 
-    pub fn update_heights(& self){
+    pub fn update_heights(&self) {
         // updates the heights of an node based on it's direct children's heights.
         // IT IS NOT recursive. If the children's heights are incorrect, the height of this node will be as well.
         match self {
@@ -343,23 +342,28 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         // Returns the number of leaves
         // Note: an empty tree has no leaves
 
-        match self.get_height(){
+        match self.get_height() {
             0 => {
                 // leaf node
-                return 1},
-            -1=> { 
-                // empty node 
-                return 0},
-            _=> { 
-                match self{
-                    Empty=>{
-                        panic!("leaf_number failed")
-                    },
-                    Node{left_child,right_child,..}=>{
-                        return (**left_child.borrow()).leaf_number() + (**right_child.borrow()).leaf_number()
-                    }
+                return 1;
+            }
+            -1 => {
+                // empty node
+                return 0;
+            }
+            _ => match self {
+                Empty => {
+                    panic!("leaf_number failed")
                 }
-              }
+                Node {
+                    left_child,
+                    right_child,
+                    ..
+                } => {
+                    return (**left_child.borrow()).leaf_number()
+                        + (**right_child.borrow()).leaf_number()
+                }
+            },
         }
     }
 
