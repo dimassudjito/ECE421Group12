@@ -56,5 +56,24 @@ fn main() {
     // rotate right should form EXAMPLE 1
     rbt = rbt.rotate_right();
     println!("\n\n{:#?}", rbt);
+
+    let rbt = rbt.insert(9);
+    println!("\n\n{:#?}", rbt);
+
+
+    let mut rbt2 = RedBlackTree::new(8);
+    rbt2 = rbt2.insert(18);
+
+    rbt2 = rbt2.insert(5);
+    rbt2 = rbt2.insert(15);
+    rbt2 = rbt2.insert(17);
+    rbt2 = rbt2.insert(25);
+    rbt2 = rbt2.insert(40);
+    rbt2 = rbt2.insert(80);
+
+    println!("\n\n{:#?}", rbt2);
+    
+
+
     
 }
