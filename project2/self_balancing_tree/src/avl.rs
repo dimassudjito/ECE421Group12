@@ -43,7 +43,82 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
                 } else {
                     return Rc::clone(node_rc);
                 }
+                
+                let return_node_rc = AVLTree::insert_node_balance(node_rc);
+                (*return_node_rc).update_heights();
+                return return_node_rc;
+            }
+        }
+    }
+
+    pub fn insert_node_balance(node_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
+        match &**node_rc {
+            AVLTree::Empty => {
                 return Rc::clone(node_rc);
+            }
+            AVLTree::Node {
+                data,
+                left_child: left_child_ref,
+                right_child: right_child_ref,
+                ..
+            } => {
+                // balance
+                let left_node = &*Rc::clone(&*left_child_ref.borrow());
+                let right_node = &*Rc::clone(&*right_child_ref.borrow());
+
+                let left_height = (*left_child_ref.borrow()).get_height();
+                let right_height = (*right_child_ref.borrow()).get_height();
+                if (left_height - right_height).abs() > 1 {
+                    // this is an unbalanced node
+                    if left_height > right_height {
+                        // left-<?> case
+                        match left_node {
+                            Empty => {
+                                panic!("Given tree is not a proper AVL tree");
+                            }
+                            Node {
+                                left_child: y_left_child_ref,
+                                right_child: y_right_child_ref,
+                                ..
+                            } => {
+                                let y_left_height = (*y_left_child_ref.borrow()).get_height();
+                                let y_right_height = (*y_right_child_ref.borrow()).get_height();
+                                if y_left_height > y_right_height{
+                                    // left-left case
+                                    return AVLTree::rotation_left_left(node_rc);
+                                } else {
+                                    // left-right case
+                                    return AVLTree::rotation_left_right(node_rc);
+                                }
+                            }
+                        }
+                    } else {
+                        // right-<?> case
+                        match right_node {
+                            Empty => {
+                                panic!("Given tree is not a proper AVL tree");
+                            }
+                            Node {
+                                left_child: y_left_child_ref,
+                                right_child: y_right_child_ref,
+                                ..
+                            } => {
+                                let y_left_height = (*y_left_child_ref.borrow()).get_height();
+                                let y_right_height = (*y_right_child_ref.borrow()).get_height();
+                                if y_left_height > y_right_height {
+                                    // right-left case
+                                    return AVLTree::rotation_right_left(node_rc);
+                                } else {
+                                    // right-right case
+                                    return AVLTree::rotation_right_right(node_rc);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // is a balanced node
+                    return Rc::clone(node_rc);
+                }
             }
         }
     }
@@ -329,6 +404,7 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
     pub fn update_heights(&self) {
         // updates the heights of an node based on it's direct children's heights.
         // IT IS NOT recursive. If the children's heights are incorrect, the height of this node will be as well.
+        // TODO: leaf node should be 1 not 0
         match self {
             Empty => {}
             Node {
