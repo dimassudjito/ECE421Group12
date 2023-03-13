@@ -26,10 +26,15 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                     height: RefCell::new(1),
                 };
             }
-            AVLTree::Node { data, left_child, right_child, height } => {
+            AVLTree::Node {
+                data,
+                left_child,
+                right_child,
+                height,
+            } => {
                 if new_data < **data.borrow() {
                     //
-                } else if new_data > *Rc::clone(&*data.borrow()){
+                } else if new_data > *Rc::clone(&*data.borrow()) {
                     //
                 } else {
                     return;
@@ -38,12 +43,19 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         }
     }
 
-    pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
+    pub fn delete_node(node_rc: &Rc<AVLTree<T>>, targetValue: &T) -> Rc<AVLTree<T>> {
         // recursively deletes the node with the target value if it exists and returns the new root
 
         match &**node_rc {
-            AVLTree::Empty => { return Rc::clone(node_rc);} // base case
-            AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
+            AVLTree::Empty => {
+                return Rc::clone(node_rc);
+            } // base case
+            AVLTree::Node {
+                data,
+                left_child: left_child_ref,
+                right_child: right_child_ref,
+                ..
+            } => {
                 if *targetValue < *Rc::clone(&*data.borrow()) {
                     let new_node =
                         AVLTree::delete_node(&Rc::clone(&*left_child_ref.borrow()), targetValue);
@@ -80,12 +92,15 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                                     ..
                                 } => {
                                     // both are not empty
-                                    
+
                                     // steal right child's value...
                                     data.replace(Rc::clone(&*right_node_data.borrow()));
 
                                     // delete right child recursively since we just stole it's value
-                                    let new_right =AVLTree::delete_node(&Rc::clone(&*right_child_ref.borrow()),&**right_node_data.borrow());
+                                    let new_right = AVLTree::delete_node(
+                                        &Rc::clone(&*right_child_ref.borrow()),
+                                        &**right_node_data.borrow(),
+                                    );
                                     right_child_ref.replace(new_right);
                                     (*node_rc).update_heights();
                                 }
@@ -96,7 +111,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
                 // balance
                 let return_node_rc = AVLTree::delete_node_balance(node_rc);
                 (*return_node_rc).update_heights();
-                return return_node_rc
+                return return_node_rc;
             }
         }
     }

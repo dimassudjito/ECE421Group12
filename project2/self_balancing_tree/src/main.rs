@@ -37,7 +37,7 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(n4);
             println!("Enum Root: {:#?}", &rc_root);
 
-            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"2");
+            let new_node = AVLTree::<&str>::delete_node(&rc_root, &"2");
             println!("Enum Root: {:#?}", &new_node);
             new_node.print_inorder();
         }
@@ -77,7 +77,7 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(root);
             println!("Enum Root: {:#?}", &rc_root);
 
-            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"0");
+            let new_node = AVLTree::<&str>::delete_node(&rc_root, &"0");
             println!("Enum Root: {:#?}", &new_node);
             new_node.print_inorder();
         }
@@ -111,7 +111,7 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(n4);
             println!("Enum Root: {:#?}", &rc_root);
 
-            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"2");
+            let new_node = AVLTree::<&str>::delete_node(&rc_root, &"2");
             println!("Enum Root: {:#?}", &new_node);
             new_node.print_inorder();
         }
@@ -151,7 +151,7 @@ fn test_avl_tree_josh(num: i32) {
             let rc_root = Rc::new(n3);
             println!("Enum Root: {:#?}", &rc_root);
 
-            let new_node = AVLTree::<&str>::delete_node(&rc_root,&"4");
+            let new_node = AVLTree::<&str>::delete_node(&rc_root, &"4");
             println!("Enum Root: {:#?}", &new_node);
             new_node.print_inorder();
         }
@@ -208,7 +208,12 @@ fn test_is_tree_empty() {
 }
 
 fn test_insert_node() {
-    let mut root: AVLTree<&str> = AVLTree::Node { data: RefCell::new(Rc::new("5")), left_child: RefCell::new(Rc::new(AVLTree::Empty)), right_child: RefCell::new(Rc::new(AVLTree::Empty)), height: RefCell::new(1) };
+    let mut root: AVLTree<&str> = AVLTree::Node {
+        data: RefCell::new(Rc::new("5")),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
     root.insert_node("3");
     root.insert_node("2");
     root.insert_node("4");
@@ -219,7 +224,7 @@ fn test_insert_node() {
 }
 
 fn main() {
-    test_avl_tree_josh(1);
+    test_avl_tree_josh(2);
     // test_is_tree_empty();
     // test_insert_node();
 }
