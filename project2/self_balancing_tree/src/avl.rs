@@ -44,7 +44,7 @@ impl<T: Ord + std::fmt::Display> AVLTree<T> {
         // recursively deletes the node with the target value if it exists and returns the new root
 
         match &**node_rc {
-            AVLTree::Empty => { return Rc::clone(node_rc); // Base case}
+            AVLTree::Empty => { return Rc::clone(node_rc);} // base case
             AVLTree::Node { data, left_child:left_child_ref, right_child:right_child_ref,.. } => {
                 if *targetValue < *Rc::clone(&*data.borrow()) {
                     let new_node =
