@@ -15,30 +15,28 @@ pub enum AVLTree<T: Ord> {
 }
 
 impl<T: Ord + std::fmt::Display> AVLTree<T> {
-    // pub fn insert_node(&mut self, new_data: T) {
-    //     // TODO: Dimas
-    //     match self {
-    //         AVLTree::Empty => {
-    //             *self = AVLTree::Node {
-    //                 data: new_data,
-    //                 left_child: Rc::new(RefCell::new(AVLTree::Empty)),
-    //                 right_child: Rc::new(RefCell::new(AVLTree::Empty)),
-    //                 height: 1,
-    //             };
-    //         }
-    //         AVLTree::Node { data, left_child, right_child, height } => {
-    //             if new_data < *data {
-    //                let mut borrowed_node = left_child.borrow_mut();
-    //                 (*borrowed_node).insert_node(new_data);
-    //             } else if new_data > *data {
-    //                 let mut borrowed_node = right_child.borrow_mut();
-    //                 (*borrowed_node).insert_node(new_data);
-    //             } else {
-    //                 return;
-    //             }
-    //         }
-    //     }
-    // }
+    pub fn insert_node(&mut self, new_data: T) {
+        // TODO: Dimas
+        match self {
+            AVLTree::Empty => {
+                *self = AVLTree::Node {
+                    data: RefCell::new(Rc::new(new_data)),
+                    left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+                    right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+                    height: RefCell::new(1),
+                };
+            }
+            AVLTree::Node { data, left_child, right_child, height } => {
+                if new_data < **data.borrow() {
+                    //
+                } else if new_data > *Rc::clone(&*data.borrow()){
+                    //
+                } else {
+                    return;
+                }
+            }
+        }
+    }
 
     // pub fn delete_node(node_rc:&Rc<AVLTree<T>>,targetValue:&T) -> Rc<AVLTree<T>>{
     //     // recursively deletes the node with the target value if it exists and returns the new root
