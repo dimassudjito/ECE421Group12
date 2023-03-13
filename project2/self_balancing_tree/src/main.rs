@@ -59,6 +59,7 @@ fn main() {
     println!("\n\n{:#?}", rbt);
 
 
+
     let rbt = rbt.insert(9);
     println!("\n\n{:#?}", rbt);
     rbt.in_order_traversal();
@@ -79,7 +80,8 @@ fn main() {
 
 
     
-
-    
+    println!("Leaf nodes: {}", rbt.count_leaves());
+    println!("Tree height: {}", rbt.get_height());
+    rbt.in_order_traversal();
 
 }
