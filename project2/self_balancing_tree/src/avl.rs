@@ -1,6 +1,7 @@
 use crate::AVLTree::*;
 use std::cell::RefCell;
 use std::cmp::max;
+use std::fmt::Display;
 use std::rc::Rc;
 
 #[derive(Debug)]
@@ -14,32 +15,25 @@ pub enum AVLTree<T: Ord> {
     Empty,
 }
 
-impl<T: Ord + std::fmt::Display> AVLTree<T> {
-    pub fn insert_node(&mut self, new_data: T) {
+impl<T: Ord + Display + Copy> AVLTree<T> {
+    pub fn insert_node(node_rc: &Rc<AVLTree<T>>, new_data: &T) -> Rc<AVLTree<T>> {
         // TODO: Dimas
-        match self {
+        match &**node_rc {
             AVLTree::Empty => {
-                *self = AVLTree::Node {
-                    data: RefCell::new(Rc::new(new_data)),
+                let new_node: AVLTree<T> = AVLTree::Node {
+                    data: RefCell::new(Rc::new(*new_data)),
                     left_child: RefCell::new(Rc::new(AVLTree::Empty)),
                     right_child: RefCell::new(Rc::new(AVLTree::Empty)),
                     height: RefCell::new(1),
                 };
+                Rc::new(new_node)
             }
             AVLTree::Node {
                 data,
                 left_child,
                 right_child,
                 height,
-            } => {
-                if new_data < **data.borrow() {
-                    //
-                } else if new_data < **data.borrow() {
-                    //
-                } else {
-                    return;
-                }
-            }
+            } => Rc::new(AVLTree::Empty),
         }
     }
 

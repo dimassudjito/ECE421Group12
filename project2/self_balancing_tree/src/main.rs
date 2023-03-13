@@ -208,19 +208,37 @@ fn test_is_tree_empty() {
 }
 
 fn test_insert_node() {
-    let mut root: AVLTree<&str> = AVLTree::Node {
-        data: RefCell::new(Rc::new("5")),
+    // left left case
+    let n2 = AVLTree::Node {
+        data: RefCell::new(Rc::new("2")),
         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
         height: RefCell::new(1),
     };
-    root.insert_node("3");
-    // root.insert_node("2");
-    // root.insert_node("4");
-    // root.insert_node("7");
-    // root.insert_node("6");
-    // root.insert_node("9");
-    println!("Enum Root: {:#?}", root);
+    let n3 = AVLTree::Node {
+        data: RefCell::new(Rc::new("3")),
+        left_child: RefCell::new(Rc::new(n2)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(2),
+    };
+    let n4 = AVLTree::Node {
+        data: RefCell::new(Rc::new("4")),
+        left_child: RefCell::new(Rc::new(n3)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(3),
+    };
+
+    // let rc_root = Rc::new(n4);
+    // println!("Enum Root: {:#?}", &rc_root);
+    // rc_root.print_inorder();
+
+    // let new_node = AVLTree::<&str>::insert_node(&rc_root, &"1");
+    // println!("Enum Root: {:#?}", &new_node);
+    // new_node.print_inorder();
+
+    let empty_root: Rc<AVLTree<i32>> = Rc::new(AVLTree::Empty);
+    let root = AVLTree::insert_node(&empty_root, &2);
+    println!("Enum Root: {:#?}", &root);
 }
 
 fn main() {
