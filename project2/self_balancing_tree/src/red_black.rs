@@ -80,17 +80,26 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         }
     }
 
-    pub fn in_order_traversal(&self) {
+    pub fn traverse(&self) {
         // Print traversal of left node, then root, then right node
         match self {
             RedBlackTree::Node {colour, data, left_child, right_child} => {
-                left_child.borrow().in_order_traversal();
+                left_child.borrow().traverse();
                 print!("{:?} ", *data);
-                right_child.borrow().in_order_traversal();
+                right_child.borrow().traverse();
             },
             RedBlackTree::Empty => {},
         }
+        
     }
+
+    // traverse with new line printed at the end
+    pub fn in_order_traversal(&self) {
+        self.traverse();
+        print!("\n");
+    }
+
+
 
     pub fn rotate_left(self) -> Self {
 
