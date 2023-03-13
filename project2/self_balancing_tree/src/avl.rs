@@ -33,7 +33,18 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
                 left_child,
                 right_child,
                 height,
-            } => Rc::new(AVLTree::Empty),
+            } => {
+                if *new_data < **(data.borrow()) {
+                    let new_node = AVLTree::insert_node(&*(left_child.borrow()), new_data);
+                    left_child.replace(new_node);
+                } else if *new_data > **(data.borrow()) {
+                    let new_node = AVLTree::insert_node(&*(right_child.borrow()), new_data);
+                    right_child.replace(new_node);
+                } else {
+                    return Rc::clone(node_rc);
+                }
+                return Rc::clone(node_rc);
+            }
         }
     }
 
