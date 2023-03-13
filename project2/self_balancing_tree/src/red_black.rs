@@ -56,6 +56,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             RedBlackTree::Empty => {
                 return 1;
             },
+        }
+    }
 
     pub fn in_order_traversal(&self) {
         // Print traversal of left node, then root, then right node
