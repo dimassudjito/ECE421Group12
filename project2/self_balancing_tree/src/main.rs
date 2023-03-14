@@ -83,5 +83,5 @@ fn main() {
     println!("Leaf nodes: {}", rbt2.count_leaves());
     println!("Tree height: {}", rbt2.get_height());
     rbt2.in_order_traversal();
-
+    rbt2.display_tree();
 }

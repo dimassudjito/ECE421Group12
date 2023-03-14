@@ -99,6 +99,49 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         print!("\n");
     }
 
+    pub fn display_tree(&self) {
+        // Reserve 5 characters for each node of the tree to be printed, e.g. "R:218" or " B:4 " or " R:12"
+        let two: u32 = 2;
+        let total_elements = two.pow(self.get_height().try_into().unwrap()) - 1;
+        let mut layer_order_elements = vec![String::from(""); (total_elements + 1) as usize];
+        let mut layer_order_elements_exist = vec![false; (total_elements + 1) as usize];
+
+        fn get_node_string<T: Ord + Copy + Debug>(tree: &RedBlackTree<T>) -> String {
+            // Given a node, this returns a string padded up to 5 characters of the color and the value, e.g. " B:7 " or "R:28 "
+            match tree {
+                RedBlackTree::Node {
+                    colour,
+                    data,
+                    left_child,
+                    right_child,
+                } => {
+                    let colour_string = match colour {
+                        NodeColour::Red => "R",
+                        NodeColour::Black => "B",
+                    };
+                    let data_string = format!("{:?}", data);
+                    let padding_size = 5 - data_string.len();
+                    let left_padding = padding_size / 2;
+                    let right_padding = padding_size - left_padding;
+                    format!("{}{}:{}{}", " ".repeat(left_padding), colour_string, data_string, " ".repeat(right_padding))
+                }
+                RedBlackTree::Empty => "".to_string(),
+            }
+        }
+
+        fn extract_elements_in_layer_order<T: Ord + Copy + Debug>(tree: &RedBlackTree<T>, v: &mut Vec<String>, v_exist: &mut Vec<bool>) {
+            v[2] = get_node_string(&tree);
+            v_exist[2] = true;
+        }
+
+        extract_elements_in_layer_order(self, &mut layer_order_elements, &mut layer_order_elements_exist);
+
+        println!("Elements: {}", total_elements);
+        println!("element 2: {}", layer_order_elements[2]);
+        println!("element 2 exist: {}", layer_order_elements_exist[2]);
+
+    }
+
 
 
     pub fn rotate_left(self) -> Self {
