@@ -129,20 +129,89 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             }
         }
 
-        fn extract_elements_in_layer_order<T: Ord + Copy + Debug>(tree: &RedBlackTree<T>, v: &mut Vec<String>, v_exist: &mut Vec<bool>) {
-            v[2] = get_node_string(&tree);
-            v_exist[2] = true;
+        /*
+                   _______1_______
+                  /               \
+              ____2____            3_
+             /         \          /   \
+          __4__         5       6       7
+         /     \       / \     / \     / \
+        8      9     10  11  12  13  14  15
+
+        Layer 0's range is 2^0 to 2^1 - 1
+        Layer 1's range is 2^1 to 2^2 - 1
+        Layer 2's range is 2^2 to 2^3 - 1
+        Layer 3's range is 2^3 to 2^4 - 1
+
+        To get the layer offset, track how we got to that node. For each left path taken, that's a binary 0 and for each right path taken, it's a binary one.
+        The number in the tree using layer by layer traversal is 2^layer + offset
+        */
+
+        fn extract_elements_in_layer_order<T: Ord + Copy + Debug>(tree: &RedBlackTree<T>, v: &mut Vec<String>, v_exist: &mut Vec<bool>, layer: u32, offset: i32) {
+            match tree {
+                RedBlackTree::Node {
+                    colour,
+                    data,
+                    left_child,
+                    right_child,
+                } => {
+                    let two: u32 = 2;
+                    
+                    v[(two.pow(layer) as i32 + offset) as usize] = get_node_string(&tree);
+                    v_exist[(two.pow(layer) as i32 + offset) as usize] = true;
+                    extract_elements_in_layer_order(&left_child.borrow(), v, v_exist, layer + 1, 2*offset);
+                    extract_elements_in_layer_order(&right_child.borrow(), v, v_exist, layer + 1, 2*offset + 1);
+                }
+                RedBlackTree::Empty => {}
+            }
         }
 
-        extract_elements_in_layer_order(self, &mut layer_order_elements, &mut layer_order_elements_exist);
+        extract_elements_in_layer_order(self, &mut layer_order_elements, &mut layer_order_elements_exist, 0, 0);
 
-        println!("Elements: {}", total_elements);
-        println!("element 2: {}", layer_order_elements[2]);
-        println!("element 2 exist: {}", layer_order_elements_exist[2]);
+        //println!("Elements: {}", total_elements);
+        //println!("element 2: {}", layer_order_elements[2]);
+        //println!("element 2 exist: {}", layer_order_elements_exist[2]);
+        println!("\n{:#?}", layer_order_elements);
 
+        // Iterate through each layer of the tree and print the nodes
+
+        /*
+                              xxxxx
+                    /                       \
+                  xxxxx                   xxxxx
+              /           \           /           \
+            xxxxx       xxxxx       xxxxx       xxxxx
+           /     \     /     \     /     \     /     \
+         xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx
+
+         The gaps between the nodes increase by 2x+5 when going up a layer, and (x-5)/2 when going down a layer
+         The closed form equation of sequence a(n+1) = 2*a(n)+5 and a(0)=1 is a(n) = 3*2^(n + 1) - 5
+         The initial padding on the left starts at 1 at the bottom, and then it goes 3*2^layer - 2 where layer starts counting from 0 at the bottom, or if the layer starts counting from 0 at the top, it goes 3*2^(num_layers - layer) - 2
+        */
+        
+
+        let two: u32 = 2;
+        for layer in 0..(self.get_height() - 1) {
+            //println!("Doing layer {}: ", layer);
+            // Print left padding for this layer
+            print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer + 1).try_into().unwrap()) - 2).try_into().unwrap()));
+            for elem in two.pow(layer as u32)..two.pow(layer as u32 + 1) {
+                //println!("layer elem: {}", layer_order_elements[elem as usize]);
+                // Print the element
+                match layer_order_elements_exist[elem as usize] {
+                    true => {
+                        print!("{}", layer_order_elements[elem as usize]);
+                    }
+                    false => {
+                        print!("     ");
+                    }
+                }
+                // Print the right padding
+                print!("{}", " ".repeat((3*two.pow((self.get_height() - 1 - layer + 1).try_into().unwrap()) - 5).try_into().unwrap()));
+            }
+            println!("");
+        }
     }
-
-
 
     pub fn rotate_left(self) -> Self {
 
