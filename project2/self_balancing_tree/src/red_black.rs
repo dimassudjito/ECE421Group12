@@ -120,9 +120,10 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                         NodeColour::Black => "B",
                     };
                     let data_string = format!("{:?}", data);
-                    let padding_size = 5 - data_string.len();
+                    let padding_size = 5 - (data_string.len() + 2);
                     let left_padding = padding_size / 2;
                     let right_padding = padding_size - left_padding;
+                    println!("left pad: {}, right pad: {}", left_padding, right_padding);
                     format!("{}{}:{}{}", " ".repeat(left_padding), colour_string, data_string, " ".repeat(right_padding))
                 }
                 RedBlackTree::Empty => "".to_string(),
@@ -189,12 +190,12 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
          The initial padding on the left starts at 1 at the bottom, and then it goes 3*2^layer - 2 where layer starts counting from 0 at the bottom, or if the layer starts counting from 0 at the top, it goes 3*2^(num_layers - layer) - 2
         */
         
-
+        //println!("Tree height is {}", self.get_height());
         let two: u32 = 2;
         for layer in 0..(self.get_height() - 1) {
             //println!("Doing layer {}: ", layer);
             // Print left padding for this layer
-            print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer + 1).try_into().unwrap()) - 2).try_into().unwrap()));
+            print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer + 1).try_into().unwrap()) - 2).try_into().unwrap()));
             for elem in two.pow(layer as u32)..two.pow(layer as u32 + 1) {
                 //println!("layer elem: {}", layer_order_elements[elem as usize]);
                 // Print the element
@@ -206,8 +207,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                         print!("     ");
                     }
                 }
-                // Print the right padding
-                print!("{}", " ".repeat((3*two.pow((self.get_height() - 1 - layer + 1).try_into().unwrap()) - 5).try_into().unwrap()));
+                // Print the right padding for this element
+                print!("{}", " ".repeat((3*two.pow((self.get_height() - 1 - layer).try_into().unwrap()) - 5).try_into().unwrap()));
             }
             println!("");
         }
