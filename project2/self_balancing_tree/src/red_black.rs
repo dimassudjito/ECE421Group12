@@ -177,18 +177,33 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         // Iterate through each layer of the tree and print the nodes
 
         /*
-                              xxxxx
-                    /                       \
-                  xxxxx                   xxxxx
-              /           \           /           \
-            xxxxx       xxxxx       xxxxx       xxxxx
-           /     \     /     \     /     \     /     \
-         xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx
+                                                      xxxxx
+                                 ______________________/ \______________________
+                                /                                               \
+                              xxxxx                                           xxxxx
+                     __________/ \__________                         __________/ \__________
+                    /                       \                       /                       \
+                  xxxxx                   xxxxx                   xxxxx                   xxxxx
+               ____/ \____             ____/ \____             ____/ \____             ____/ \____
+              /           \           /           \           /           \           /           \
+            xxxxx       xxxxx       xxxxx       xxxxx       xxxxx       xxxxx       xxxxx       xxxxx
+            _/ \_       _/ \_       _/ \_       _/ \_       _/ \_       _/ \_       _/ \_       _/ \_
+           /     \     /     \     /     \     /     \     /     \     /     \     /     \     /     \
+         xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx xxxxx
 
          The gaps between the nodes increase by 2x+5 when going up a layer, and (x-5)/2 when going down a layer
          The closed form equation of sequence a(n+1) = 2*a(n)+5 and a(0)=1 is a(n) = 3*2^(n + 1) - 5
          The initial padding on the left starts at 1 at the bottom, and then it goes 3*2^layer - 2 where layer starts counting from 0 at the bottom, or if the layer starts counting from 0 at the top, it goes 3*2^(num_layers - layer) - 2
-        */
+         Between any two layers are two lines to display the branches.
+          - The first line has a series of _ and / \ followed by more _, repeated for each node it goes under
+            - The left padding for the first line goes 4, 7, 13, 25, which is 3*2^n + 1 (0 indexed)
+            - The amount of underscores follows the pattern 1, 4, 10, 22 which is 3*2^n - 2 (0 indexed)
+            - The spaces in between the middle underscores for the child nodes follows the pattern 7, 13, 25 which is 3*2^(n+1) + 1 (0 indexed)
+          - The second line puts / over each left child and \ over each right child
+            - The left padding is one less than the left padding of the first line, so it's 3*2^n (0 indexed)
+            - The padding between the / and \ follows the pattern 5, 11, 23, 47 which is 3*2^(n+1) - 1 (0 indexed)
+            - The padding between the nodes is 2 less than the padding from the previous line, so it's 3*2^(n+1) - 1 (0 indexed)
+         */
         
         //println!("Tree height is {}", self.get_height());
         let two: u32 = 2;
@@ -211,6 +226,36 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                 print!("{}", " ".repeat((3*two.pow((self.get_height() - 1 - layer).try_into().unwrap()) - 5).try_into().unwrap()));
             }
             println!("");
+            // Print the two lines of branches between two layers, as long as this isn't the last layer since nothing goes below that (we don't display NIL nodes for simplicity)
+            if layer != self.get_height() - 2 {
+                //println!(r"\/ \\");
+                // FIRST LINE
+                // Print left padding
+                print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) + 1).try_into().unwrap()));
+                for node in 0..two.pow(layer as u32) {
+                    // Print underscores
+                    print!("{}", "_".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                    // Print the connector thing
+                    print!(r"/ \");
+                    // Print the underscores
+                    print!("{}", "_".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                    // Print the right space padding
+                    print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer).try_into().unwrap()) + 1).try_into().unwrap()));
+                }
+                println!("");
+                // SECOND LINE
+                // Print left padding
+                print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap())).try_into().unwrap()));
+                for node in 0..two.pow(layer as u32) {
+                    print!(r"/");
+                    // Print the padding between nodes
+                    print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer).try_into().unwrap()) - 1).try_into().unwrap()));
+                    print!(r"\");
+                    // Print the right space padding
+                    print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer).try_into().unwrap()) - 1).try_into().unwrap()));
+                }
+                println!("");
+            }
         }
     }
 
