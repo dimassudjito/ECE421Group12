@@ -121,8 +121,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     };
                     let data_string = format!("{:?}", data);
                     let padding_size = 5 - (data_string.len() + 2);
-                    let left_padding = padding_size / 2;
-                    let right_padding = padding_size - left_padding;
+                    let right_padding = padding_size / 2;
+                    let left_padding = padding_size - right_padding;
                     println!("left pad: {}, right pad: {}", left_padding, right_padding);
                     format!("{}{}:{}{}", " ".repeat(left_padding), colour_string, data_string, " ".repeat(right_padding))
                 }
@@ -227,18 +227,41 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             }
             println!("");
             // Print the two lines of branches between two layers, as long as this isn't the last layer since nothing goes below that (we don't display NIL nodes for simplicity)
+            // Only print branches with children! Do checks for this within each loop through all nodes
             if layer != self.get_height() - 2 {
-                //println!(r"\/ \\");
+                // Within this loop, self.get_height() - 3 - layer is equal to n within the 0 indexed equations above, indexed from the bottom and not the top
                 // FIRST LINE
                 // Print left padding
                 print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) + 1).try_into().unwrap()));
                 for node in 0..two.pow(layer as u32) {
-                    // Print underscores
-                    print!("{}", "_".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                    // Check whether this node has left/right children by jumping to the next layer and probing the left and right sides
+                    let has_left_child: bool = match layer_order_elements_exist[(two.pow(layer as u32 + 1) + 2*node) as usize] {
+                        true => true,
+                        false => false,
+                    };
+                    let has_right_child: bool = match layer_order_elements_exist[(two.pow(layer as u32 + 1) + 2*node + 1) as usize] {
+                        true => true,
+                        false => false,
+                    };
+
                     // Print the connector thing
-                    print!(r"/ \");
-                    // Print the underscores
-                    print!("{}", "_".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                    if has_left_child {
+                        // Print underscores
+                        print!("{}", "_".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                        print!(r"/");
+                    } else {
+                        print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                        print!(" ");
+                    }
+                    print!(" ");
+                    if has_right_child {
+                        print!(r"\");
+                        // Print the underscores
+                        print!("{}", "_".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                    } else {
+                        print!(" ");
+                        print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap()) - 2).try_into().unwrap()));
+                    }
                     // Print the right space padding
                     print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer).try_into().unwrap()) + 1).try_into().unwrap()));
                 }
@@ -247,10 +270,28 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                 // Print left padding
                 print!("{}", " ".repeat((3*two.pow((self.get_height() - 3 - layer).try_into().unwrap())).try_into().unwrap()));
                 for node in 0..two.pow(layer as u32) {
-                    print!(r"/");
+                    // Check whether this node has left/right children by jumping to the next layer and probing the left and right sides
+                    let has_left_child: bool = match layer_order_elements_exist[(two.pow(layer as u32 + 1) + 2*node) as usize] {
+                        true => true,
+                        false => false,
+                    };
+                    let has_right_child: bool = match layer_order_elements_exist[(two.pow(layer as u32 + 1) + 2*node + 1) as usize] {
+                        true => true,
+                        false => false,
+                    };
+
+                    if has_left_child {
+                        print!(r"/");
+                    } else {
+                        print!(" ");
+                    }
                     // Print the padding between nodes
                     print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer).try_into().unwrap()) - 1).try_into().unwrap()));
-                    print!(r"\");
+                    if has_right_child {
+                        print!(r"\");
+                    } else {
+                        print!(" ");
+                    }
                     // Print the right space padding
                     print!("{}", " ".repeat((3*two.pow((self.get_height() - 2 - layer).try_into().unwrap()) - 1).try_into().unwrap()));
                 }
