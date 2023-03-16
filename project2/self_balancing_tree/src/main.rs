@@ -204,7 +204,32 @@ fn test_is_tree_empty() {
     };
     let empty_root: AVLTree<i32> = AVLTree::Empty;
     println!("Non-empty: {:?}", root.is_tree_empty());
-    println!("Non-empty: {:?}", empty_root.is_tree_empty())
+    println!("Empty: {:?}", empty_root.is_tree_empty())
+}
+
+fn test_tree_height() {
+    let n2 = AVLTree::Node {
+        data: RefCell::new(Rc::new(2)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
+    let n3 = AVLTree::Node {
+        data: RefCell::new(Rc::new(3)),
+        left_child: RefCell::new(Rc::new(n2)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(2),
+    };
+    let root = AVLTree::Node {
+        data: RefCell::new(Rc::new(4)),
+        left_child: RefCell::new(Rc::new(n3)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(3),
+    };
+    let empty_root: AVLTree<i32> = AVLTree::Empty;
+    println!("Non-empty: {:?}", root.tree_height());
+    println!("Empty: {:?}", empty_root.tree_height())
+
 }
 
 fn test_insert_node() {
@@ -356,6 +381,7 @@ pub fn test_insert_node_all(num: i32) {
 
 fn main() {
     // test_avl_tree_josh(2);
-    // test_is_tree_empty();
-    test_insert_node_all(4);
+    test_is_tree_empty();
+    test_tree_height();
+    // test_insert_node_all(4);
 }

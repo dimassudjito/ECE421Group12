@@ -17,7 +17,6 @@ pub enum AVLTree<T: Ord> {
 
 impl<T: Ord + Display + Copy> AVLTree<T> {
     pub fn insert_node(node_rc: &Rc<AVLTree<T>>, new_data: &T) -> Rc<AVLTree<T>> {
-        // TODO: Dimas
         match &**node_rc {
             AVLTree::Empty => {
                 let new_node: AVLTree<T> = AVLTree::Node {
@@ -461,9 +460,13 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
         }
     }
 
-    // pub fn tree_height() {
-    //     // TODO: Dimas
-    // }
+    pub fn tree_height(&self) -> i32 {
+        // TODO: Dimas
+        match self {
+            AVLTree::Empty => 0,
+            AVLTree::Node { height, .. } => *(height.borrow()),
+        }
+    }
 
     // pub fn print() {
     //     // TODO: Dimas
@@ -486,7 +489,7 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
         }
     }
 
-    pub fn is_tree_empty(self) -> bool {
+    pub fn is_tree_empty(&self) -> bool {
         match self {
             AVLTree::Empty => true,
             AVLTree::Node { .. } => false,
