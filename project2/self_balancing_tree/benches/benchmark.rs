@@ -153,8 +153,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         new_parent
     }
 
-
-    pub fn insert(mut self, val: T) -> Self {
+    pub fn insert(&mut self, val: T) {
         let mut stack = vec![Rc::new(RefCell::new(self.clone()))];
         let mut node = Rc::clone(&stack[0]);
         let mut nodetemp = Rc::clone(&node);
@@ -168,7 +167,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     } else if val < *data {
                         nodetemp = Rc::clone(&left_child);
                     } else {
-                        return self;
+                        return;
                     }
                 },
                 RedBlackTree::Empty => {break},
@@ -293,7 +292,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     };
 
                     if idx - 2 == 0 {
-                        return parent.borrow().clone()
+                        *self = parent.borrow().clone();
+                        return;
                     } else { // else, attach the parent node to the upper tree
                         match *stack[idx - 3].borrow_mut() {
                             RedBlackTree::Node {ref data, ref colour, ref mut left_child, ref mut right_child} => {
@@ -327,8 +327,11 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                 } == Rc::clone(&stack[idx])) {
                     
                     // left rotate on parent
-                    println!("\n\n\n PARENT OLD: {:#?}", parent);
-                    println!("\n\n\n CURRENT OLD: {:#?}", stack[idx]);
+                    // println!("\n\n\n PARENT OLD:");
+                    // parent.borrow().display_tree();
+                    // println!("\n\n\n CURRENT OLD:");
+                    // stack[idx].borrow().display_tree();
+
                     let mut p_temp = parent.borrow().clone();
                     p_temp = p_temp.rotate_left();
                     stack[idx].replace(p_temp);
@@ -345,11 +348,22 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
 
                     
-                    println!("\n\n\n PARENT NEW: {:#?}", parent);
-                    println!("\n\n\n CURRENT NEW: {:#?}", stack[idx]);
+                    // println!("\n\n\n PARENT NEW:");
+                    // parent.borrow().display_tree();
 
-                    println!("\n\n\n GRANDPARENT OLD: {:#?}", grandfather);
-                    println!("\n\n\n CURRENT OLD: {:#?}", stack[idx]);
+                    // println!("\n\n\n CURRENT NEW:");
+                    // stack[idx].borrow().display_tree();
+
+
+
+
+
+                    // println!("\n\n\n GRANDPARENT OLD:");
+                    // grandfather.borrow().display_tree();
+
+                    // println!("\n\n\n CURRENT OLD:");
+                    // stack[idx].borrow().display_tree();
+
 
 
                     // right rotate on grandfather
@@ -362,8 +376,12 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                         RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                     };
 
-                    println!("\n\n\n GRANDPARENT NEW: {:#?}", grandfather);
-                    println!("\n\n\n CURRENT NEW: {:#?}", stack[idx]);
+                    // println!("\n\n\n GRANDPARENT NEW:");
+                    // grandfather.borrow().display_tree();
+
+                    // println!("\n\n\n CURRENT NEW:");
+                    // stack[idx].borrow().display_tree();
+
 
                     // then swap colours of grandfather and current
                     let mut gf_colour = match &*grandfather.borrow(){
@@ -386,7 +404,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                     // if new insert is root, return
                     if idx - 2 == 0 {
-                        return stack[idx].borrow().clone()
+                        *self = stack[idx].borrow().clone();
+                        return ;
                     } else { // else, attach the parent node to the upper tree
                         match *stack[idx - 3].borrow_mut() {
                             RedBlackTree::Node {ref data, ref colour, ref mut left_child, ref mut right_child} => {
@@ -467,7 +486,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                     // if new insert is root, return
                     if idx - 2 == 0 {
-                        return stack[idx].borrow().clone()
+                        *self = stack[idx].borrow().clone();
+                        return;
                     } else { // else, attach the parent node to the upper tree
                         match *stack[idx - 3].borrow_mut() {
                             RedBlackTree::Node {ref data, ref colour, ref mut left_child, ref mut right_child} => {
@@ -538,7 +558,8 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                     // if parent is root, return
                     if idx - 2 == 0 {
-                        return parent.borrow().clone()
+                        *self = parent.borrow().clone();
+                        return;
                     } else { // else, attach the parent node to the upper tree
                         match *stack[idx - 3].borrow_mut() {
                             RedBlackTree::Node {ref data, ref colour, ref mut left_child, ref mut right_child} => {
@@ -569,9 +590,11 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         ///// END FIX TREE //////
         
         // println!("{:#?}" , stack);
-        let root = stack[0].borrow().clone(); 
-        root
+        // println!("\n\n\nFINAL:");
+        // let root = stack[0].borrow().display_tree(); 
+        *self = stack[0].borrow().clone();
     }
+    
 }
 
 
@@ -590,7 +613,8 @@ fn red_black_insert_random(c: &mut Criterion) {
                 // Code to benchmark goes here
                 let mut rbt = RedBlackTree::new(black_box(&insertions[0]));
                 for x in &insertions {
-                    rbt.insert(x);
+                    rbt.insert(black_box(x));
+                    // let y = black_box(x);
                 }
             }),
         );
