@@ -7,6 +7,9 @@ use std::cmp::max;
 use std::marker::Copy;
 use std::fmt::Debug;
 use rand::thread_rng;
+use rand::Rng;
+use rand::prelude::SliceRandom;
+use std::time::Duration;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum  NodeColour {
@@ -595,28 +598,178 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         *self = stack[0].borrow().clone();
     }
     
+
+    pub fn insert_no_fix(&mut self, val: T) {
+        let mut stack = vec![Rc::new(RefCell::new(self.clone()))];
+        let mut node = Rc::clone(&stack[0]);
+        let mut nodetemp = Rc::clone(&node);
+
+        ///// BINARY TREE INSERT //////
+        loop {
+            match &*node.borrow() {
+                RedBlackTree::Node {data, colour, left_child, right_child} => {
+                    if val > *data {
+                        nodetemp = Rc::clone(&right_child);
+                    } else if val < *data {
+                        nodetemp = Rc::clone(&left_child);
+                    } else {
+                        return;
+                    }
+                },
+                RedBlackTree::Empty => {break},
+            }
+            node = Rc::clone(&nodetemp);
+            stack.push(Rc::clone(&node));
+        }
+        // println!("{:#?}", stack);
+
+        stack[stack.len()-1].replace(RedBlackTree::Node {
+            data: val.clone(), 
+            colour: NodeColour::Red, 
+            left_child: Rc::new(RefCell::new(RedBlackTree::Empty)), 
+            right_child: Rc::new(RefCell::new(RedBlackTree::Empty))
+        });
+    }
 }
 
 
 fn red_black_insert_random(c: &mut Criterion) {
 
     let mut group = c.benchmark_group("red_black_insert_random");
-    group.sample_size(10);
+    group.sample_size(100);
+    group.warm_up_time(Duration::from_millis(5));
+    group.measurement_time(Duration::from_millis(5));
 
-    for upper in vec![1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000] {
+    for upper in vec![1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000] {
         let mut insertions:Vec<u32> = (0..upper).collect();
-        // thread_rng().shuffle(&insertions);
+        let slice: &mut [u32] = &mut insertions;
+        slice.shuffle(&mut thread_rng());
+        insertions = Vec::from(slice);
+
 
         group.bench_function(
             ("red_black_insert_random_".to_owned() + &upper.to_string()).as_str(),
-            |b| b.iter(|| {
-                // Code to benchmark goes here
+            |b| {
+
                 let mut rbt = RedBlackTree::new(black_box(&insertions[0]));
-                for x in &insertions {
-                    rbt.insert(black_box(x));
-                    // let y = black_box(x);
+                for i in 0..insertions.len()-100 {
+                    rbt.insert(&insertions[i]);
                 }
-            }),
+
+                b.iter(|| {
+                // Code to benchmark goes here
+                    // let y = black_box(x);
+                    for i in insertions.len()-100..insertions.len() {
+                        rbt.insert(black_box(&insertions[i]));
+                    }
+                })
+            },
+        );
+    }
+
+    group.finish();    
+}
+
+fn red_black_insert_sequential(c: &mut Criterion) {
+
+    let mut group = c.benchmark_group("red_black_insert_sequential");
+    group.sample_size(100);
+    group.warm_up_time(Duration::from_millis(5));
+    group.measurement_time(Duration::from_millis(5));
+
+    for upper in vec![1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000] {
+        let mut insertions:Vec<u32> = (0..upper).collect();
+        // let slice: &mut [u32] = &mut insertions;
+        // slice.shuffle(&mut thread_rng());
+        // insertions = Vec::from(slice);
+
+
+        group.bench_function(
+            ("red_black_insert_sequential_".to_owned() + &upper.to_string()).as_str(),
+            |b| {
+
+                let mut rbt = RedBlackTree::new(black_box(&insertions[0]));
+                for i in 0..insertions.len()-100 {
+                    rbt.insert(&insertions[i]);
+                }
+
+                b.iter(|| {
+                // Code to benchmark goes here
+                    // let y = black_box(x);
+                    for i in insertions.len()-100..insertions.len() {
+                        rbt.insert(black_box(&insertions[i]));
+                    }
+                })
+            },
+        );
+    }
+
+    group.finish();    
+}
+
+fn red_black_insert_block_random(c: &mut Criterion) {
+
+    let mut group = c.benchmark_group("red_black_insert_block_random");
+    group.sample_size(100);
+    group.warm_up_time(Duration::from_millis(5));
+    group.measurement_time(Duration::from_millis(5));
+
+    for upper in vec![1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000] {
+        let mut insertions:Vec<u32> = (0..upper).collect();
+        let slice: &mut [u32] = &mut insertions;
+        slice.shuffle(&mut thread_rng());
+        insertions = Vec::from(slice);
+
+
+        group.bench_function(
+            ("red_black_insert_block_random_".to_owned() + &upper.to_string()).as_str(),
+            |b| {
+
+                let mut rbt = RedBlackTree::new(black_box(&insertions[0]));
+                
+                b.iter(|| {
+                // Code to benchmark goes here
+                    // let y = black_box(x);
+                    for i in 0..insertions.len() {
+                        rbt.insert(black_box(&insertions[i]));
+                    }
+                })
+            },
+        );
+    }
+
+    group.finish();    
+}
+
+fn red_black_insert_block_sequential(c: &mut Criterion) {
+
+    let mut group = c.benchmark_group("red_black_insert_block_sequential");
+    group.sample_size(100);
+    group.warm_up_time(Duration::from_millis(5));
+    group.measurement_time(Duration::from_millis(5));
+
+    for upper in vec![1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000] {
+        let mut insertions:Vec<u32> = (0..upper).collect();
+        // let slice: &mut [u32] = &mut insertions;
+        // slice.shuffle(&mut thread_rng());
+        // insertions = Vec::from(slice);
+
+
+        group.bench_function(
+            ("red_black_insert_random_".to_owned() + &upper.to_string()).as_str(),
+            |b| {
+
+                let mut rbt = RedBlackTree::new(black_box(&insertions[0]));
+                
+
+                b.iter(|| {
+                // Code to benchmark goes here
+                    // let y = black_box(x);
+                    for i in 0..insertions.len() {
+                        rbt.insert(black_box(&insertions[i]));
+                    }
+                })
+            },
         );
     }
 
@@ -624,5 +777,14 @@ fn red_black_insert_random(c: &mut Criterion) {
 }
 
 
-criterion_group!(benches, red_black_insert_random);
+
+
+
+
+
+
+
+
+
+criterion_group!(benches, red_black_insert_random, red_black_insert_sequential, red_black_insert_block_random, red_black_insert_block_sequential);
 criterion_main!(benches);
