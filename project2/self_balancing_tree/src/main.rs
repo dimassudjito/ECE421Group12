@@ -476,25 +476,35 @@ fn avl_cli() {
                     println!("Invalid input");
                     return;
                 } else {
-                    let value: i32 = cmd[1].parse().unwrap();
-                    match cmd[0] {
-                        "insert" => {
-                            root_rc = AVLTree::insert_node(&root_rc, &value);
+                    match cmd[1].parse() {
+                        Err(e) => {
+                            println!(
+                                "Invalid input value, please try a numeric and or smaller value"
+                            );
+                            continue;
                         }
-                        "search" => {
-                            if (*root_rc).borrow().search(&value) {
-                                println!("Value {} exists in the tree", &value);
-                            } else {
-                                println!("Value {} does not exist in the tree", &value);
+                        Ok(i) => {
+                            let value: i32 = i;
+                            match cmd[0] {
+                                "insert" => {
+                                    root_rc = AVLTree::insert_node(&root_rc, &value);
+                                }
+                                "search" => {
+                                    if (*root_rc).borrow().search(&value) {
+                                        println!("Value {} exists in the tree", &value);
+                                    } else {
+                                        println!("Value {} does not exist in the tree", &value);
+                                    }
+                                }
+                                "del" => {
+                                    root_rc = AVLTree::delete_node(&root_rc, &value);
+                                }
+                                _ => {
+                                    println!("Invalid input command");
+                                }
                             }
                         }
-                        "del" => {
-                            root_rc = AVLTree::delete_node(&root_rc, &value);
-                        }
-                        _ => {
-                            println!("Invalid input");
-                        }
-                    }
+                    };
                 }
             }
         }
@@ -527,24 +537,34 @@ fn rb_cli() {
                     println!("Invalid input");
                     return;
                 } else {
-                    let value: i32 = cmd[1].parse().unwrap();
-                    match cmd[0] {
-                        "insert" => {
-                            root.insert(value);
+                    match cmd[1].parse() {
+                        Err(e) => {
+                            println!(
+                                "Invalid input value, please try a numeric and or smaller value"
+                            );
+                            continue;
                         }
-                        "search" => {
-                            let found: bool = root.search(&value);
-                            if found {
-                                println!("Value {} exists in the tree", &value);
-                            } else {
-                                println!("Value {} does not exist in the tree", &value);
+                        Ok(i) => {
+                            let value: i32 = i;
+                            match cmd[0] {
+                                "insert" => {
+                                    root.insert(value);
+                                }
+                                "search" => {
+                                    let found: bool = root.search(&value);
+                                    if found {
+                                        println!("Value {} exists in the tree", &value);
+                                    } else {
+                                        println!("Value {} does not exist in the tree", &value);
+                                    }
+                                }
+                                "del" => {
+                                    // Insert RB delete here
+                                }
+                                _ => {
+                                    println!("Invalid input");
+                                }
                             }
-                        }
-                        "del" => {
-                            // Insert RB delete here
-                        }
-                        _ => {
-                            println!("Invalid input");
                         }
                     }
                 }
