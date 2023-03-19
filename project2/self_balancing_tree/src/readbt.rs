@@ -201,7 +201,7 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
                 let padding_size = 5 - (data_string.len() + 2);
                 let right_padding = padding_size / 2;
                 let left_padding = padding_size - right_padding;
-                println!("left pad: {}, right pad: {}", left_padding, right_padding);
+
                 if colour_string == "" {
                     return format!(
                         "{} {} {}",
