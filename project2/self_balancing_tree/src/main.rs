@@ -185,7 +185,7 @@ fn test_avl_tree_josh(num: i32) {
 
             println!("{}", n2.count_leaves());
             n2.in_order_traversal();
-            // n2.get_height();
+            println!("{}", n2.get_tree_height());
             // n2.is_tree_empty();
             // n2.display_tree();
 
@@ -200,6 +200,7 @@ fn test_avl_tree_josh(num: i32) {
             rbt2 = rbt2.insert(4);
             rbt2 = rbt2.insert(14);
             println!("{}", rbt2.count_leaves());
+            println!("{}", rbt2.get_tree_height());
             rbt2.in_order_traversal();
         }
         _ => {}

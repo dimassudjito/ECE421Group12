@@ -71,27 +71,27 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
     fn is_tree_empty(&self) -> bool {
         return self.is_node_empty();
     }
-    // fn get_height(&self) -> i32 {
-    //     // Recursively get height
-    //     // This counts nodes and not edges (e.g. a tree with one node has height 1, and not 0)
+    fn get_tree_height(&self) -> i32 {
+        // Recursively get height
 
-    //     if self.is_node_empty() {
-    //         // empty node
-    //         return 0;
-    //     } else {
-    //         if self.immut_right_child().unwrap().is_node_empty()
-    //             && self.immut_left_child().unwrap().is_node_empty()
-    //         {
-    //             // leaf node
-    //             return 1;
-    //         } else {
-    //             return std::cmp::max(
-    //                 self.immut_right_child().unwrap().get_height(),
-    //                 self.immut_left_child().unwrap().get_height(),
-    //             );
-    //         }
-    //     }
-    // }
+        if self.is_node_empty() {
+            // empty node
+            return 0;
+        } else {
+            if self.immut_right_child().unwrap().is_node_empty()
+                && self.immut_left_child().unwrap().is_node_empty()
+            {
+                // leaf node that is not empty
+                return 0;
+            } else {
+                // node with at least one child
+                return std::cmp::max(
+                    self.immut_right_child().unwrap().get_tree_height(),
+                    self.immut_left_child().unwrap().get_tree_height(),
+                ) + 1;
+            }
+        }
+    }
 
     // traverse with new line printed at the end
     fn in_order_traversal(&self) {
