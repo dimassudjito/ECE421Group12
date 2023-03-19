@@ -405,21 +405,21 @@ fn main() {
 
     let mut rbt2 = RedBlackTree::new();
     rbt2.insert(8);
-    // rbt2.insert(18);
-    // rbt2.insert(5);
-    // rbt2.insert(15);
-    // rbt2.insert(17);
-    // rbt2.insert(25);
-    // rbt2.insert(40);
-    // rbt2.insert(80);
-    // rbt2.insert(4);
-    // rbt2.insert(14);
-    // rbt2.insert(16);
-    // rbt2.insert(24);
-    // rbt2.insert(39);
-    // rbt2.insert(79);
-    // rbt2.insert(2);
-    // rbt2.insert(12);
+    rbt2.insert(18);
+    rbt2.insert(5);
+    rbt2.insert(15);
+    rbt2.insert(17);
+    rbt2.insert(25);
+    rbt2.insert(40);
+    rbt2.insert(80);
+    rbt2.insert(4);
+    rbt2.insert(14);
+    rbt2.insert(16);
+    rbt2.insert(24);
+    rbt2.insert(39);
+    rbt2.insert(79);
+    rbt2.insert(2);
+    rbt2.insert(12);
     // rbt2.insert(11);
     // rbt2.insert(20);
     // rbt2.insert(37);
@@ -453,6 +453,9 @@ fn main() {
     // rbt2.in_order_traversal();
     println!("\n\n\n\n\n");
     rbt2.display_tree();
+
+    println!("\n\n\nSEARCH RESULT:");
+    rbt2.search(8).display_tree();
 
 
     //////// END RED BLACK TREE /////////
