@@ -475,32 +475,4 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
             }
         }
     }
-
-    pub fn tree_height(&self) -> i32 {
-        match self {
-            AVLTree::Empty => 0,
-            AVLTree::Node { height, .. } => *(height.borrow()),
-        }
-    }
-
-    pub fn print() {
-        // TODO: Dimas
-    }
-
-    pub fn print_inorder(&self) {
-        // // Prints an AVL tree in a inorder traversal
-        // match self {
-        //     AVLTree::Node {
-        //         data,
-        //         left_child,
-        //         right_child,
-        //         ..
-        //     } => {
-        //         (*left_child.borrow()).print_inorder();
-        //         println!("{}", **data.borrow());
-        //         (*right_child.borrow()).print_inorder();
-        //     }
-        //     AVLTree::Empty => return,
-        // }
-    }
 }

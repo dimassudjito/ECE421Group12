@@ -43,7 +43,7 @@ fn test_avl_tree_josh(num: i32) {
 
             let new_node = AVLTree::delete_node(&rc_root, &2);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         2 => {
             // right left case
@@ -83,7 +83,7 @@ fn test_avl_tree_josh(num: i32) {
 
             let new_node = AVLTree::delete_node(&rc_root, &0);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         3 => {
             // right right case
@@ -117,7 +117,7 @@ fn test_avl_tree_josh(num: i32) {
 
             let new_node = AVLTree::delete_node(&rc_root, &2);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         4 => {
             // left right case
@@ -157,7 +157,7 @@ fn test_avl_tree_josh(num: i32) {
 
             let new_node = AVLTree::delete_node(&rc_root, &4);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         5 => {
             // Testing leaves function
@@ -186,8 +186,8 @@ fn test_avl_tree_josh(num: i32) {
             println!("{}", n2.count_leaves());
             n2.in_order_traversal();
             println!("{}", n2.get_tree_height());
-            // n2.is_tree_empty();
-            // n2.display_tree();
+            println!("{}", n2.is_tree_empty());
+            n2.print_tree();
 
             let mut rbt2 = RedBlackTree::new(8);
             rbt2 = rbt2.insert(18);
@@ -202,6 +202,13 @@ fn test_avl_tree_josh(num: i32) {
             println!("{}", rbt2.count_leaves());
             println!("{}", rbt2.get_tree_height());
             rbt2.in_order_traversal();
+            println!("{}", rbt2.is_tree_empty());
+            rbt2.print_tree();
+            rbt2.print_tree();
+
+            let mut rbt3 = RedBlackTree::new(8);
+            println!("{}", rbt3.get_tree_height());
+            println!("{}", RedBlackTree::<i32>::Empty.get_tree_height());
         }
         _ => {}
     }
@@ -239,8 +246,8 @@ fn test_tree_height() {
         height: RefCell::new(3),
     };
     let empty_root: AVLTree<i32> = AVLTree::Empty;
-    println!("Non-empty: {:?}", root.tree_height());
-    println!("Empty: {:?}", empty_root.tree_height())
+    println!("Non-empty: {:?}", root.get_tree_height());
+    println!("Empty: {:?}", empty_root.get_tree_height())
 }
 
 fn test_insert_node() {
@@ -265,11 +272,11 @@ fn test_insert_node() {
 
     let rc_root = Rc::new(n4);
     println!("Enum Root: {:#?}", &rc_root);
-    rc_root.print_inorder();
+    rc_root.in_order_traversal();
     println!("----------");
     let new_node = AVLTree::insert_node(&rc_root, &1);
     println!("Enum Root: {:#?}", &new_node);
-    new_node.print_inorder();
+    new_node.in_order_traversal();
 }
 
 pub fn test_insert_node_all(num: i32) {
@@ -296,11 +303,11 @@ pub fn test_insert_node_all(num: i32) {
 
             let rc_root = Rc::new(n4);
             println!("Enum Root: {:#?}", &rc_root);
-            rc_root.print_inorder();
+            rc_root.in_order_traversal();
             println!("----------");
             let new_node = AVLTree::insert_node(&rc_root, &1);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         2 => {
             // left right case
@@ -325,11 +332,11 @@ pub fn test_insert_node_all(num: i32) {
 
             let rc_root = Rc::new(n5);
             println!("Enum Root: {:#?}", &rc_root);
-            rc_root.print_inorder();
+            rc_root.in_order_traversal();
             println!("----------");
             let new_node = AVLTree::insert_node(&rc_root, &2);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         3 => {
             // right right case
@@ -357,7 +364,7 @@ pub fn test_insert_node_all(num: i32) {
 
             let new_node = AVLTree::insert_node(&rc_root, &5);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         4 => {
             // right left case
@@ -384,7 +391,7 @@ pub fn test_insert_node_all(num: i32) {
 
             let new_node = AVLTree::insert_node(&rc_root, &5);
             println!("Enum Root: {:#?}", &new_node);
-            new_node.print_inorder();
+            new_node.in_order_traversal();
         }
         _ => {}
     }
@@ -401,118 +408,114 @@ fn main() {
 
     //////// RED BLACK TREE /////////////
 
-    // println!("Hello, world!");
+    let mut lower = RedBlackTree::new(6);
+    match lower {
+        RedBlackTree::Node {
+            colour,
+            data,
+            ref mut left_child,
+            ref mut right_child,
+        } => {
+            *left_child = Rc::new(RefCell::new(RedBlackTree::new(7)));
+            *right_child = Rc::new(RefCell::new(RedBlackTree::new(8)));
+        }
+        RedBlackTree::Empty => {}
+    }
+    let mut rbt = RedBlackTree::new(5);
+    match rbt {
+        RedBlackTree::Node {
+            colour,
+            data,
+            ref mut left_child,
+            ref mut right_child,
+        } => {
+            *left_child = Rc::new(RefCell::new(RedBlackTree::Empty));
+            *right_child = Rc::new(RefCell::new(lower));
+        }
+        RedBlackTree::Empty => {}
+    }
 
-    // /////////////////////////////////////
+    ////////////EXAMPLE 1/////////////////
+    //     |
+    //     5
+    //   /   \
+    //  x     6
+    //      /   \
+    //     7     8
+    //
+    //  Watch out for the following nodes: x, 7, 8, where x is empty.
 
-    // let mut lower = RedBlackTree::new(6);
-    // match lower {
-    //     RedBlackTree::Node {
-    //         colour,
-    //         data,
-    //         ref mut left_child,
-    //         ref mut right_child,
-    //     } => {
-    //         *left_child = Rc::new(RefCell::new(RedBlackTree::new(7)));
-    //         *right_child = Rc::new(RefCell::new(RedBlackTree::new(8)));
-    //     }
-    //     RedBlackTree::Empty => {}
-    // }
-    // let mut rbt = RedBlackTree::new(5);
-    // match rbt {
-    //     RedBlackTree::Node {
-    //         colour,
-    //         data,
-    //         ref mut left_child,
-    //         ref mut right_child,
-    //     } => {
-    //         *left_child = Rc::new(RefCell::new(RedBlackTree::Empty));
-    //         *right_child = Rc::new(RefCell::new(lower));
-    //     }
-    //     RedBlackTree::Empty => {}
-    // }
+    println!("{:#?}", rbt);
+    println!("\n");
+    // rotate left should form EXAMPLE 2
+    rbt = rbt.rotate_left();
 
-    // ////////////EXAMPLE 1/////////////////
-    // //     |
-    // //     5
-    // //   /   \
-    // //  x     6
-    // //      /   \
-    // //     7     8
-    // //
-    // //  Watch out for the following nodes: x, 7, 8, where x is empty.
+    println!("\n\n{:#?}", rbt);
+    rbt.in_order_traversal();
 
-    // println!("{:#?}", rbt);
-    // println!("\n");
-    // // rotate left should form EXAMPLE 2
-    // rbt = rbt.rotate_left();
+    /////////EXAMPLE 2//////////////////
+    //         |
+    //         6
+    //       /   \
+    //      5     8
+    //     /  \
+    //    x    7
+    //
 
-    // println!("\n\n{:#?}", rbt);
-    // rbt.in_order_traversal();
+    // rotate right should form EXAMPLE 1
+    rbt = rbt.rotate_right();
+    println!("\n\n{:#?}", rbt);
 
-    // /////////EXAMPLE 2//////////////////
-    // //         |
-    // //         6
-    // //       /   \
-    // //      5     8
-    // //     /  \
-    // //    x    7
-    // //
+    let rbt = rbt.insert(9);
+    println!("\n\n{:#?}", rbt);
+    rbt.in_order_traversal();
 
-    // // rotate right should form EXAMPLE 1
-    // rbt = rbt.rotate_right();
-    // println!("\n\n{:#?}", rbt);
+    let mut rbt2 = RedBlackTree::new(8);
+    rbt2 = rbt2.insert(18);
 
-    // let rbt = rbt.insert(9);
-    // println!("\n\n{:#?}", rbt);
-    // rbt.in_order_traversal();
+    rbt2 = rbt2.insert(5);
+    rbt2 = rbt2.insert(15);
+    rbt2 = rbt2.insert(17);
+    rbt2 = rbt2.insert(25);
+    rbt2 = rbt2.insert(40);
+    rbt2 = rbt2.insert(80);
+    rbt2 = rbt2.insert(4);
+    rbt2 = rbt2.insert(14);
+    rbt2 = rbt2.insert(16);
+    rbt2 = rbt2.insert(24);
+    rbt2 = rbt2.insert(39);
+    rbt2 = rbt2.insert(79);
+    rbt2 = rbt2.insert(2);
+    rbt2 = rbt2.insert(12);
+    rbt2 = rbt2.insert(11);
+    rbt2 = rbt2.insert(20);
+    rbt2 = rbt2.insert(37);
+    rbt2 = rbt2.insert(27);
+    rbt2 = rbt2.insert(15);
+    rbt2 = rbt2.insert(115);
+    rbt2 = rbt2.insert(117);
+    rbt2 = rbt2.insert(125);
+    rbt2 = rbt2.insert(140);
+    rbt2 = rbt2.insert(180);
+    rbt2 = rbt2.insert(14);
+    rbt2 = rbt2.insert(114);
+    rbt2 = rbt2.insert(116);
+    rbt2 = rbt2.insert(124);
+    rbt2 = rbt2.insert(139);
+    rbt2 = rbt2.insert(179);
+    rbt2 = rbt2.insert(12);
+    rbt2 = rbt2.insert(112);
+    rbt2 = rbt2.insert(111);
+    rbt2 = rbt2.insert(120);
+    rbt2 = rbt2.insert(137);
+    rbt2 = rbt2.insert(127);
 
-    // let mut rbt2 = RedBlackTree::new(8);
-    // rbt2 = rbt2.insert(18);
+    println!("\n\n{:#?}", rbt2);
 
-    // rbt2 = rbt2.insert(5);
-    // rbt2 = rbt2.insert(15);
-    // rbt2 = rbt2.insert(17);
-    // rbt2 = rbt2.insert(25);
-    // rbt2 = rbt2.insert(40);
-    // rbt2 = rbt2.insert(80);
-    // rbt2 = rbt2.insert(4);
-    // rbt2 = rbt2.insert(14);
-    // rbt2 = rbt2.insert(16);
-    // rbt2 = rbt2.insert(24);
-    // rbt2 = rbt2.insert(39);
-    // rbt2 = rbt2.insert(79);
-    // rbt2 = rbt2.insert(2);
-    // rbt2 = rbt2.insert(12);
-    // rbt2 = rbt2.insert(11);
-    // rbt2 = rbt2.insert(20);
-    // rbt2 = rbt2.insert(37);
-    // rbt2 = rbt2.insert(27);
-    // rbt2 = rbt2.insert(15);
-    // rbt2 = rbt2.insert(115);
-    // rbt2 = rbt2.insert(117);
-    // rbt2 = rbt2.insert(125);
-    // rbt2 = rbt2.insert(140);
-    // rbt2 = rbt2.insert(180);
-    // rbt2 = rbt2.insert(14);
-    // rbt2 = rbt2.insert(114);
-    // rbt2 = rbt2.insert(116);
-    // rbt2 = rbt2.insert(124);
-    // rbt2 = rbt2.insert(139);
-    // rbt2 = rbt2.insert(179);
-    // rbt2 = rbt2.insert(12);
-    // rbt2 = rbt2.insert(112);
-    // rbt2 = rbt2.insert(111);
-    // rbt2 = rbt2.insert(120);
-    // rbt2 = rbt2.insert(137);
-    // rbt2 = rbt2.insert(127);
+    println!("Leaf nodes: {}", rbt2.count_leaves());
+    println!("Tree height: {}", rbt2.get_tree_height());
+    rbt2.in_order_traversal();
+    rbt2.print_tree();
 
-    // println!("\n\n{:#?}", rbt2);
-
-    // println!("Leaf nodes: {}", rbt2.count_leaves());
-    // println!("Tree height: {}", rbt2.get_height());
-    // rbt2.in_order_traversal();
-    // rbt2.display_tree();
-
-    //////// END RED BLACK TREE /////////
+    ////// END RED BLACK TREE /////////
 }
