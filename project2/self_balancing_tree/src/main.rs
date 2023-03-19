@@ -384,6 +384,29 @@ pub fn test_insert_node_all(num: i32) {
     }
 }
 
+fn test_avl_search() {
+    let n2 = AVLTree::Node {
+        data: RefCell::new(Rc::new(2)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
+    let n3 = AVLTree::Node {
+        data: RefCell::new(Rc::new(3)),
+        left_child: RefCell::new(Rc::new(n2)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(2),
+    };
+    let n4 = AVLTree::Node {
+        data: RefCell::new(Rc::new(4)),
+        left_child: RefCell::new(Rc::new(n3)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(3),
+    };
+    println!("Should be true: {}", n4.search_node(&2));
+    println!("Should be false: {}", n4.search_node(&100));
+}
+
 fn main() {
 
     //////// AVL TREE /////////////
@@ -391,6 +414,7 @@ fn main() {
     test_is_tree_empty();
     test_tree_height();
     // test_insert_node_all(4);
+    test_avl_search();
 
     ////// END AVL TREE ///////////
 
