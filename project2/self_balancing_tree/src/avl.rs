@@ -61,6 +61,25 @@ impl<D: Ord + Copy + Debug> ReadableBinaryTree<D> for AVLTree<D> {
 }
 
 impl<T: Ord + Debug + Copy> AVLTree<T> {
+    // pub fn search_node(&self, value: &T) -> bool {
+    //     match self {
+    //         AVLTree::Node {
+    //             data,
+    //             left_child,
+    //             right_child,
+    //             ..
+    //         } => {
+    //             if *value == **data.borrow() {
+    //                 true
+    //             } else if *value < **data.borrow() {
+    //                 left_child.borrow().search_node(value)
+    //             } else {
+    //                 right_child.borrow().search_node(value)
+    //             }
+    //         }
+    //         AVLTree::Empty => false,
+    //     }
+    // }
     pub fn insert_node(node_rc: &Rc<AVLTree<T>>, new_data: &T) -> Rc<AVLTree<T>> {
         match &**node_rc {
             AVLTree::Empty => {

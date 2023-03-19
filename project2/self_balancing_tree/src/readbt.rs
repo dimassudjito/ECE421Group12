@@ -53,6 +53,36 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
     }
 
     // Shared Methods
+    fn search(&self, val: &T) -> bool {
+        if self.is_node_empty() {
+            return false;
+        } else {
+            match self.immut_data() {
+                data::RefType(data_value) => {
+                    let left_child = self.immut_left_child().unwrap();
+                    let right_child = self.immut_right_child().unwrap();
+                    if *val == *data_value {
+                        return true;
+                    } else if *val < *data_value {
+                        left_child.search(val)
+                    } else {
+                        right_child.search(val)
+                    }
+                }
+                data::refType(data_value) => {
+                    let left_child = self.immut_left_child().unwrap();
+                    let right_child = self.immut_right_child().unwrap();
+                    if *val == *data_value {
+                        return true;
+                    } else if *val < *data_value {
+                        left_child.search(val)
+                    } else {
+                        right_child.search(val)
+                    }
+                }
+            }
+        }
+    }
     fn count_leaves(&self) -> i32 {
         // Returns the number of leaves
         // leaf is defined as a node with no children
