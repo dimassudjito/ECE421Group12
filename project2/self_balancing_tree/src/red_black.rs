@@ -94,6 +94,27 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         print!("\n");
     }
 
+
+    pub fn search(&self, val: T) -> Self {
+        match self {
+            RedBlackTree::Node {data, colour, left_child, right_child} => {
+                if val == *data {
+                    return self.clone();
+                }
+                else if val > *data {
+                    return right_child.borrow().search(val);
+                } else {
+                    return left_child.borrow().search(val);
+                }
+            }, 
+            RedBlackTree::Empty => {
+                return RedBlackTree::Empty;
+            }
+        }
+    }
+
+
+
     pub fn display_tree(&self) {
         // Reserve 5 characters for each node of the tree to be printed, e.g. "R:218" or " B:4 " or " R:12"
         let two: u32 = 2;
