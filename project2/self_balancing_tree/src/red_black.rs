@@ -316,104 +316,63 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         }
     }
 
-    pub fn rotate_left(self) -> Self {
 
-        let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
-
+    pub fn rotate_right(&mut self) {
         match self {
-            RedBlackTree::Node {colour, data, left_child, right_child} => {
-                let tl_branch = Rc::clone(&left_child);
-                let bl_branch = match &*right_child.borrow() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&left_child),
-                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
+            RedBlackTree::Node{data, colour, left_child, right_child} => {
+                let mut lc = Rc::clone(&left_child);
+                let lc_rc = match &*lc.borrow() {
+                    RedBlackTree::Node{data, colour, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Empty => {return;}
                 };
-                let br_branch = match &*right_child.borrow() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&right_child),
-                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
-                };
-                
-                let datatemp = &data;
-                let colourtemp = &colour;
-
-                
-                new_parent = match &*right_child.borrow() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} =>  {
-                        let t_colour = *colour;
-                        let t_data = *data;
-                        let t_lc = Rc::new(RefCell::new(RedBlackTree::Node{
-                            colour: *colourtemp,
-                            data: *datatemp,
-                            left_child: tl_branch,
-                            right_child:bl_branch
-                        }));
-                        let t_rc = Rc::clone(&right_child);
-                        RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
-                    }
-                    RedBlackTree::Empty => RedBlackTree::Node {
-                        colour: *colourtemp,
-                        data: *datatemp,
-                        left_child: Rc::clone(&left_child),
-                        right_child:Rc::clone(&right_child)
+                let mut oldself = self.clone();
+                match oldself {
+                    RedBlackTree::Node{data, colour, ref mut left_child, ref mut right_child} => {
+                        *left_child = lc_rc;
                     },
-                };
+                    RedBlackTree::Empty => {return;}
+                }
 
-
+                *self = lc.borrow().clone();
+                match self {
+                    RedBlackTree::Node{data, colour, ref mut left_child, ref mut right_child} => {
+                        *right_child = Rc::new(RefCell::new(oldself));
+                    },
+                    RedBlackTree::Empty => {return;}
+                }
             },
-            RedBlackTree::Empty => {},
+            RedBlackTree::Empty => {return;}
         }
-        new_parent
     }
 
 
-
-    pub fn rotate_right(self) -> Self {
-
-        let mut new_parent: RedBlackTree<T> = RedBlackTree::Empty;
-
+    pub fn rotate_left(&mut self) {
         match self {
-            RedBlackTree::Node {colour, data, left_child, right_child} => {
-                let tr_branch = Rc::clone(&right_child);
-                let br_branch = match &*left_child.borrow() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&right_child),
-                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
+            RedBlackTree::Node{data, colour, left_child, right_child} => {
+                let mut rc = Rc::clone(&right_child);
+                let rc_lc = match &*rc.borrow() {
+                    RedBlackTree::Node{data, colour, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Empty => {return;}
                 };
-                let bl_branch = match &*left_child.borrow() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} => Rc::clone(&left_child),
-                    RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
-                };
-                
-                let datatemp = &data;
-                let colourtemp = &colour;
-
-                
-                new_parent = match &*left_child.borrow() {
-                    RedBlackTree::Node {colour, data, left_child, right_child} =>  {
-                        let t_colour = *colour;
-                        let t_data = *data;
-                        let t_rc = Rc::new(RefCell::new(RedBlackTree::Node{
-                            colour: *colourtemp,
-                            data: *datatemp,
-                            left_child: br_branch,
-                            right_child:tr_branch
-                        }));
-                        let t_lc = Rc::clone(&left_child);
-                        RedBlackTree::Node {colour:t_colour, data:t_data, left_child: t_lc, right_child: t_rc}
-                    }
-                    RedBlackTree::Empty => RedBlackTree::Node {
-                        colour: *colourtemp,
-                        data: *datatemp,
-                        left_child: Rc::clone(&left_child),
-                        right_child:Rc::clone(&right_child)
+                let mut oldself = self.clone();
+                match oldself {
+                    RedBlackTree::Node{data, colour, ref mut left_child, ref mut right_child} => {
+                        *right_child = rc_lc;
                     },
-                };
+                    RedBlackTree::Empty => {return;}
+                }
 
-
+                *self = rc.borrow().clone();
+                match self {
+                    RedBlackTree::Node{data, colour, ref mut left_child, ref mut right_child} => {
+                        *left_child = Rc::new(RefCell::new(oldself));
+                    },
+                    RedBlackTree::Empty => {return;}
+                }
             },
-            RedBlackTree::Empty => {},
+            RedBlackTree::Empty => {return;}
         }
-        new_parent
     }
-
 
     pub fn insert(&mut self, val: T) {
         match self {
@@ -472,7 +431,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             let mut gf_left =  Rc::new(RefCell::new(RedBlackTree::Empty));
             let mut gf_right =  Rc::new(RefCell::new(RedBlackTree::Empty));
 
-            let gf_val = match &*grandfather.borrow() {
+            let mut gf_val = match &*grandfather.borrow() {
                 RedBlackTree::Node {data, colour, left_child, right_child} => {
                     gf_left = Rc::clone(&left_child);
                     gf_right = Rc::clone(&right_child);
@@ -493,7 +452,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
             // If parent is black, then we break
             if NodeColour::Black == match &*parent.borrow() {
-                RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                 RedBlackTree::Empty => NodeColour::Black,
             } {
                 break;
@@ -501,7 +460,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
             // otherwise...
             // if uncle is red
             if NodeColour::Red == match &*uncle.borrow() {
-                RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                 RedBlackTree::Empty => NodeColour::Black,
             } {
                 // Set uncle and parent as black
@@ -531,16 +490,17 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                 // If grandparent.left.left is the current node
                 if (match &*grandfather.borrow() {
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&left_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&parent)) &&
                 (match &*parent.borrow(){
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&left_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&stack[idx])) {
+
                     // right rotate on grandfather
                     let mut gf_temp = grandfather.borrow().clone();
-                    gf_temp = gf_temp.rotate_right();
+                    gf_temp.rotate_right();
                     parent.replace(gf_temp);
 
                     grandfather = match &*parent.borrow(){
@@ -549,12 +509,12 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     };
 
                     // then swap colours of grandfather and parent
-                    let gf_colour = match &*grandfather.borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                    let mut gf_colour = match &*grandfather.borrow(){
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
-                    let p_colour = match &*parent.borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                    let mut p_colour = match &*parent.borrow(){
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
                     match *grandfather.borrow_mut(){
@@ -593,11 +553,11 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                 // If grandparent.left.right is the current node
                 else if (match &*grandfather.borrow() {
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&left_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&parent)) &&
                 (match &*parent.borrow(){
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&right_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&stack[idx])) {
                     
@@ -608,7 +568,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     // stack[idx].borrow().display_tree();
 
                     let mut p_temp = parent.borrow().clone();
-                    p_temp = p_temp.rotate_left();
+                    p_temp.rotate_left();
                     stack[idx].replace(p_temp);
 
                     parent = match &*stack[idx].borrow(){
@@ -643,7 +603,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                     // right rotate on grandfather
                     let mut gf_temp = grandfather.borrow().clone();
-                    gf_temp = gf_temp.rotate_right();
+                    gf_temp.rotate_right();
                     stack[idx].replace(gf_temp);
 
                     grandfather = match &*stack[idx].borrow(){
@@ -659,12 +619,12 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
 
                     // then swap colours of grandfather and current
-                    let gf_colour = match &*grandfather.borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                    let mut gf_colour = match &*grandfather.borrow(){
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
-                    let c_colour = match &*stack[idx].borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                    let mut c_colour = match &*stack[idx].borrow(){
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
                     match *grandfather.borrow_mut() {
@@ -706,16 +666,16 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                 // If grandparent.right.left is the current node
                 else if (match &*grandfather.borrow() {
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&right_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&parent)) &&
                 (match &*parent.borrow(){
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&left_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&left_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&stack[idx])) {
                     // right rotate on parent
                     let mut p_temp = parent.borrow().clone();
-                    p_temp = p_temp.rotate_right();
+                    p_temp.rotate_right();
                     stack[idx].replace(p_temp);
 
                     parent = match &*stack[idx].borrow(){
@@ -730,7 +690,7 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                     // left rotate on grandfather
                     let mut gf_temp = grandfather.borrow().clone();
-                    gf_temp = gf_temp.rotate_left();
+                    gf_temp.rotate_left();
                     stack[idx].replace(gf_temp);
 
                     grandfather = match &*stack[idx].borrow(){
@@ -739,12 +699,12 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                     };
 
                     // then swap colours of grandfather and current
-                    let gf_colour = match &*grandfather.borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                    let mut gf_colour = match &*grandfather.borrow(){
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
-                    let c_colour = match &*stack[idx].borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                    let mut c_colour = match &*stack[idx].borrow(){
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
                   
@@ -788,18 +748,18 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
                 
                 // If grandparent.right.right is the current node
                 else if (match &*grandfather.borrow() {
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&right_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&parent)) &&
                 (match &*parent.borrow(){
-                    RedBlackTree::Node {data, colour, left_child, right_child} => Rc::clone(&right_child),
+                    RedBlackTree::Node {data, mut colour, left_child, right_child} => Rc::clone(&right_child),
                     RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                 } == Rc::clone(&stack[idx])) {
 
 
                     // left rotate on grandfather
                     let mut gf_temp = grandfather.borrow().clone();
-                    gf_temp = gf_temp.rotate_left();
+                    gf_temp.rotate_left();
                     parent.replace(gf_temp);
 
                     grandfather = match &*parent.borrow(){
@@ -810,11 +770,11 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
                     // then swap colours of grandfather and parent
                     let gf_colour = match &*grandfather.borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
                     let p_colour = match &*parent.borrow(){
-                        RedBlackTree::Node {data, colour, left_child, right_child} => colour.clone(),
+                        RedBlackTree::Node {data, colour, left_child, right_child} => *colour,
                         RedBlackTree::Empty => NodeColour::Black,
                     };
 
@@ -869,6 +829,4 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         // let root = stack[0].borrow().display_tree(); 
         *self = stack[0].borrow().clone();
     }
-
-
 }
