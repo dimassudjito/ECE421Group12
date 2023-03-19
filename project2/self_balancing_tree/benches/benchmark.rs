@@ -939,6 +939,21 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
         }
     }
 
+    pub fn search_node(&self, value: &T) -> bool {
+        match self {
+            AVLTree::Node { data, left_child, right_child, .. } => {
+                if *value == **data.borrow() {
+                    true
+                } else if *value < **data.borrow() {
+                    left_child.borrow().search_node(value)
+                } else {
+                    right_child.borrow().search_node(value)
+                }
+            },
+            AVLTree::Empty => false,
+        }
+    }
+
 }
 
 
@@ -1368,7 +1383,7 @@ fn avl_search_random(c: &mut Criterion) {
                 });
 
 
-                for i in 0..insertions.len()-100 {
+                for i in 0..insertions.len() {
                     avl = AVLTree::insert_node(&avl, &&insertions[i]);
                 }
 
@@ -1376,7 +1391,7 @@ fn avl_search_random(c: &mut Criterion) {
                 // Code to benchmark goes here
                     // let y = black_box(x);
                     for i in insertions.len()-100..insertions.len() {
-                        avl = AVLTree::insert_node(&avl, black_box(&&insertions[i]));
+                        avl.search_node(black_box(&&insertions[i]));
                     }
                 })
             },
@@ -1412,7 +1427,7 @@ fn avl_search_sequential(c: &mut Criterion) {
                 });
 
 
-                for i in 0..insertions.len()-100 {
+                for i in 0..insertions.len() {
                     avl = AVLTree::insert_node(&avl, &&insertions[i]);
                 }
 
@@ -1420,7 +1435,7 @@ fn avl_search_sequential(c: &mut Criterion) {
                 // Code to benchmark goes here
                     // let y = black_box(x);
                     for i in insertions.len()-100..insertions.len() {
-                        avl = AVLTree::insert_node(&avl, black_box(&&insertions[i]));
+                        avl.search_node(black_box(&&insertions[i]));
                     }
                 })
             },
@@ -1434,12 +1449,11 @@ fn avl_search_sequential(c: &mut Criterion) {
 
 
 
-// criterion_group!(benches, red_black_insert_random, red_black_insert_sequential, red_black_insert_block_random, red_black_insert_block_sequential);
-// criterion_group!(benches, red_black_insert_random, avl_insert_random);
-// criterion_group!(benches, red_black_insert_sequential, avl_insert_sequential);
-// criterion_group!(benches, red_black_insert_block_random, avl_insert_block_random);
-// criterion_group!(benches, red_black_insert_block_sequential, avl_insert_block_sequential);
-// criterion_group!(benches, red_black_search_random, avl_search_random);
-criterion_group!(benches, red_black_search_sequential, avl_search_sequential);
+criterion_group!(insert_random, red_black_insert_random, avl_insert_random);
+criterion_group!(insert_sequential, red_black_insert_sequential, avl_insert_sequential);
+criterion_group!(insert_block_random, red_black_insert_block_random, avl_insert_block_random);
+criterion_group!(insert_block_sequential, red_black_insert_block_sequential, avl_insert_block_sequential);
+criterion_group!(search_random, red_black_search_random, avl_search_random);
+criterion_group!(search_sequential, red_black_search_sequential, avl_search_sequential);
 
-criterion_main!(benches);
+criterion_main!(insert_random, insert_sequential, insert_block_random, insert_block_sequential, search_random, search_sequential);
