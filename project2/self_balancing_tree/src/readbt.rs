@@ -204,7 +204,7 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
                 println!("left pad: {}, right pad: {}", left_padding, right_padding);
                 if colour_string == "" {
                     return format!(
-                        "{} {}{}",
+                        "{} {} {}",
                         " ".repeat(left_padding),
                         data_string,
                         " ".repeat(right_padding)
