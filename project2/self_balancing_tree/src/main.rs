@@ -4,6 +4,7 @@ mod red_black;
 use avl::AVLTree;
 use red_black::*;
 
+use std::borrow::Borrow;
 use std::cell::RefCell;
 use std::io;
 use std::rc::Rc;
@@ -405,36 +406,84 @@ fn test_avl_search() {
 }
 
 pub fn cli() {
-    println!("1. Start AVL tree: init avl");
-    println!("2. Start Red-Black tree: init rb");
-    println!("3. Exit: exit");
+    loop {
+        println!("1. Start AVL tree: init avl");
+        println!("2. Start Red-Black tree: init rb");
+        println!("3. Exit: exit");
 
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read input.");
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
 
-    match input.trim() {
-        "init avl" => {
-            avl_cli();
-        }
-        "init rb" => {
-            rb_cli();
-        }
-        "exit" => return,
-        _ => {
-            println!("Invalid input");
+        match input.trim() {
+            "init avl" => {
+                avl_cli();
+            }
+            "init rb" => {
+                rb_cli();
+            }
+            "exit" => return,
+            _ => {
+                println!("Invalid input");
+            }
         }
     }
 }
 
 fn avl_cli() {
-    println!("Executing avl cli");
-    let empty_root: AVLTree<i32> = AVLTree::Empty;
+    let root: AVLTree<i32> = AVLTree::Empty;
+    let mut root_rc = Rc::new(root);
+    loop {
+        println!("1. Insert node: insert value (e.g., insert 3)");
+        println!("2. Search node: search value (e.g., search 4)");
+        println!("3. Delete node: del value (e.g., del 2)");
+        println!("4. Print: print");
+        println!("5. Exit");
+
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
+        let cmd: Vec<&str> = input.trim().split_whitespace().collect();
+
+        match cmd[0] {
+            "exit" => return,
+            "print" => {
+                println!("{:#?}", root_rc);
+            },
+            _ => {
+                if cmd.len() < 2 {
+                    println!("Invalid input"); 
+                    return;
+                } else {
+                    let value: i32 = cmd[1].parse().unwrap();
+                    match cmd[0] {
+                        "insert" => {
+                            root_rc = AVLTree::insert_node(&root_rc, &value);
+                        },
+                        "search" => {
+                            if (*root_rc).borrow().search_node(&value) {
+                                println!("Value {} exists in the tree", &value);
+                            } else {
+                                println!("Value {} does not exist in the tree", &value);
+                            }
+                        },
+                        "del" => {
+                            root_rc = AVLTree::delete_node(&root_rc, &value);
+                        },
+                        _ => {
+                            println!("Invalid input");
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 fn rb_cli() {
-    println!("Executing rb cli");
+    println!("Executing rb cli"); // DEBUG
 }
 
 fn main() {
