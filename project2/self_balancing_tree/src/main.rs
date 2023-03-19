@@ -407,6 +407,7 @@ fn test_avl_search() {
 
 pub fn cli() {
     loop {
+        println!("--- Main Menu ---");
         println!("1. Start AVL tree: init avl");
         println!("2. Start Red-Black tree: init rb");
         println!("3. Exit: exit");
@@ -435,11 +436,12 @@ fn avl_cli() {
     let root: AVLTree<i32> = AVLTree::Empty;
     let mut root_rc = Rc::new(root);
     loop {
+        println!("--- AVL Tree Menu ---");
         println!("1. Insert node: insert value (e.g., insert 3)");
         println!("2. Search node: search value (e.g., search 4)");
         println!("3. Delete node: del value (e.g., del 2)");
         println!("4. Print: print");
-        println!("5. Exit");
+        println!("5. Exit: exit");
 
         let mut input = String::new();
         io::stdin()
@@ -483,7 +485,55 @@ fn avl_cli() {
 }
 
 fn rb_cli() {
-    println!("Executing rb cli"); // DEBUG
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    loop {
+        println!("--- Red-Black Tree Menu ---");
+        println!("1. Insert node: insert value (e.g., insert 3)");
+        println!("2. Search node: search value (e.g., search 4)");
+        println!("3. Delete node: del value (e.g., del 2)");
+        println!("4. Print: print");
+        println!("5. Exit: exit");
+
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
+        let cmd: Vec<&str> = input.trim().split_whitespace().collect();
+
+        match cmd[0] {
+            "exit" => return,
+            "print" => {
+                root.display_tree();
+            },
+            _ => {
+                if cmd.len() < 2 {
+                    println!("Invalid input"); 
+                    return;
+                } else {
+                    let value: i32 = cmd[1].parse().unwrap();
+                    match cmd[0] {
+                        "insert" => {
+                            root.insert(value);
+                        },
+                        "search" => {
+                            let found: bool = !(root.search(value) == RedBlackTree::Empty);
+                            if found {
+                                println!("Value {} exists in the tree", &value);
+                            } else {
+                                println!("Value {} does not exist in the tree", &value);
+                            }
+                        },
+                        "del" => {
+                            // Insert RB delete here
+                        },
+                        _ => {
+                            println!("Invalid input");
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 fn main() {
