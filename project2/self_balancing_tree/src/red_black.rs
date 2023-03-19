@@ -45,13 +45,8 @@ impl <T: Ord + Copy + Debug> PartialEq for RedBlackTree<T>
 
 impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
-    pub fn new(data: T) -> Self {
-        RedBlackTree::<T>::Node {
-            colour: NodeColour::Black, 
-            data: data,
-            left_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
-            right_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
-        }
+    pub fn new() -> Self {
+        RedBlackTree::<T>::Empty
     }
 
 
@@ -400,6 +395,19 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
 
     pub fn insert(&mut self, val: T) {
+        match self {
+            RedBlackTree::Node {data, colour, left_child, right_child} => {},
+            RedBlackTree::Empty => {
+                *self = RedBlackTree::Node {
+                    data:val, 
+                    colour:NodeColour::Black, 
+                    left_child: Rc::new(RefCell::new(RedBlackTree::Empty)), 
+                    right_child: Rc::new(RefCell::new(RedBlackTree::Empty))
+                };
+                return;
+            }
+        };
+
         let mut stack = vec![Rc::new(RefCell::new(self.clone()))];
         let mut node = Rc::clone(&stack[0]);
         let mut nodetemp = Rc::clone(&node);
