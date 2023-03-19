@@ -1,10 +1,12 @@
 
 mod avl;
 mod red_black;
+mod cli;
 
 
 use avl::AVLTree;
 use red_black::*;
+use cli::cli;
 
 
 use std::cell::RefCell;
@@ -483,5 +485,7 @@ fn main() {
 
 
     //////// END RED BLACK TREE /////////
+    
+    cli();
 
 }
