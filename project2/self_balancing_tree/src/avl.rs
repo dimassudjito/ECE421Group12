@@ -1,11 +1,15 @@
+use crate::readbt;
+
 use crate::AVLTree::*;
-use std::cell::RefCell;
+use readbt::ReadableBinaryTree;
+use std::cell::{Ref, RefCell};
 use std::cmp::max;
+use std::fmt::Debug;
 use std::fmt::Display;
 use std::rc::Rc;
 
 #[derive(Debug)]
-pub enum AVLTree<T: Ord> {
+pub enum AVLTree<T: Ord + Debug + Copy> {
     Node {
         data: RefCell<Rc<T>>,
         left_child: RefCell<Rc<AVLTree<T>>>,
@@ -15,21 +19,67 @@ pub enum AVLTree<T: Ord> {
     Empty,
 }
 
-impl<T: Ord + Display + Copy> AVLTree<T> {
-    pub fn search_node(&self, value: &T) -> bool {
+impl<D: Ord + Copy + Debug> ReadableBinaryTree<D> for AVLTree<D> {
+    // template methods must be implemented by implementors
+    fn is_node_empty(&self) -> bool {
         match self {
-            AVLTree::Node { data, left_child, right_child, .. } => {
-                if *value == **data.borrow() {
-                    true
-                } else if *value < **data.borrow() {
-                    left_child.borrow().search_node(value)
-                } else {
-                    right_child.borrow().search_node(value)
-                }
-            },
-            AVLTree::Empty => false,
+            AVLTree::Empty => true,
+            AVLTree::Node { .. } => false,
         }
     }
+
+    // An Err in these three functions signifies an empty node.
+    fn immut_right_child(&self) -> Result<Ref<dyn ReadableBinaryTree<D>>, &str> {
+        match self {
+            Empty => return Result::Err("Node is empty and has no children"),
+            Node { right_child, .. } => {
+                // creates a new Ref to overcome the original Ref falling out of scope
+                let rf = Ref::map(right_child.borrow(), |t| &**t);
+                return Result::Ok(rf);
+            }
+        }
+    }
+    fn immut_left_child(&self) -> Result<Ref<dyn ReadableBinaryTree<D>>, &str> {
+        match self {
+            Empty => return Result::Err("Node is empty and has no children"),
+            Node { left_child, .. } => {
+                // creates a new Ref to overcome the original Ref falling out of scope
+                let rf = Ref::map(left_child.borrow(), |t| &**t);
+                return Result::Ok(rf);
+            }
+        }
+    }
+    fn immut_data_from_Ref(&self) -> Result<Ref<D>, &str> {
+        match self {
+            Empty => return Result::Err("Node is empty and has no data"),
+            Node { data, .. } => {
+                let rf = Ref::map(data.borrow(), |t| &**t);
+                return Result::Ok(rf);
+            }
+        }
+    }
+}
+
+impl<T: Ord + Debug + Copy> AVLTree<T> {
+    // pub fn search_node(&self, value: &T) -> bool {
+    //     match self {
+    //         AVLTree::Node {
+    //             data,
+    //             left_child,
+    //             right_child,
+    //             ..
+    //         } => {
+    //             if *value == **data.borrow() {
+    //                 true
+    //             } else if *value < **data.borrow() {
+    //                 left_child.borrow().search_node(value)
+    //             } else {
+    //                 right_child.borrow().search_node(value)
+    //             }
+    //         }
+    //         AVLTree::Empty => false,
+    //     }
+    // }
     pub fn insert_node(node_rc: &Rc<AVLTree<T>>, new_data: &T) -> Rc<AVLTree<T>> {
         match &**node_rc {
             AVLTree::Empty => {
@@ -56,7 +106,7 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
                 } else {
                     return Rc::clone(node_rc);
                 }
-                
+
                 let return_node_rc = AVLTree::insert_node_balance(node_rc);
                 (*return_node_rc).update_heights();
                 return return_node_rc;
@@ -96,7 +146,7 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
                             } => {
                                 let y_left_height = (*y_left_child_ref.borrow()).get_height();
                                 let y_right_height = (*y_right_child_ref.borrow()).get_height();
-                                if y_left_height > y_right_height{
+                                if y_left_height > y_right_height {
                                     // left-left case
                                     return AVLTree::rotation_left_left(node_rc);
                                 } else {
@@ -442,71 +492,6 @@ impl<T: Ord + Display + Copy> AVLTree<T> {
             Node { height, .. } => {
                 return *height.borrow();
             }
-        }
-    }
-
-    pub fn leaf_number(&self) -> i32 {
-        // Returns the number of leaves
-        // Note: an empty tree has no leaves
-
-        match self.get_height() {
-            0 => {
-                // leaf node
-                return 1;
-            }
-            -1 => {
-                // empty node
-                return 0;
-            }
-            _ => match self {
-                Empty => {
-                    panic!("leaf_number failed")
-                }
-                Node {
-                    left_child,
-                    right_child,
-                    ..
-                } => {
-                    return (**left_child.borrow()).leaf_number()
-                        + (**right_child.borrow()).leaf_number()
-                }
-            },
-        }
-    }
-
-    pub fn tree_height(&self) -> i32 {
-        // TODO: Dimas
-        match self {
-            AVLTree::Empty => 0,
-            AVLTree::Node { height, .. } => *(height.borrow()),
-        }
-    }
-
-    // pub fn print() {
-    //     // TODO: Dimas
-    // }
-
-    pub fn print_inorder(&self) {
-        // Prints an AVL tree in a inorder traversal
-        match self {
-            AVLTree::Node {
-                data,
-                left_child,
-                right_child,
-                ..
-            } => {
-                (*left_child.borrow()).print_inorder();
-                println!("{}", **data.borrow());
-                (*right_child.borrow()).print_inorder();
-            }
-            AVLTree::Empty => return,
-        }
-    }
-
-    pub fn is_tree_empty(&self) -> bool {
-        match self {
-            AVLTree::Empty => true,
-            AVLTree::Node { .. } => false,
         }
     }
 }
