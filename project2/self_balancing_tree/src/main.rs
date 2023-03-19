@@ -401,64 +401,11 @@ fn main() {
 
     /////////////////////////////////////
 
-    let mut lower = RedBlackTree::new(6);
-    match lower {
-        RedBlackTree::Node {colour, data, ref mut left_child, ref mut right_child} => {
-            *left_child = Rc::new(RefCell::new(RedBlackTree::new(7)));
-            *right_child = Rc::new(RefCell::new(RedBlackTree::new(8)));
-        },
-        RedBlackTree::Empty => {},
-    }
-    let mut rbt = RedBlackTree::new(5);
-    match rbt {
-        RedBlackTree::Node {colour, data, ref mut left_child, ref mut right_child} => {
-            *left_child = Rc::new(RefCell::new(RedBlackTree::Empty));
-            *right_child = Rc::new(RefCell::new(lower));
-        },
-        RedBlackTree::Empty => {},
-    }
-
-    ////////////EXAMPLE 1/////////////////
-    //     |
-    //     5
-    //   /   \
-    //  x     6
-    //      /   \
-    //     7     8
-    //
-    //  Watch out for the following nodes: x, 7, 8, where x is empty.
-
-    println!("{:#?}", rbt);
-    println!("\n");
-    // rotate left should form EXAMPLE 2
-    rbt = rbt.rotate_left();
-    
-    println!("\n\n{:#?}", rbt);
-    rbt.in_order_traversal();
-
-       /////////EXAMPLE 2//////////////////
-    //         |
-    //         6
-    //       /   \
-    //      5     8
-    //     /  \    
-    //    x    7     
-    // 
-
-    // rotate right should form EXAMPLE 1
-    rbt = rbt.rotate_right();
-    println!("\n\n{:#?}", rbt);
 
 
-
-    rbt.insert(9);
-    println!("\n\n{:#?}", rbt);
-    rbt.in_order_traversal();
-
-
-    let mut rbt2 = RedBlackTree::new(8);
+    let mut rbt2 = RedBlackTree::new();
+    rbt2.insert(8);
     rbt2.insert(18);
-
     rbt2.insert(5);
     rbt2.insert(15);
     rbt2.insert(17);
@@ -496,7 +443,7 @@ fn main() {
     rbt2.insert(137);
     rbt2.insert(127);
 
-    println!("\n\n{:#?}", rbt2);
+    // println!("\n\n{:#?}", rbt2);
     
 
 
@@ -504,7 +451,11 @@ fn main() {
     // println!("Leaf nodes: {}", rbt2.count_leaves());
     // println!("Tree height: {}", rbt2.get_height());
     // rbt2.in_order_traversal();
+    println!("\n\n\n\n\n");
     rbt2.display_tree();
+
+    println!("\n\n\nSEARCH RESULT:");
+    rbt2.search(124).display_tree();
 
 
     //////// END RED BLACK TREE /////////

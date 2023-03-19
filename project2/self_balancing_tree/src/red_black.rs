@@ -45,13 +45,8 @@ impl <T: Ord + Copy + Debug> PartialEq for RedBlackTree<T>
 
 impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
-    pub fn new(data: T) -> Self {
-        RedBlackTree::<T>::Node {
-            colour: NodeColour::Black, 
-            data: data,
-            left_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
-            right_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
-        }
+    pub fn new() -> Self {
+        RedBlackTree::<T>::Empty
     }
 
 
@@ -98,6 +93,27 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
         self.traverse();
         print!("\n");
     }
+
+
+    pub fn search(&self, val: T) -> Self {
+        match self {
+            RedBlackTree::Node {data, colour, left_child, right_child} => {
+                if val == *data {
+                    return self.clone();
+                }
+                else if val > *data {
+                    return right_child.borrow().search(val);
+                } else {
+                    return left_child.borrow().search(val);
+                }
+            }, 
+            RedBlackTree::Empty => {
+                return RedBlackTree::Empty;
+            }
+        }
+    }
+
+
 
     pub fn display_tree(&self) {
         // Reserve 5 characters for each node of the tree to be printed, e.g. "R:218" or " B:4 " or " R:12"
@@ -400,6 +416,19 @@ impl <T: Ord + Copy + Debug> RedBlackTree<T> {
 
 
     pub fn insert(&mut self, val: T) {
+        match self {
+            RedBlackTree::Node {data, colour, left_child, right_child} => {},
+            RedBlackTree::Empty => {
+                *self = RedBlackTree::Node {
+                    data:val, 
+                    colour:NodeColour::Black, 
+                    left_child: Rc::new(RefCell::new(RedBlackTree::Empty)), 
+                    right_child: Rc::new(RefCell::new(RedBlackTree::Empty))
+                };
+                return;
+            }
+        };
+
         let mut stack = vec![Rc::new(RefCell::new(self.clone()))];
         let mut node = Rc::clone(&stack[0]);
         let mut nodetemp = Rc::clone(&node);
