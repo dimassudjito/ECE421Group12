@@ -1,13 +1,12 @@
-
 mod avl;
 mod red_black;
-
 
 use avl::AVLTree;
 use red_black::*;
 
-
+use std::borrow::Borrow;
 use std::cell::RefCell;
+use std::io;
 use std::rc::Rc;
 
 fn test_avl_tree_josh(num: i32) {
@@ -234,7 +233,6 @@ fn test_tree_height() {
     let empty_root: AVLTree<i32> = AVLTree::Empty;
     println!("Non-empty: {:?}", root.tree_height());
     println!("Empty: {:?}", empty_root.tree_height())
-
 }
 
 fn test_insert_node() {
@@ -287,7 +285,7 @@ pub fn test_insert_node_all(num: i32) {
                 right_child: RefCell::new(Rc::new(AVLTree::Empty)),
                 height: RefCell::new(3),
             };
-        
+
             let rc_root = Rc::new(n4);
             println!("Enum Root: {:#?}", &rc_root);
             rc_root.print_inorder();
@@ -316,7 +314,7 @@ pub fn test_insert_node_all(num: i32) {
                 right_child: RefCell::new(Rc::new(AVLTree::Empty)),
                 height: RefCell::new(2),
             };
-            
+
             let rc_root = Rc::new(n5);
             println!("Enum Root: {:#?}", &rc_root);
             rc_root.print_inorder();
@@ -407,8 +405,138 @@ fn test_avl_search() {
     println!("Should be false: {}", n4.search_node(&100));
 }
 
-fn main() {
+pub fn cli() {
+    loop {
+        println!("--- Main Menu ---");
+        println!("1. Start AVL tree: init avl");
+        println!("2. Start Red-Black tree: init rb");
+        println!("3. Exit: exit");
 
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
+
+        match input.trim() {
+            "init avl" => {
+                avl_cli();
+            }
+            "init rb" => {
+                rb_cli();
+            }
+            "exit" => return,
+            _ => {
+                println!("Invalid input");
+            }
+        }
+    }
+}
+
+fn avl_cli() {
+    let root: AVLTree<i32> = AVLTree::Empty;
+    let mut root_rc = Rc::new(root);
+    loop {
+        println!("--- AVL Tree Menu ---");
+        println!("1. Insert node: insert value (e.g., insert 3)");
+        println!("2. Search node: search value (e.g., search 4)");
+        println!("3. Delete node: del value (e.g., del 2)");
+        println!("4. Print: print");
+        println!("5. Exit: exit");
+
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
+        let cmd: Vec<&str> = input.trim().split_whitespace().collect();
+
+        match cmd[0] {
+            "exit" => return,
+            "print" => {
+                println!("{:#?}", root_rc);
+            },
+            _ => {
+                if cmd.len() < 2 {
+                    println!("Invalid input"); 
+                    return;
+                } else {
+                    let value: i32 = cmd[1].parse().unwrap();
+                    match cmd[0] {
+                        "insert" => {
+                            root_rc = AVLTree::insert_node(&root_rc, &value);
+                        },
+                        "search" => {
+                            if (*root_rc).borrow().search_node(&value) {
+                                println!("Value {} exists in the tree", &value);
+                            } else {
+                                println!("Value {} does not exist in the tree", &value);
+                            }
+                        },
+                        "del" => {
+                            root_rc = AVLTree::delete_node(&root_rc, &value);
+                        },
+                        _ => {
+                            println!("Invalid input");
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn rb_cli() {
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    loop {
+        println!("--- Red-Black Tree Menu ---");
+        println!("1. Insert node: insert value (e.g., insert 3)");
+        println!("2. Search node: search value (e.g., search 4)");
+        println!("3. Delete node: del value (e.g., del 2)");
+        println!("4. Print: print");
+        println!("5. Exit: exit");
+
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read input");
+        let cmd: Vec<&str> = input.trim().split_whitespace().collect();
+
+        match cmd[0] {
+            "exit" => return,
+            "print" => {
+                root.display_tree();
+            },
+            _ => {
+                if cmd.len() < 2 {
+                    println!("Invalid input"); 
+                    return;
+                } else {
+                    let value: i32 = cmd[1].parse().unwrap();
+                    match cmd[0] {
+                        "insert" => {
+                            root.insert(value);
+                        },
+                        "search" => {
+                            let found: bool = !(root.search(value) == RedBlackTree::Empty);
+                            if found {
+                                println!("Value {} exists in the tree", &value);
+                            } else {
+                                println!("Value {} does not exist in the tree", &value);
+                            }
+                        },
+                        "del" => {
+                            // Insert RB delete here
+                        },
+                        _ => {
+                            println!("Invalid input");
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn main() {
     //////// AVL TREE /////////////
     // test_avl_tree_josh(2);
     test_is_tree_empty();
@@ -418,14 +546,11 @@ fn main() {
 
     ////// END AVL TREE ///////////
 
-
     //////// RED BLACK TREE /////////////
 
     println!("Hello, world!");
 
     /////////////////////////////////////
-
-
 
     let mut rbt2 = RedBlackTree::new();
     rbt2.insert(8);
@@ -468,10 +593,7 @@ fn main() {
     // rbt2.insert(127);
 
     // println!("\n\n{:#?}", rbt2);
-    
 
-
-    
     // println!("Leaf nodes: {}", rbt2.count_leaves());
     // println!("Tree height: {}", rbt2.get_height());
     // rbt2.in_order_traversal();
@@ -481,7 +603,7 @@ fn main() {
     println!("\n\n\nSEARCH RESULT:");
     rbt2.search(8).display_tree();
 
-
     //////// END RED BLACK TREE /////////
 
+    cli();
 }
