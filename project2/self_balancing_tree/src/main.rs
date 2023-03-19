@@ -424,7 +424,7 @@ fn test_avl_search() {
 
 pub fn cli() {
     loop {
-        println!("--- Main Menu ---");
+        println!("\n--- Main Menu ---");
         println!("1. Start AVL tree: init avl");
         println!("2. Start Red-Black tree: init rb");
         println!("3. Exit: exit");
@@ -453,7 +453,7 @@ fn avl_cli() {
     let root: AVLTree<i32> = AVLTree::Empty;
     let mut root_rc = Rc::new(root);
     loop {
-        println!("--- AVL Tree Menu ---");
+        println!("\n--- AVL Tree Menu ---");
         println!("1. Insert node: insert value (e.g., insert 3)");
         println!("2. Search node: search value (e.g., search 4)");
         println!("3. Delete node: del value (e.g., del 2)");
@@ -476,6 +476,10 @@ fn avl_cli() {
                     println!("Invalid input");
                     return;
                 } else {
+                    if cmd[1].len() > 3 {
+                        println!("Invalid data value, numbers must be below 1000");
+                        continue;
+                    }
                     match cmd[1].parse() {
                         Err(e) => {
                             println!(
@@ -514,7 +518,7 @@ fn avl_cli() {
 fn rb_cli() {
     let mut root: RedBlackTree<i32> = RedBlackTree::new();
     loop {
-        println!("--- Red-Black Tree Menu ---");
+        println!("\n--- Red-Black Tree Menu ---");
         println!("1. Insert node: insert value (e.g., insert 3)");
         println!("2. Search node: search value (e.g., search 4)");
         println!("3. Delete node: del value (e.g., del 2)");
@@ -537,6 +541,10 @@ fn rb_cli() {
                     println!("Invalid input");
                     return;
                 } else {
+                    if cmd[1].len() > 3 {
+                        println!("Invalid data value, numbers must be below 1000");
+                        continue;
+                    }
                     match cmd[1].parse() {
                         Err(e) => {
                             println!(
