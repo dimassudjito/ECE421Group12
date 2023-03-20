@@ -443,7 +443,7 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
     pub fn update_heights(&self) {
         // updates the heights of an node based on it's direct children's heights.
         // IT IS NOT recursive. If the children's heights are incorrect, the height of this node will be as well.
-        // TODO: leaf node should be 1 not 0
+
         match self {
             Empty => {}
             Node {
