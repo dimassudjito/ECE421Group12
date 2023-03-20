@@ -373,8 +373,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                 }
 
                 idx = idx - 2;
-
-                // println!("\n\n\n ROOT\n{:#?}", stack[0]);
             } else {
                 // else if uncle is black
                 // we have 4 cases
@@ -505,10 +503,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                     } == Rc::clone(&stack[idx]))
                 {
                     // left rotate on parent
-                    // println!("\n\n\n PARENT OLD:");
-                    // parent.borrow().display_tree();
-                    // println!("\n\n\n CURRENT OLD:");
-                    // stack[idx].borrow().display_tree();
 
                     let mut p_temp = parent.borrow().clone();
                     p_temp.rotate_left();
@@ -534,18 +528,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                         RedBlackTree::Empty => {}
                     };
 
-                    // println!("\n\n\n PARENT NEW:");
-                    // parent.borrow().display_tree();
-
-                    // println!("\n\n\n CURRENT NEW:");
-                    // stack[idx].borrow().display_tree();
-
-                    // println!("\n\n\n GRANDPARENT OLD:");
-                    // grandfather.borrow().display_tree();
-
-                    // println!("\n\n\n CURRENT OLD:");
-                    // stack[idx].borrow().display_tree();
-
                     // right rotate on grandfather
                     let mut gf_temp = grandfather.borrow().clone();
                     gf_temp.rotate_right();
@@ -560,12 +542,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                         } => Rc::clone(&right_child),
                         RedBlackTree::Empty => Rc::new(RefCell::new(RedBlackTree::Empty)),
                     };
-
-                    // println!("\n\n\n GRANDPARENT NEW:");
-                    // grandfather.borrow().display_tree();
-
-                    // println!("\n\n\n CURRENT NEW:");
-                    // stack[idx].borrow().display_tree();
 
                     // then swap colours of grandfather and current
                     let mut gf_colour = match &*grandfather.borrow() {
@@ -886,9 +862,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
         }
         ///// END FIX TREE //////
 
-        // println!("{:#?}" , stack);
-        // println!("\n\n\nFINAL:");
-        // let root = stack[0].borrow().display_tree();
         *self = stack[0].borrow().clone();
     }
 

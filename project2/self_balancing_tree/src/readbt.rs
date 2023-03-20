@@ -33,16 +33,16 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
     fn immut_data(&self) -> data<T> {
         // the nested methods allows for multiple formats of data return for the trait objects
         match self.immut_data_from_Ref() {
-            Err(..) => {
-                match self.immut_data_from_ref() {
-                    Err(..) => {
-                        panic!("Readable binary tree has no suitable implementations for data retrieval")
-                    }
-                    Ok(data) => {
-                        return data::refType(data);
-                    }
+            Err(..) => match self.immut_data_from_ref() {
+                Err(..) => {
+                    panic!("Readable binary tree has no suitable implementations for data retrieval. 
+                        For the ReadableBinaryTree trait, either immut_data_from_ref or immut_data_from_Ref must
+                        be implemented to return the node data as a reference or Ref<T> respectively.")
                 }
-            }
+                Ok(data) => {
+                    return data::refType(data);
+                }
+            },
             Ok(dataRef) => return data::RefType(dataRef),
         }
     }
@@ -201,7 +201,7 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
                 let padding_size = 5 - (data_string.len() + 2);
                 let right_padding = padding_size / 2;
                 let left_padding = padding_size - right_padding;
-                println!("left pad: {}, right pad: {}", left_padding, right_padding);
+
                 if colour_string == "" {
                     return format!(
                         "{} {} {}",
