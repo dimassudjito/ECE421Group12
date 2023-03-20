@@ -112,6 +112,378 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
         RedBlackTree::<T>::Empty
     }
 
+    pub fn is_empty(&self) -> bool {
+        match self {
+            RedBlackTree::Node { .. } => false,
+            RedBlackTree::Empty => true,
+        }
+    }
+
+    pub fn get_left_child(&self) -> &Rc<RefCell<RedBlackTree<T>>> {
+        match self {
+            RedBlackTree::Node {left_child, ..} => {
+                return left_child;
+            },
+            RedBlackTree::Empty => {
+                panic!("Tree is empty!");
+            },
+        }
+    }
+
+    pub fn get_right_child(&self) -> &Rc<RefCell<RedBlackTree<T>>> {
+        match self {
+            RedBlackTree::Node {right_child, ..} => {
+                return right_child;
+            },
+            RedBlackTree::Empty => {
+                panic!("Tree is empty!");
+            },
+        }
+    }
+
+    pub fn set_left_child(&mut self, child: Rc<RefCell<RedBlackTree<T>>>) {
+        match self {
+            RedBlackTree::Node { colour, data, left_child, right_child } => {
+                *left_child = child;
+            },
+            RedBlackTree::Empty => {
+                panic!("Node is empty!");
+            },
+        }
+    }
+
+    pub fn set_right_child(&mut self, child: Rc<RefCell<RedBlackTree<T>>>) {
+        match self {
+            RedBlackTree::Node { colour, data, left_child, right_child } => {
+                *right_child = child;
+            },
+            RedBlackTree::Empty => {
+                panic!("Node is empty!");
+            },
+        }
+    }
+
+    fn get_data(&self) -> &T {
+        match self {
+            RedBlackTree::Node {data, ..} => {
+                return data;
+            },
+            RedBlackTree::Empty => {
+                panic!("Tree is empty!");
+            },
+        }
+    }
+
+    fn set_data(&mut self, new_data: T) {
+        match self {
+            RedBlackTree::Node {data, ..} => {
+                *data = new_data;
+            },
+            RedBlackTree::Empty => {
+                panic!("Tree is empty!");
+            },
+        }
+    }
+
+    fn get_colour(&self) -> &NodeColour {
+        match self {
+            RedBlackTree::Node {colour, ..} => {
+                return colour;
+            },
+            RedBlackTree::Empty => {
+                panic!("Tree is empty!");
+            },
+        }
+    }
+
+    fn set_colour(&mut self, new_colour: NodeColour) {
+        match self {
+            RedBlackTree::Node {colour, ..} => {
+                *colour = new_colour;
+            },
+            RedBlackTree::Empty => {
+                panic!("Tree is empty!");
+            },
+        }
+    }
+
+    pub fn delete(&mut self, val: T) {
+        fn delete_fixup<T: Ord + Copy + Debug>(stack: Vec<Rc<RefCell<RedBlackTree<T>>>>) {
+            // Based on https://github.com/Bibeknam/algorithmtutorprograms/blob/master/data-structures/red-black-trees/red_black_tree.py
+            println!("Fixup time");
+            let mut index = stack.len() - 1;
+            let mut x = Rc::clone(&stack[index]);
+            let mut x_parent = Rc::clone(&stack[index]); // temp
+            if index != 0 {
+                x_parent = Rc::clone(&stack[index - 1]);
+            }
+            let mut x_parent_left = Rc::clone(&stack[index]); // temp
+            let mut x_parent_right = Rc::clone(&stack[index]); // temp
+            match &*x_parent.borrow() {
+                RedBlackTree::Node {left_child, right_child, ..} => {
+                    x_parent_left = Rc::clone(&left_child);
+                    x_parent_right = Rc::clone(&right_child);
+                },
+                RedBlackTree::Empty => {
+                    panic!("Tree is empty!");
+                },
+            }
+
+            //println!("{:#?}", x.borrow());
+            while index != 0 && *x.borrow().get_colour() != NodeColour::Black {
+                if x == x_parent_left {
+                    let mut s = Rc::clone(&x_parent_right);
+
+                    let mut s_left = Rc::clone(&stack[index]); // temp
+                    let mut s_right = Rc::clone(&stack[index]); // temp
+                    match &*s.borrow() {
+                        RedBlackTree::Node {left_child, right_child, ..} => {
+                            s_left = Rc::clone(&left_child);
+                            s_right = Rc::clone(&right_child);
+                        },
+                        RedBlackTree::Empty => {
+                            panic!("Tree is empty!");
+                        },
+                    }
+
+                    if *s.borrow().get_colour() == NodeColour::Red {
+                        // case 3.1
+                        println!("case 3.1");
+                        s.borrow_mut().set_colour(NodeColour::Black);
+                        x_parent.borrow_mut().set_colour(NodeColour::Red);
+                        x_parent.borrow_mut().rotate_left();
+                        s = Rc::clone(&x_parent_right);
+                    }
+
+                    if *s_left.borrow().get_colour() == NodeColour::Black && *s_right.borrow().get_colour() == NodeColour::Black {
+                        // case 3.2
+                        println!("case 3.2");
+                        s.borrow_mut().set_colour(NodeColour::Red);
+                        x = Rc::clone(&x_parent);
+                        index = index - 1;
+                    } else {
+                        if *s_right.borrow().get_colour() == NodeColour::Black {
+                            // case 3.3
+                            println!("case 3.3");
+                            s_left.borrow_mut().set_colour(NodeColour::Black);
+                            s.borrow_mut().set_colour(NodeColour::Red);
+                            let s_temp = Rc::clone(&s);
+                            s.borrow_mut().rotate_right();
+                            s = Rc::clone(&x_parent_right);
+                        }
+
+                        // case 3.4
+                        println!("case 3.4");
+                        s.borrow_mut().set_colour(*x_parent.borrow().get_colour());
+                        x_parent.borrow_mut().set_colour(NodeColour::Black);
+                        s_right.borrow_mut().set_colour(NodeColour::Black);
+                        x_parent.borrow_mut().rotate_left();
+                        index = 0;
+                        x = Rc::clone(&stack[0]);
+                    }
+                } else {
+                    // same thing other side!
+                    println!("Unimplemented other side!");
+                }
+            }
+            stack[index].borrow_mut().set_colour(NodeColour::Black);
+        }
+        
+        println!("Deleting {:?}", val);
+        // Search through binary tree to find this value
+        // Track the path down the tree in a stack
+        let mut stack = vec![Rc::new(RefCell::new(self.clone()))];
+        let mut node = Rc::new(RefCell::new(self.clone()));
+        //node.borrow_mut().set_left_child(Rc::new(RefCell::new(RedBlackTree::Empty)));
+        //node.borrow().display_tree();
+        //return;
+        let mut nodetemp = Rc::clone(&node);
+        let mut parent = None;
+        let mut is_left_child = false;
+        loop {
+            match &*node.borrow() {
+                RedBlackTree::Node {data, colour, left_child, right_child} => {
+                    if val > *data {
+                        println!("Going right");
+                        nodetemp = Rc::clone(&right_child);
+                        is_left_child = false;
+                    } else if val < *data {
+                        println!("Going left");
+                        nodetemp = Rc::clone(&left_child);
+                        is_left_child = true;
+                    } else {
+                        println!("Found!");
+                        break;
+                    }
+                },
+                RedBlackTree::Empty => {
+                    println!("Value isn't inside tree?!");
+                    return;
+                }
+            }
+            parent = Some(Rc::clone(&node));
+            node = Rc::clone(&nodetemp);
+            stack.push(Rc::clone(&node));
+        }
+        //let tempdata = *nodetemp.borrow().get_data();
+        //node.borrow_mut().set_data(tempdata);
+        //nodetemp = Rc::clone(&(Rc::new(node.borrow())));
+        nodetemp = Rc::new(RefCell::new(node.borrow().clone()));
+
+        let is_root = match parent {
+            Some(ref p) => {
+                false
+            }
+            None => {
+                true
+            }
+        };
+
+        let del_node_is_black = match &*nodetemp.borrow() {
+            RedBlackTree::Node { colour, .. } => {
+                match colour {
+                    NodeColour::Black => {
+                        true
+                    },
+                    NodeColour::Red => {
+                        false
+                    }
+                }
+            },
+            RedBlackTree::Empty => {
+                println!("This should never happen!");
+                return;
+            }
+        };
+
+        match &*nodetemp.borrow() {
+            RedBlackTree::Node {data, colour, left_child, right_child} => {
+                // We know val == data
+
+                if left_child.borrow().is_empty() && right_child.borrow().is_empty() {
+                    // Node has no children, so we can just remove this node and we're done!
+                    println!("Easy case!");
+                    match parent {
+                        Some(ref p) => {
+                            if is_left_child {
+                                (*p).borrow_mut().set_left_child(Rc::new(RefCell::new(RedBlackTree::Empty)));
+                            } else {
+                                (*p).borrow_mut().set_right_child(Rc::new(RefCell::new(RedBlackTree::Empty)));
+                            }
+                        },
+                        None => {
+                            // Deleting the root node
+                            *self = RedBlackTree::Empty;
+                        }
+                    }
+                } else if left_child.borrow().is_empty() {
+                    // Node has child on right
+                    // Replace the node with the child and set color to black (it might already be black)
+                    right_child.borrow_mut().set_colour(NodeColour::Black);
+                    match parent {
+                        Some(ref p) => {
+                            if is_left_child {
+                                (*p).borrow_mut().set_left_child(Rc::clone(&right_child));
+                            } else {
+                                (*p).borrow_mut().set_right_child(Rc::clone(&right_child));
+                            }
+                        }
+                        None => {
+                            *self = right_child.borrow().clone();
+                        }
+                    }
+                } else if right_child.borrow().is_empty() {
+                    // Node has child on left
+                    // Replace the node with the child and set color to black (it might already be black)
+                    left_child.borrow_mut().set_colour(NodeColour::Black);
+                    match parent {
+                        Some(ref p) => {
+                            if is_left_child {
+                                (*p).borrow_mut().set_left_child(Rc::clone(&left_child));
+                            } else {
+                                (*p).borrow_mut().set_right_child(Rc::clone(&left_child));
+                            }
+                        }
+                        None => {
+                            *self = left_child.borrow().clone();
+                        }
+                    }
+                } else {
+                    // Node has two children
+                    // Replace the node with its in-order successor, which is the leftmost node in the right subtree. Then delete the in-order successor node as if it has at most one child.
+                    println!("Two children");
+                    let mut new_successor = Rc::clone(&left_child); // temp
+                    match &*node.borrow() {
+                        RedBlackTree::Node {data, colour, left_child, right_child} => {
+                            new_successor = Rc::clone(&right_child);
+                        },
+                        RedBlackTree::Empty => {
+                            println!("bad");
+                        }
+                    }
+                    let mut successor_parent = None;
+                    
+                    while {
+                        let borrow_new_successor = new_successor.borrow();
+                        let while_condition = !borrow_new_successor.get_left_child().borrow().is_empty();
+                        while_condition
+                    } {
+                        //println!("In while loop");
+                        successor_parent = Some(Rc::clone(&new_successor));
+                        let temp = Rc::clone(&(new_successor.borrow().get_left_child()));
+                        new_successor = temp;
+                    }
+                    let mut successor = Rc::clone(&new_successor);
+                    //println!("Made it past while!");
+
+                    // Swap the value to delete with the value of the successor node
+                    let temp = (*(node.borrow().get_data())).clone();
+                    println!("Temp data 1: {:?}", temp);
+                    let temp_data = (*(successor.borrow().get_data())).clone();
+                    println!("Temp data 2: {:?}", temp_data);
+                    (*node).borrow_mut().set_data(temp_data);
+                    //println!("{:#?}", successor.borrow());
+                    (*successor).borrow_mut().set_data(temp);
+                    //node.borrow().display_tree();
+                    println!("Made it past swap!");
+                    if is_root {
+                        println!("Case where thing was root, cloning to replace root");
+                        *self = node.borrow().clone();
+                    }
+
+                    // Delete the successor node as if it has at most one child
+                    //println!("{:#?}", successor.borrow());
+                    let successor_child = Rc::clone(&successor.borrow().get_right_child());
+                    //println!("{:#?}", successor_child.borrow());
+
+                    // Replace the node with the successor node, whether that successor is empty or not!
+                    match successor_parent {
+                        Some(ref p) => {
+                            // We know this will be the left child
+                            (*p).borrow_mut().set_left_child(successor_child);
+                        }
+                        None => {
+                            // This means the successor is just the right child of the node
+                            (*node).borrow_mut().set_right_child(successor_child);
+                        }
+                    }
+
+                    if del_node_is_black && !is_root{
+                        println!("We deleted a black non-root node so we need to fix shit");
+                        delete_fixup(stack);
+                    }
+                }
+            },
+            RedBlackTree::Empty => {
+                println!("This should never happen!");
+                return;
+            },
+        };
+
+        //let lastthing = stack[stack.len()-1].borrow();
+        //println!("{:#?}", lastthing);
+    }
+
     pub fn rotate_right(&mut self) {
         match self {
             RedBlackTree::Node {
@@ -864,4 +1236,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
 
         *self = stack[0].borrow().clone();
     }
+
+
 }
