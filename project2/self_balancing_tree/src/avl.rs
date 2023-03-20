@@ -375,7 +375,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
     }
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
-        println!("rotating right");
 
         // EX:   z
         //      /
@@ -420,7 +419,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
     }
 
     pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
-        println!("rotating left");
 
         // EX:   z
         //        \
