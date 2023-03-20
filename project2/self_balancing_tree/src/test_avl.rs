@@ -173,10 +173,10 @@ fn test_right_left() {
 
 pub fn test_avl() {
     // --- UNCOMMENT TO DEBUG --- //
-    test_empty();
-    test_left_left();
-    test_left_right();
-    test_right_right();
-    test_right_left();
+    // test_empty();
+    // test_left_left();
+    // test_left_right();
+    // test_right_right();
+    // test_right_left();
     // --- --- //
 }
