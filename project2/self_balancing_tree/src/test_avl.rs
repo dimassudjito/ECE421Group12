@@ -496,18 +496,59 @@ fn test_left_right() {
     println!("<<<< Original >>>");
     let root = Rc::new(n6);
     root.print_tree();
-    println!("<<<< Insert 1: >>>");
+    println!("<<<< Insert 4: >>>");
     let inserted_node = AVLTree::insert_node(&root, &4);
     inserted_node.print_tree();
     println!("<<< Delete 7 >>>");
     let deleted_node = AVLTree::delete_node(&root, &7);
     deleted_node.print_tree();
+    println!("--- End of Left Right Case ---");
+}
+
+fn test_right_right() {
+    println!("--- End of Right Right Case ---");
+    let n4 = AVLTree::Node {
+        data: RefCell::new(Rc::new(4)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(0),
+    };
+    let n3 = AVLTree::Node {
+        data: RefCell::new(Rc::new(3)),
+        right_child: RefCell::new(Rc::new(n4)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
+    let n1 = AVLTree::Node {
+        data: RefCell::new(Rc::new(1)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
+    let n2 = AVLTree::Node {
+        data: RefCell::new(Rc::new(2)),
+        right_child: RefCell::new(Rc::new(n3)),
+        left_child: RefCell::new(Rc::new(n1)),
+        height: RefCell::new(2),
+    };
+
+    println!("<<<< Original >>>");
+    let root = Rc::new(n2);
+    root.print_tree();
+    println!("<<<< Insert 5: >>>");
+    let inserted_node = AVLTree::insert_node(&root, &5);
+    inserted_node.print_tree();
+    println!("<<< Delete 1 >>>");
+    let deleted_node = AVLTree::delete_node(&root, &1);
+    deleted_node.print_tree();
+    println!("--- End of Right Right Case ---");
 }
 
 pub fn test_avl() {
     // --- UNCOMMENT TO DEBUG --- //
     // test_empty();
     // test_left_left();
-    test_left_right();
+    // test_left_right();
+    test_right_right();
     // --- --- //
 }
