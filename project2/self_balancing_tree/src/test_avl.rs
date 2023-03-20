@@ -466,9 +466,48 @@ fn test_left_left() {
     println!("--- End of Left Left Case ---");
 }
 
+fn test_left_right() {
+    println!("--- Left Right Case ---");
+    let n5 = AVLTree::Node {
+        data: RefCell::new(Rc::new(5)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
+    let n7 = AVLTree::Node {
+        data: RefCell::new(Rc::new(7)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        height: RefCell::new(1),
+    };
+    let n3 = AVLTree::Node {
+        data: RefCell::new(Rc::new(3)),
+        left_child: RefCell::new(Rc::new(AVLTree::Empty)),
+        right_child: RefCell::new(Rc::new(n5)),
+        height: RefCell::new(2),
+    };
+    let n6 = AVLTree::Node {
+        data: RefCell::new(Rc::new(6)),
+        left_child: RefCell::new(Rc::new(n3)),
+        right_child: RefCell::new(Rc::new(n7)),
+        height: RefCell::new(3),
+    };
+
+    println!("<<<< Original >>>");
+    let root = Rc::new(n6);
+    root.print_tree();
+    println!("<<<< Insert 1: >>>");
+    let inserted_node = AVLTree::insert_node(&root, &4);
+    inserted_node.print_tree();
+    println!("<<< Delete 7 >>>");
+    let deleted_node = AVLTree::delete_node(&root, &7);
+    deleted_node.print_tree();
+}
+
 pub fn test_avl() {
     // --- UNCOMMENT TO DEBUG --- //
-    test_empty();
-    test_left_left();
+    // test_empty();
+    // test_left_left();
+    test_left_right();
     // --- --- //
 }
