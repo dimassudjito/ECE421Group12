@@ -450,17 +450,23 @@ fn test_left_left() {
     println!("<<<< Original >>>");
     let root = Rc::new(n4);
     root.print_tree();
+    println!("<<< Print In-order >>>");
+    root.in_order_traversal();
     println!("<<<< Insert 1: >>>");
     let inserted_node = AVLTree::insert_node(&root, &1);
     inserted_node.print_tree();
     println!("<<< Delete 4 >>>");
     let deleted_node = AVLTree::delete_node(&inserted_node, &4);
     deleted_node.print_tree();
+    println!("Search 4 (Found): {:#?}", root.search(&4));
+    println!("Search 99 (Not Found): {:#?}", root.search(&99));
+    println!("Leaf nodes count: {:#?}", root.count_leaves());
+    println!("Tree height: {:#?}", root.get_tree_height());
     println!("--- End of Left Left Case ---");
 }
 
 pub fn test_avl() {
-    // --- UNCOMMENT TO DEBUG --- ///
+    // --- UNCOMMENT TO DEBUG --- //
     test_empty();
     test_left_left();
     // --- --- //
