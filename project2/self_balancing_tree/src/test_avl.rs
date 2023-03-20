@@ -462,6 +462,7 @@ fn test_left_left() {
     println!("Search 99 (Not Found): {:#?}", root.search(&99));
     println!("Leaf nodes count: {:#?}", root.count_leaves());
     println!("Tree height: {:#?}", root.get_tree_height());
+    println!("Is tree empty (not): {:#?}", root.is_tree_empty());
     println!("--- End of Left Left Case ---");
 }
 
