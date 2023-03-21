@@ -37,6 +37,7 @@ fn test_left_left() {
 
     println!("<<<< Original >>>");
     let root = Rc::new(n4);
+    println!("Tree height: {:#?}", root.get_tree_height());
     root.print_tree();
     println!("<<< Print In-order >>>");
     root.in_order_traversal();
@@ -49,7 +50,6 @@ fn test_left_left() {
     println!("Search 4 (Found): {:#?}", root.search(&4));
     println!("Search 99 (Not Found): {:#?}", root.search(&99));
     println!("Leaf nodes count: {:#?}", root.count_leaves());
-    println!("Tree height: {:#?}", root.get_tree_height());
     println!("Is tree empty (not): {:#?}", root.is_tree_empty());
     println!("--- End of Left Left Case ---");
 }
@@ -173,10 +173,10 @@ fn test_right_left() {
 
 pub fn test_avl() {
     // --- UNCOMMENT TO DEBUG --- //
-    test_empty();
-    test_left_left();
-    test_left_right();
-    test_right_right();
-    test_right_left();
+    // test_empty();
+    // test_left_left();
+    // test_left_right();
+    // test_right_right();
+    // test_right_left();
     // --- --- //
 }

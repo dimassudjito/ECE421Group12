@@ -465,7 +465,7 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
         // Returns the height of a AVLTree node, including empty nodes
         match self {
             Empty => {
-                return -1;
+                return 0;
             }
             Node { height, .. } => {
                 return *height.borrow();
