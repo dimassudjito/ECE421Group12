@@ -1,7 +1,6 @@
 use crate::readbt;
 use readbt::ReadableBinaryTree;
 use std::cell::{Ref, RefCell};
-use std::cmp::max;
 use std::cmp::Ord;
 use std::fmt::Debug;
 use std::fmt::Display;
@@ -677,7 +676,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
             node = Rc::clone(&nodetemp);
             stack.push(Rc::clone(&node));
         }
-        // println!("{:#?}", stack);
 
         stack[stack.len() - 1].replace(RedBlackTree::Node {
             data: val.clone(),
@@ -1273,5 +1271,56 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
         *self = stack[0].borrow().clone();
     }
 
+    pub fn insert_no_fix(&mut self, val: T) {
+        match self {
+            RedBlackTree::Node {
+                data,
+                colour,
+                left_child,
+                right_child,
+            } => {}
+            RedBlackTree::Empty => {
+                *self = RedBlackTree::Node {
+                    data: val,
+                    colour: NodeColour::Black,
+                    left_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
+                    right_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
+                };
+                return;
+            }
+        };
 
+        let mut node = Rc::new(RefCell::new(self.clone()));
+        let mut nodetemp = Rc::clone(&node);
+
+        ///// BINARY TREE INSERT //////
+        loop {
+            match &*node.borrow() {
+                RedBlackTree::Node {
+                    data,
+                    colour,
+                    left_child,
+                    right_child,
+                } => {
+                    if val > *data {
+                        nodetemp = Rc::clone(&right_child);
+                    } else if val < *data {
+                        nodetemp = Rc::clone(&left_child);
+                    } else {
+                        return;
+                    }
+                }
+                RedBlackTree::Empty => break,
+            }
+            node = Rc::clone(&nodetemp);
+        }
+
+        node.replace(RedBlackTree::Node {
+            data: val.clone(),
+            colour: NodeColour::Red,
+            left_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
+            right_child: Rc::new(RefCell::new(RedBlackTree::Empty)),
+        });
+        ///// END BINARY TREE INSERT //////
+    }
 }
