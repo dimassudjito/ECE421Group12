@@ -62,6 +62,11 @@ fn avl_cli() {
             .expect("Failed to read input");
         let cmd: Vec<&str> = input.trim().split_whitespace().collect();
 
+        if cmd.len() < 1 {
+            println!("Invalid input");
+            continue;
+        }
+
         match cmd[0] {
             "exit" => return,
             "print" => {
@@ -150,6 +155,11 @@ fn rb_cli() {
             .read_line(&mut input)
             .expect("Failed to read input");
         let cmd: Vec<&str> = input.trim().split_whitespace().collect();
+
+        if cmd.len() < 1 {
+            println!("Invalid input");
+            continue;
+        }
 
         match cmd[0] {
             "exit" => return,
