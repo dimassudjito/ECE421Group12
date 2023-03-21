@@ -5,7 +5,6 @@ use readbt::ReadableBinaryTree;
 use std::cell::{Ref, RefCell};
 use std::cmp::max;
 use std::fmt::Debug;
-use std::fmt::Display;
 use std::rc::Rc;
 
 #[derive(Debug)]
@@ -169,7 +168,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
 
     pub fn delete_node(node_rc: &Rc<AVLTree<T>>, targetValue: &T) -> Rc<AVLTree<T>> {
         // recursively deletes the node with the target value if it exists and returns the new root
-
         match &**node_rc {
             AVLTree::Empty => {
                 return Rc::clone(node_rc);
@@ -300,7 +298,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
                                     return AVLTree::rotation_right_left(node_rc);
                                 } else {
                                     // right-right case
-
                                     return AVLTree::rotation_right_right(node_rc);
                                 }
                             }
@@ -355,7 +352,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
     }
 
     pub fn rotate_right(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
-
         // EX:   z
         //      /
         //     y
@@ -399,7 +395,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
     }
 
     pub fn rotate_left(z_rc: &Rc<AVLTree<T>>) -> Rc<AVLTree<T>> {
-
         // EX:   z
         //        \
         //         y
@@ -445,7 +440,6 @@ impl<T: Ord + Debug + Copy> AVLTree<T> {
     pub fn update_heights(&self) {
         // updates the heights of an node based on it's direct children's heights.
         // IT IS NOT recursive. If the children's heights are incorrect, the height of this node will be as well.
-
         match self {
             Empty => {}
             Node {

@@ -183,8 +183,7 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
         let mut layer_order_elements_exist = vec![false; (total_elements + 1) as usize];
 
         fn get_node_string<T: Ord + Copy + Debug>(tree: &dyn ReadableBinaryTree<T>) -> String {
-            // Given a node, this returns a string padded up to 5 characters of the color and the value, e.g. " B:7 " or "R:28 "
-
+            // Given a node, this returns a string padded up to 5 characters of the color and the value, e.g. " B:7 " or " R:28 "
             if tree.is_node_empty() {
                 return "".to_string();
             } else {
