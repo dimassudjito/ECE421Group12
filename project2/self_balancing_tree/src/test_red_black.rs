@@ -1,9 +1,6 @@
 use crate::red_black::*;
 use crate::readbt::ReadableBinaryTree;
 
-use std::cell::RefCell;
-use std::rc::Rc;
-
 fn test_empty() {
     println!("--- Empty Case ---");
     let root: RedBlackTree<i32> = RedBlackTree::new();
@@ -14,169 +11,160 @@ fn test_empty() {
     println!("--- End of Empty Case ---");
 }
 
-// fn test_left_left() {
-//     println!("--- Left Left Case ---");
-//     let n2 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(2)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n3 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(3)),
-//         left_child: RefCell::new(Rc::new(n2)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(2),
-//     };
-//     let n4 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(4)),
-//         left_child: RefCell::new(Rc::new(n3)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(3),
-//     };
+fn test_non_empty() {
+    println!("--- Non-Empty Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(3);
+    root.insert(4);
+    root.insert(2);
 
-//     println!("<<<< Original >>>");
-//     let root = Rc::new(n4);
-//     root.print_tree();
-//     println!("<<< Print In-order >>>");
-//     root.in_order_traversal();
-//     println!("<<<< Insert 1: >>>");
-//     let inserted_node = AVLTree::insert_node(&root, &1);
-//     inserted_node.print_tree();
-//     println!("<<< Delete 4 >>>");
-//     let deleted_node = AVLTree::delete_node(&inserted_node, &4);
-//     deleted_node.print_tree();
-//     println!("Search 4 (Found): {:#?}", root.search(&4));
-//     println!("Search 99 (Not Found): {:#?}", root.search(&99));
-//     println!("Leaf nodes count: {:#?}", root.count_leaves());
-//     println!("Tree height: {:#?}", root.get_tree_height());
-//     println!("Is tree empty (not): {:#?}", root.is_tree_empty());
-//     println!("--- End of Left Left Case ---");
-// }
+    println!("<<<< Original >>>");
+    root.print_tree();
+    println!("<<< Print In-order >>>");
+    root.in_order_traversal();
+    println!("Search 4 (Found): {:#?}", root.search(&4));
+    println!("Search 99 (Not Found): {:#?}", root.search(&99));
+    println!("Leaf nodes count: {:#?}", root.count_leaves());
+    println!("Tree height: {:#?}", root.get_tree_height());
+    println!("Is tree empty (not): {:#?}", root.is_tree_empty());
+    println!("--- End of Non-Empty Case ---");
+}
 
-// fn test_left_right() {
-//     println!("--- Left Right Case ---");
-//     let n5 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(5)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n7 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(7)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n3 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(3)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(n5)),
-//         height: RefCell::new(2),
-//     };
-//     let n6 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(6)),
-//         left_child: RefCell::new(Rc::new(n3)),
-//         right_child: RefCell::new(Rc::new(n7)),
-//         height: RefCell::new(3),
-//     };
+fn test_insert_ascending() {
+    println!("--- Ascending Insert Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(1);
+    root.insert(2);
+    root.insert(3);
+    root.insert(4);
+    root.insert(5);
+    root.print_tree();
+    println!("--- End of Ascending Insert Case ---");
+}
 
-//     println!("<<<< Original >>>");
-//     let root = Rc::new(n6);
-//     root.print_tree();
-//     println!("<<<< Insert 4: >>>");
-//     let inserted_node = AVLTree::insert_node(&root, &4);
-//     inserted_node.print_tree();
-//     println!("<<< Delete 7 >>>");
-//     let deleted_node = AVLTree::delete_node(&root, &7);
-//     deleted_node.print_tree();
-//     println!("--- End of Left Right Case ---");
-// }
+fn test_insert_descending() {
+    println!("--- Descending Insert Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(5);
+    root.insert(4);
+    root.insert(3);
+    root.insert(2);
+    root.insert(1);
+    root.print_tree();
+    println!("--- End of Descending Insert Case ---");
+}
 
-// fn test_right_right() {
-//     println!("--- Right Right Case ---");
-//     let n4 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(4)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n3 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(3)),
-//         right_child: RefCell::new(Rc::new(n4)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(2),
-//     };
-//     let n1 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(1)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n2 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(2)),
-//         right_child: RefCell::new(Rc::new(n3)),
-//         left_child: RefCell::new(Rc::new(n1)),
-//         height: RefCell::new(3),
-//     };
+fn test_insert_random() {
+    println!("--- Random Insert Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(4);
+    root.insert(2);
+    root.insert(3);
+    root.insert(5);
+    root.insert(1);
+    root.print_tree();
+    println!("--- End of Random Insert Case ---");
+}
 
-//     println!("<<<< Original >>>");
-//     let root = Rc::new(n2);
-//     root.print_tree();
-//     println!("<<<< Insert 5: >>>");
-//     let inserted_node = AVLTree::insert_node(&root, &5);
-//     inserted_node.print_tree();
-//     println!("<<< Delete 1 >>>");
-//     let deleted_node = AVLTree::delete_node(&root, &1);
-//     deleted_node.print_tree();
-//     println!("--- End of Right Right Case ---");
-// }
+fn test_insert_double() {
+    println!("--- Double Insert Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(1);
+    root.insert(1);
+    root.print_tree();
+    println!("--- End of Double Insert Case ---");
+}
 
-// fn test_right_left() {
-//     println!("--- Right Left Case ---");
-//     let n3 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(3)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n4 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(4)),
-//         left_child: RefCell::new(Rc::new(n3)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(2),
-//     };
-//     let n1 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(1)),
-//         left_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         right_child: RefCell::new(Rc::new(AVLTree::Empty)),
-//         height: RefCell::new(1),
-//     };
-//     let n2 = AVLTree::Node {
-//         data: RefCell::new(Rc::new(2)),
-//         left_child: RefCell::new(Rc::new(n1)),
-//         right_child: RefCell::new(Rc::new(n4)),
-//         height: RefCell::new(3),
-//     };
+fn test_delete_ascending() {
+    println!("--- Ascending Delete Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(1);
+    root.insert(2);
+    root.insert(3);
+    root.insert(4);
+    root.insert(5);
+    root.insert(6);
+    root.insert(7);
+    root.insert(8);
+    root.insert(9);
+    root.insert(10);
+    // root.delete(1);
+    // root.delete(2);
+    // root.delete(3);
+    root.print_tree();
+    println!("--- End of Ascending Delete Case ---");
+}
 
-//     println!("<<<< Original >>>");
-//     let root = Rc::new(n2);
-//     root.print_tree();
-//     println!("<<<< Insert 5: >>>");
-//     let inserted_node = AVLTree::insert_node(&root, &5);
-//     inserted_node.print_tree();
-//     println!("<<< Delete 1 >>>");
-//     let deleted_node = AVLTree::delete_node(&root, &1);
-//     deleted_node.print_tree();
-//     println!("--- End of Right Left Case ---");
-// }
+fn test_delete_descending() {
+    println!("--- Descending Delete Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(1);
+    root.insert(2);
+    root.insert(3);
+    root.insert(4);
+    root.insert(5);
+    root.insert(6);
+    root.insert(7);
+    root.insert(8);
+    root.insert(9);
+    root.insert(10);
+    // root.delete(10);
+    // root.delete(9);
+    // root.delete(8);
+    root.print_tree();
+    println!("--- End of Descending Delete Case ---");
+}
+
+fn test_delete_random() {
+    println!("--- Random Delete Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(1);
+    root.insert(2);
+    root.insert(3);
+    root.insert(4);
+    root.insert(5);
+    root.insert(6);
+    root.insert(7);
+    root.insert(8);
+    root.insert(9);
+    root.insert(10);
+    // root.delete(1);
+    // root.delete(9);
+    // root.delete(3);
+    root.print_tree();
+    println!("--- End of Random Delete Case ---");
+}
+
+fn test_delete_double() {
+    println!("--- Double Delete Case ---");
+    let mut root: RedBlackTree<i32> = RedBlackTree::new();
+    root.insert(1);
+    root.insert(2);
+    root.insert(3);
+    root.insert(4);
+    root.insert(5);
+    root.insert(6);
+    root.insert(7);
+    root.insert(8);
+    root.insert(9);
+    root.insert(10);
+    // root.delete(1);
+    // root.delete(1);
+    root.print_tree();
+    println!("--- End of Double Delete Case ---");
+}
 
 pub fn test_red_black() {
     // --- UNCOMMENT TO DEBUG --- //
     test_empty();
-    // test_left_left();
-    // test_left_right();
-    // test_right_right();
-    // test_right_left();
+    test_non_empty();
+    test_insert_ascending();
+    test_insert_descending();
+    test_insert_random(); 
+    test_insert_double();
+    // test_delete_ascending();
+    // test_delete_descending();
+    // test_delete_random();
+    // test_delete_double();
     // --- --- //
 }
