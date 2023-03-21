@@ -50,7 +50,11 @@ fn avl_cli() {
         println!("2. Search node: search value (e.g., search 4)");
         println!("3. Delete node: del value (e.g., del 2)");
         println!("4. Print: print");
-        println!("5. Exit: exit");
+        println!("5. Count leaves: leaves");
+        println!("6. Print Height: height");
+        println!("7. Print In order Traversal: inorder");
+        println!("8. Check if tree is empty: empty");
+        println!("9. Exit: exit");
 
         let mut input = String::new();
         io::stdin()
@@ -63,10 +67,30 @@ fn avl_cli() {
             "print" => {
                 root_rc.print_tree();
             }
+            "leaves" => {
+                println!("The tree has {} leaves.", root_rc.count_leaves());
+            }
+            "inorder" => {
+                root_rc.in_order_traversal();
+            }
+            "height" => {
+                println!(
+                    "The tree has height {} meaning it has {} edges in it's longest path",
+                    root_rc.get_tree_height(),
+                    root_rc.get_tree_height()
+                );
+            }
+            "empty" => {
+                if root_rc.is_tree_empty() {
+                    println!("The tree is empty");
+                } else {
+                    println!("The tree is not empty");
+                }
+            }
             _ => {
                 if cmd.len() < 2 {
                     println!("Invalid input");
-                    return;
+                    continue;
                 } else {
                     if cmd[1].len() > 3 {
                         println!("Invalid data value, numbers must be below 1000");
@@ -115,7 +139,11 @@ fn rb_cli() {
         println!("2. Search node: search value (e.g., search 4)");
         println!("3. Delete node: del value (e.g., del 2)");
         println!("4. Print: print");
-        println!("5. Exit: exit");
+        println!("5. Count leaves: leaves");
+        println!("6. Print Height: height");
+        println!("7. Print In order Traversal: inorder");
+        println!("8. Check if tree is empty: empty");
+        println!("9. Exit: exit");
 
         let mut input = String::new();
         io::stdin()
@@ -128,10 +156,30 @@ fn rb_cli() {
             "print" => {
                 root.print_tree();
             }
+            "leaves" => {
+                println!("The tree has {} leaves.", root.count_leaves());
+            }
+            "inorder" => {
+                root.in_order_traversal();
+            }
+            "height" => {
+                println!(
+                    "The tree has height {} meaning it has {} edges in it's longest path",
+                    root.get_tree_height(),
+                    root.get_tree_height()
+                );
+            }
+            "empty" => {
+                if root.is_tree_empty() {
+                    println!("The tree is empty");
+                } else {
+                    println!("The tree is not empty");
+                }
+            }
             _ => {
                 if cmd.len() < 2 {
                     println!("Invalid input");
-                    return;
+                    continue;
                 } else {
                     if cmd[1].len() > 3 {
                         println!("Invalid data value, numbers must be below 1000");
