@@ -230,8 +230,10 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
             }
 
             //println!("{:#?}", x.borrow());
-            while index != 0 && *x.borrow().get_colour() != NodeColour::Black {
+            while index != 0 && *x.borrow().get_colour() == NodeColour::Black {
+                println!("Index of stack in fixup: {:?}", index);
                 if x == x_parent_left {
+                    println!("Going into implemented side");
                     let mut s = Rc::clone(&x_parent_right);
 
                     let mut s_left = Rc::clone(&stack[index]); // temp
@@ -267,7 +269,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                             println!("case 3.3");
                             s_left.borrow_mut().set_colour(NodeColour::Black);
                             s.borrow_mut().set_colour(NodeColour::Red);
-                            let s_temp = Rc::clone(&s);
                             s.borrow_mut().rotate_right();
                             s = Rc::clone(&x_parent_right);
                         }
@@ -283,10 +284,59 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                     }
                 } else {
                     // same thing other side!
-                    println!("Unimplemented other side!");
+                    println!("mirrored case");
+                    println!("Going into implemented side");
+                    let mut s = Rc::clone(&x_parent_left);
+
+                    let mut s_left = Rc::clone(&stack[index]); // temp
+                    let mut s_right = Rc::clone(&stack[index]); // temp
+                    match &*s.borrow() {
+                        RedBlackTree::Node {left_child, right_child, ..} => {
+                            s_left = Rc::clone(&left_child);
+                            s_right = Rc::clone(&right_child);
+                        },
+                        RedBlackTree::Empty => {
+                            panic!("Tree is empty!");
+                        },
+                    }
+
+                    if *s.borrow().get_colour() == NodeColour::Red {
+                        // case 3.1
+                        println!("case 3.1");
+                        s.borrow_mut().set_colour(NodeColour::Black);
+                        x_parent.borrow_mut().set_colour(NodeColour::Red);
+                        x_parent.borrow_mut().rotate_right();
+                        s = Rc::clone(&x_parent_left);
+                    }
+
+                    if *s_left.borrow().get_colour() == NodeColour::Black && *s_right.borrow().get_colour() == NodeColour::Black {
+                        // case 3.2
+                        println!("case 3.2");
+                        s.borrow_mut().set_colour(NodeColour::Red);
+                        x = Rc::clone(&x_parent);
+                        index = index - 1;
+                    } else {
+                        if *s_left.borrow().get_colour() == NodeColour::Black {
+                            // case 3.3
+                            println!("case 3.3");
+                            s_right.borrow_mut().set_colour(NodeColour::Black);
+                            s.borrow_mut().set_colour(NodeColour::Red);
+                            s.borrow_mut().rotate_left();
+                            s = Rc::clone(&x_parent_left);
+                        }
+
+                        // case 3.4
+                        println!("case 3.4");
+                        s.borrow_mut().set_colour(*x_parent.borrow().get_colour());
+                        x_parent.borrow_mut().set_colour(NodeColour::Black);
+                        s_left.borrow_mut().set_colour(NodeColour::Black);
+                        x_parent.borrow_mut().rotate_right();
+                        index = 0;
+                        x = Rc::clone(&stack[0]);
+                    }
                 }
             }
-            stack[index].borrow_mut().set_colour(NodeColour::Black);
+            x.borrow_mut().set_colour(NodeColour::Black);
         }
         
         println!("Deleting {:?}", val);
