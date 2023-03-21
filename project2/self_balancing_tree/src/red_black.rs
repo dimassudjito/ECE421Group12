@@ -1,7 +1,6 @@
 use crate::readbt;
 use readbt::ReadableBinaryTree;
 use std::cell::{Ref, RefCell};
-use std::cmp::max;
 use std::cmp::Ord;
 use std::fmt::Debug;
 use std::fmt::Display;
@@ -269,7 +268,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
             node = Rc::clone(&nodetemp);
             stack.push(Rc::clone(&node));
         }
-        // println!("{:#?}", stack);
 
         stack[stack.len() - 1].replace(RedBlackTree::Node {
             data: val.clone(),
@@ -908,7 +906,6 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
             }
             node = Rc::clone(&nodetemp);
         }
-        // println!("{:#?}", stack);
 
         node.replace(RedBlackTree::Node {
             data: val.clone(),

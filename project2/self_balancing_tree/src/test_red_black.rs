@@ -1,5 +1,5 @@
-use crate::red_black::*;
 use crate::readbt::ReadableBinaryTree;
+use crate::red_black::*;
 
 fn test_empty() {
     println!("--- Empty Case ---");
@@ -160,7 +160,7 @@ pub fn test_red_black() {
     test_non_empty();
     test_insert_ascending();
     test_insert_descending();
-    test_insert_random(); 
+    test_insert_random();
     test_insert_double();
     // test_delete_ascending();
     // test_delete_descending();
