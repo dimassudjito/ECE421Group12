@@ -383,6 +383,7 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
         }
         
         nodetemp = Rc::new(RefCell::new(node.borrow().clone()));
+        //nodetemp = Rc::clone(&node);
 
         let is_root = match parent {
             Some(ref p) => {
@@ -403,35 +404,51 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                     stack.pop();
                     stack.push(Rc::clone(&right_child));
                     // Replace the node with the child
-                    match parent {
-                        Some(ref p) => {
-                            if is_left_child {
-                                (*p).borrow_mut().set_left_child(Rc::clone(&right_child));
-                            } else {
-                                (*p).borrow_mut().set_right_child(Rc::clone(&right_child));
+                    if stack.len() > 2 {
+                        match parent {
+                            Some(ref p) => {
+                                if is_left_child {
+                                    (*p).borrow_mut().set_left_child(Rc::clone(&right_child));
+                                } else {
+                                    (*p).borrow_mut().set_right_child(Rc::clone(&right_child));
+                                }
+                            }
+                            None => {
+                                *self = right_child.borrow().clone();
                             }
                         }
-                        None => {
-                            *self = right_child.borrow().clone();
-                        }
+                    } else {
+                        println!("Parent is the root! We need to handle this differently.");
+                        let temp = right_child.borrow().clone();
+                        *self = temp;
+                        stack.pop();
+                        stack.push(Rc::new(RefCell::new(self)));
                     }
                 } else if right_child.borrow().is_empty() {
                     // Node has child on left
                     stack.pop();
                     stack.push(Rc::clone(&left_child));
                     // Replace the node with the child
-                    match parent {
-                        Some(ref p) => {
-                            if is_left_child {
-                                (*p).borrow_mut().set_left_child(Rc::clone(&left_child));
-                            } else {
-                                (*p).borrow_mut().set_right_child(Rc::clone(&left_child));
+                    if stack.len() > 2 {
+                        match parent {
+                            Some(ref p) => {
+                                if is_left_child {
+                                    (*p).borrow_mut().set_left_child(Rc::clone(&left_child));
+                                } else {
+                                    (*p).borrow_mut().set_right_child(Rc::clone(&left_child));
+                                }
+                            }
+                            None => {
+                                println!("BAMMMM");
+                                *self = left_child.borrow().clone();
                             }
                         }
-                        None => {
-                            println!("BAMMMM");
-                            *self = left_child.borrow().clone();
-                        }
+                    } else {
+                        println!("Parent is the root! We need to handle this differently.");
+                        let temp = left_child.borrow().clone();
+                        *self = temp;
+                        stack.pop();
+                        stack.push(Rc::new(RefCell::new(self)));
                     }
                 } else {
                     // Node has two children (or no children)
@@ -477,13 +494,15 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                         println!("Case where thing was root, cloning to replace root");
                         *self = node.borrow().clone();
                     }
-
+                    
                     // Delete the successor node as if it has at most one child
                     //println!("{:#?}", successor.borrow());
                     let successor_child = Rc::clone(&successor.borrow().get_right_child());
                     //println!("{:#?}", successor_child.borrow());
 
                     // Replace the node with the successor node, whether that successor is empty or not!
+                    //println!("Node data: {:?}", node.borrow().get_data());
+                    //println!("Root data: {:?}", (*self).get_data());
                     match successor_parent {
                         Some(ref p) => {
                             // We know this will be the left child
@@ -491,7 +510,13 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
                         }
                         None => {
                             // This means the successor is just the right child of the node
-                            (*node).borrow_mut().set_right_child(successor_child);
+                            if node.borrow().get_data() == (*self).get_data() {
+                                println!("SPECIAL CASE");
+                                // Because the node is the root, this is the only node with a clone copy instead of the actual thing, so we need to set self instead of the reference
+                                (*self).set_right_child(successor_child);
+                            } else {
+                                (*node).borrow_mut().set_right_child(successor_child);
+                            }
                         }
                     }
                 }
@@ -504,12 +529,13 @@ impl<T: Ord + Copy + Debug> RedBlackTree<T> {
 
         if *del_node_color == NodeColour::Black { // && !is_root {
             println!("We deleted a black node so we need to fix this stuff");
-            delete_fixup(stack);
+            delete_fixup(&stack);
         }
+        /*
         if is_root {
             println!("Is root condition!");
             *self = stack[0].borrow().clone();
-        }
+        }*/
     }
 
     pub fn rotate_right(&mut self) {
