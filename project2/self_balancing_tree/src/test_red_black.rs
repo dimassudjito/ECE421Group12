@@ -88,9 +88,9 @@ fn test_delete_ascending() {
     root.insert(8);
     root.insert(9);
     root.insert(10);
-    // root.delete(1);
-    // root.delete(2);
-    // root.delete(3);
+    root.delete(1);
+    root.delete(2);
+    root.delete(3);
     root.print_tree();
     println!("--- End of Ascending Delete Case ---");
 }
@@ -108,9 +108,9 @@ fn test_delete_descending() {
     root.insert(8);
     root.insert(9);
     root.insert(10);
-    // root.delete(10);
-    // root.delete(9);
-    // root.delete(8);
+    root.delete(10);
+    root.delete(9);
+    root.delete(8);
     root.print_tree();
     println!("--- End of Descending Delete Case ---");
 }
@@ -128,9 +128,9 @@ fn test_delete_random() {
     root.insert(8);
     root.insert(9);
     root.insert(10);
-    // root.delete(1);
-    // root.delete(9);
-    // root.delete(3);
+    root.delete(1);
+    root.delete(9);
+    root.delete(3);
     root.print_tree();
     println!("--- End of Random Delete Case ---");
 }
@@ -148,8 +148,8 @@ fn test_delete_double() {
     root.insert(8);
     root.insert(9);
     root.insert(10);
-    // root.delete(1);
-    // root.delete(1);
+    root.delete(1);
+    root.delete(1);
     root.print_tree();
     println!("--- End of Double Delete Case ---");
 }
@@ -162,9 +162,9 @@ pub fn test_red_black() {
     test_insert_descending();
     test_insert_random();
     test_insert_double();
-    // test_delete_ascending();
-    // test_delete_descending();
-    // test_delete_random();
-    // test_delete_double();
+    test_delete_ascending();
+    test_delete_descending();
+    test_delete_random();
+    test_delete_double();
     // --- --- //
 }
