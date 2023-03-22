@@ -217,7 +217,7 @@ fn rb_cli() {
                                     }
                                 }
                                 "del" => {
-                                    // Insert RB delete here
+                                    root.delete(value);
                                 }
                                 _ => {
                                     println!("Invalid input");
