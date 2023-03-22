@@ -156,15 +156,15 @@ fn test_delete_double() {
 
 pub fn test_red_black() {
     // --- UNCOMMENT TO DEBUG --- //
-    test_empty();
-    test_non_empty();
-    test_insert_ascending();
-    test_insert_descending();
-    test_insert_random();
-    test_insert_double();
-    test_delete_ascending();
-    test_delete_descending();
-    test_delete_random();
-    test_delete_double();
+    // test_empty();
+    // test_non_empty();
+    // test_insert_ascending();
+    // test_insert_descending();
+    // test_insert_random();
+    // test_insert_double();
+    // test_delete_ascending();
+    // test_delete_descending();
+    // test_delete_random();
+    // test_delete_double();
     // --- --- //
 }

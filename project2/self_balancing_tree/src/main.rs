@@ -232,9 +232,7 @@ fn rb_cli() {
 }
 
 fn main() {
-    // --- UNCOMMENT TO DEBUG --- ///
     test_avl();
     test_red_black();
-    // --- --- //
     cli();
 }
