@@ -266,14 +266,6 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
             0,
         );
 
-        // DEBUG OP
-        //println!("Elements: {}", total_elements);
-        //println!("element 2: {}", layer_order_elements[2]);
-        //println!("element 2 exist: {}", layer_order_elements_exist[2]);
-        // println!("\n{:#?}", layer_order_elements);
-
-        // Iterate through each layer of the tree and print the nodes
-
         /*
                                                      xxxxx
                                 ______________________/ \______________________
@@ -302,10 +294,8 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
            - The padding between the / and \ follows the pattern 5, 11, 23, 47 which is 3*2^(n+1) - 1 (0 indexed)
            - The padding between the nodes is 2 less than the padding from the previous line, so it's 3*2^(n+1) - 1 (0 indexed)
         */
-        //println!("Tree height is {}", self.get_node_height());
         let two: u32 = 2;
         for layer in 0..(self.get_node_height() - 1) {
-            //println!("Doing layer {}: ", layer);
             // Print left padding for this layer
             print!(
                 "{}",
@@ -316,7 +306,6 @@ pub trait ReadableBinaryTree<T: Ord + Copy + Debug> {
                 )
             );
             for elem in two.pow(layer as u32)..two.pow(layer as u32 + 1) {
-                //println!("layer elem: {}", layer_order_elements[elem as usize]);
                 // Print the element
                 match layer_order_elements_exist[elem as usize] {
                     true => {
