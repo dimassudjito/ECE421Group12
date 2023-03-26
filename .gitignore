@@ -3,4 +3,6 @@ project1/.project
 project2/self_balancing_tree/target/debug/
 project3/connect4_backend/target/
 project3/connect4_backend/dist
+project3/connect4_frontend/target/
+project3/connect4_frontend/dist
 *.mp4
