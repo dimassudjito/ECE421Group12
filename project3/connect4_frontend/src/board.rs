@@ -2,9 +2,15 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::fmt::Debug;
 
+
+
+use crate::fsm::*;
+
 pub struct Board<T> {
-    pub size: (usize, usize),
-    pub container: Vec<Vec<Option<T>>>,
+    pub size: (usize, usize),           // size of board (rows, cols)
+    pub items: (Option<T>, Option<T>),  // P1 and P2 objects
+    pub container: Vec<Vec<Option<T>>>, // board container
+    pub counter: usize,                 // counts the number of items on the board
 }
 
 impl <T: Clone + Eq + Hash + Debug> Board<T> {
@@ -20,8 +26,10 @@ impl <T: Clone + Eq + Hash + Debug> Board<T> {
         }
 
         Board {
-            size: (rows, cols), 
+            size: (rows, cols),
+            items: (None, None),
             container: outer,
+            counter: 0
         }
     }
 
@@ -41,7 +49,7 @@ impl <T: Clone + Eq + Hash + Debug> Board<T> {
     * Inserts an item into the board. pos_x must be specified. If pos_y is not specified, 
     * the item will be inserted to the bottom of the board at pos_x.
     */
-    pub fn insert(&mut self, item: &T, pos_y: Option<usize>, pos_x: Option<usize>) -> Result<(), String> {
+    pub fn insert(&mut self, item: &T, pos_y: Option<usize>, pos_x: Option<usize>) -> Result<(usize, usize), String> {
         let px = pos_x.expect("Position x must be supplied");
         let mut py: usize = 0;
     
@@ -65,6 +73,7 @@ impl <T: Clone + Eq + Hash + Debug> Board<T> {
                     if i != 0 {
                         self.container[i-1][px] = Some(item.clone());
                         inserted = true;
+                        py = i-1;
                         break;
                     } else {
                         break;
@@ -72,6 +81,7 @@ impl <T: Clone + Eq + Hash + Debug> Board<T> {
                 } else {
                     if i == self.size.0 - 1 {
                         self.container[i][px] = Some(item.clone());
+                        py = i;
                         inserted = true;
                     }
                 }
@@ -86,9 +96,26 @@ impl <T: Clone + Eq + Hash + Debug> Board<T> {
         if !inserted {
             return Err("Item was not inserted".to_string());
         }
+
+        self.counter += 1;
+        match self.counter {
+            1 => self.items.0 = Some(item.clone()),
+            2 => self.items.1 = Some(item.clone()),
+            _ => {},
+        }
         
-        Ok(())
+        Ok((px, py))
     }
+
+
+pub fn detect(&self, pos_y: usize, pos_x: usize) -> bool {
+        return true;
+    }
+
+
+
+
+
 
 
     /**
