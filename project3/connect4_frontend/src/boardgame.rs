@@ -31,16 +31,16 @@ impl BoardGame {
         BoardGame {
             board: Board::new(rows, cols),
             count: 0,
-            p1_seq: vec![Chip::One, Chip::Two, Chip::Two, Chip::One],
-            p2_seq: vec![Chip::Two, Chip::One, Chip::One, Chip::Two],
+            p1_seq: vec![Chip::Two, Chip::One, Chip::One, Chip::Two],
+            p2_seq: vec![Chip::One, Chip::Two, Chip::Two, Chip::One],
         }
     }
  
-    pub fn get_turn(&self) -> Chip {
+    pub fn get_turn(&self) -> i32 {
         if self.count %2 == 0 {
-            return Chip::One;
+            return 1;
         } 
-        return Chip::Two;
+        return 2;
     }
 
     /**
@@ -50,19 +50,18 @@ impl BoardGame {
                     win state was declared
             Err(String): Something wrong happened
     */
-    pub fn insert(&mut self, pos_x: usize) -> Result<Option<Chip>, String> {
+    pub fn insert(&mut self, pos_x: usize, chip: Chip) -> Result<Option<i32>, String> {
 
         let mut fsm: FSM<Chip>;
         
-        if let Chip::One = self.get_turn() {
+        if self.get_turn() == 1 {
             fsm = FSM::<Chip>::new(self.p1_seq.clone());
         } else {
             fsm = FSM::<Chip>::new(self.p2_seq.clone());
         }
 
         // insert chip into the board
-
-        let res = self.board.insert(&self.get_turn(), None, Some(pos_x))?;
+        let res = self.board.insert(&chip, None, Some(pos_x))?;
         
         if self.board.detect(res.0, res.1, &mut fsm) {
             return Ok(Some(self.get_turn()));

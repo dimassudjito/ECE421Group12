@@ -96,25 +96,25 @@ fn main() {
 
     let mut con4 = BoardGame::connect4(6, 8);
 
-    let res = con4.insert(3);
-    let res = con4.insert(2);
+    let res = con4.insert(3, Chip::One);
+    let res = con4.insert(2, Chip::Two);
 
-    let res = con4.insert(2);
-    let res = con4.insert(1);
+    let res = con4.insert(2, Chip::One);
+    let res = con4.insert(1, Chip::Two);
 
-    let res = con4.insert(4);
-    let res = con4.insert(1);
+    let res = con4.insert(4, Chip::One);
+    let res = con4.insert(1, Chip::Two);
     //
-    let res = con4.insert(1);
-    let res = con4.insert(7);
+    let res = con4.insert(1, Chip::One);
+    let res = con4.insert(7, Chip::Two);
     //
-    let res = con4.insert(0);
-    let res = con4.insert(0);
+    let res = con4.insert(0, Chip::One);
+    let res = con4.insert(0, Chip::Two);
     // 
-    let res = con4.insert(0);
-    let res = con4.insert(7);
+    let res = con4.insert(0, Chip::One);
+    let res = con4.insert(7, Chip::Two);
     //
-    let res = con4.insert(0);
+    let res = con4.insert(0, Chip::One);
     // let res = con4.insert(6);
 
 
@@ -130,7 +130,7 @@ fn main() {
 
     if let Ok(x) = res {
         if let Some(y) = x {
-            if let Chip::One = y {
+            if y == 1 {
                 println!("Red wins!");
             } else {
                 println!("Yello wins!");
