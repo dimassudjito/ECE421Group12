@@ -197,8 +197,8 @@ impl <T: Clone + Eq + Hash + Debug + Copy> Board<T> {
     *
     * realvals is a toggle for printing either placeholders, or real values.
     * print the real values if you are debugging using single-character primatives
-    * (for example, single digit integers), and print placeholder values if you are
-    * using objects...
+    * (for example, single digit integers), and print placeholder values 
+    * (the X's and O's mentioned earlier) if you are using objects...
     */
     pub fn debug_print(&self, realvals: bool) {
 
