@@ -1,7 +1,7 @@
 use std::cmp::PartialEq;
+use std::marker::Copy;
 
-
-pub struct FSM<T> {
+pub struct FSM<T: Clone + PartialEq + Copy> {
     pub seq: Vec<T>,
     pub size: usize,
     pub idx: usize,
@@ -44,4 +44,12 @@ impl <T: Clone + PartialEq + Copy> FSM<T> {
         }
         return true;
     }
+
+    pub fn clear(&mut self) {
+        self.buffer = Vec::new();
+        for i in 0..self.seq.len() {
+            self.buffer.push(None);
+        }
+    }
+
 }
