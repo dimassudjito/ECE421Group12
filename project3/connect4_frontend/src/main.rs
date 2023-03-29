@@ -7,11 +7,8 @@ use board::*;
 mod fsm;
 use fsm::*;
 
-mod boardgame;
-use boardgame::*;
-
-mod chip;
-use chip::*;
+mod connect4;
+use connect4::*;
 
 
 
@@ -94,7 +91,7 @@ fn main() {
 
 
 
-    let mut con4 = BoardGame::connect4(6, 8);
+    let mut con4 = Connect4::new(6, 8);
 
     let res = con4.insert(3);
     let res = con4.insert(2);
@@ -130,10 +127,10 @@ fn main() {
 
     if let Ok(x) = res {
         if let Some(y) = x {
-            if let Chip::One = y {
+            if let CChip::Red = y {
                 println!("Red wins!");
             } else {
-                println!("Yello wins!");
+                println!("Yellow wins!");
             }
         } 
     } 

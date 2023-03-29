@@ -98,11 +98,30 @@ impl <T: Clone + Eq + Hash + Debug + Copy> Board<T> {
             1 => self.items.0 = Some(item.clone()),
             2 => self.items.1 = Some(item.clone()),
             _ => {},
-        }
+        };
         
         Ok((py, px))
-    }
+    } 
 
+
+    pub fn remove(&mut self, pos_y: usize, pos_x: usize) -> Result<(), String> {
+
+        if pos_y >= self.size.0 {
+            return Err("Position out of bounds".to_string());
+        }
+
+        if pos_x >= self.size.1 {
+            return Err("Position out of bounds".to_string());
+        }
+
+        if let Some(x) = self.container[pos_y][pos_x] {
+            self.container[pos_y][pos_x] = None; 
+        } else {
+            return Err("Position already empty. Cannot remove".to_string());
+        }
+        Ok(())
+ 
+    }
 
     pub fn detect(&self, pos_y: usize, pos_x: usize, fsm: &mut FSM<T>) -> bool {
 
