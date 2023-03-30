@@ -1,0 +1,85 @@
+body {
+    width: 100%;
+    height: 100%;
+    font-family: "Source Sans Pro", "poppins", Helvetica, Arial, sans-serif;
+    margin: 0;
+}
+
+.side-nav {
+    z-index: 3;
+    width: 350px;
+    font-weight: bold;
+    background: #3477aa;
+    height: 100vh;
+    padding: 20px;
+    font-size: 18px;
+}
+
+.title {
+    color: #fbeff8;
+    font-size: 27px;
+}
+
+.w3-hover-white {
+    color: #ddf3f1;
+    transition-property: translate;
+    translate: 0px;
+    transition-duration: 0.2s;
+}
+
+.w3-hover-white:hover {
+    color: #192042;
+    background-color: #d1d5e8;
+    translate: 3px;
+}
+
+.w3-padding-xlarge {
+    padding: 7px;
+}
+
+.w3-hide-large {
+    color: #000;
+}
+
+.w3-container {
+    padding: 0px;
+}
+
+.w3-padding-64 {
+    padding: 0px;
+}
+
+.w3-padding {
+    padding: 8px;
+}
+
+a {
+    color: #00B7FF;
+    text-decoration: none;
+}
+
+.submit-btn {
+    background-color: #b1dbff;
+    margin: 10px 0 10px 0;
+}
+
+.post {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.odd {
+    background-color: #f2f9ff;
+
+}
+
+.even {
+    background-color: #eceff3;
+}
+
+.form-auth {
+    max-width: 330px;
+    padding: 5px;
+    margin: 0 auto;
+}
