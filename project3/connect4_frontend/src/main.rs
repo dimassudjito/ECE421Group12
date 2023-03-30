@@ -80,7 +80,7 @@ fn app() -> Html {
                         <Link<Route> to={Route::Score} classes="w3-padding w3-hover-white">{"Score Board"}</Link<Route>>
                     </div>
                 </nav>
-                <div style="padding:5%">
+                <div style="padding:5%;width:100%">
 
                         <Switch<Route> render={switch} />
 
