@@ -4,8 +4,9 @@ use web_sys::HtmlInputElement;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub name: String,
     pub handle_onchange: Callback<String>,
+    pub id: String,
+    pub placeholder: String,
 }
 
 #[function_component(TextInput)]
@@ -17,6 +18,6 @@ pub fn text_input(props: &Props) -> Html {
     });
 
     html! {
-        <input type="text" name={props.name.clone()} onchange={onchange}/>
+        <input type="text" id={props.id.clone()} placeholder={props.placeholder.clone()} onchange={onchange}/>
     }
 }
