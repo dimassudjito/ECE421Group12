@@ -55,7 +55,7 @@ fn app() -> Html {
 
 
                 <nav class="side-nav" id="mySidenav">
-                    <div style="display:flex;flex-direction:column">
+                    <div style="display:flex;flex-direction:column;width:320px">
                         <br/>
                         <br/>
                         <div class="w3-container">
