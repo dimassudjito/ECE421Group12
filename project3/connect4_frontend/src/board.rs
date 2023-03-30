@@ -3,9 +3,11 @@ use std::hash::Hash;
 use std::fmt::Debug;
 use std::cmp;
 use std::marker::Copy;
+use std::fmt::{self, Display, Formatter};
 
 use crate::fsm::*;
 
+#[derive(Clone)]
 pub struct Board<T> {
     pub size: (usize, usize),           // size of board (rows, cols)
     pub items: (Option<T>, Option<T>),  // P1 and P2 objects
@@ -13,7 +15,7 @@ pub struct Board<T> {
     pub counter: usize,                 // counts the number of items on the board
 }
 
-impl <T: Clone + Eq + Hash + Debug + Copy> Board<T> {
+impl <T: Clone + Eq + Hash + Debug + Copy + Display> Board<T> {
     pub fn new(rows: usize, cols: usize) -> Self {
         
         let mut outer = Vec::<Vec<Option<T>>>::with_capacity(rows);
@@ -102,7 +104,22 @@ impl <T: Clone + Eq + Hash + Debug + Copy> Board<T> {
         
         Ok((py, px))
     }
+    
+    pub fn remove(&mut self, pos_y: usize, pos_x: usize) -> Result<(), String> {
+        if pos_y >= self.size.0 {
+            return Err("Position y out of bounds".to_string());
+        } 
+        if pos_x >= self.size.1 {
+            return Err("Position x out of bounds".to_string());
+        }
 
+        if let None = self.container[pos_y][pos_x] {
+            return Err("Value does not exist at this location".to_string());
+        }
+        self.container[pos_y][pos_x] = None;
+        self.counter -= 1;
+        Ok(())
+    }
 
     pub fn detect(&self, pos_y: usize, pos_x: usize, fsm: &mut FSM<T>) -> bool {
 
@@ -176,19 +193,33 @@ impl <T: Clone + Eq + Hash + Debug + Copy> Board<T> {
             }
         }
 
-        println!("{:?}", v);
-        println!("{:?}", h);
-        println!("{:?}", d1);
-        println!("{:?}", d2);
+        // println!("{:?}", v);
+        // println!("{:?}", h);
+        // println!("{:?}", d1);
+        // println!("{:?}", d2);
 
         return false;
     }
 
 
+    pub fn insertable(&self, pos_x: usize) -> bool {
+        if let None = self.container[0][pos_x] {
+            return true;
+        }
+        return false;
+    }
 
-
-
-
+    pub fn game_winning_play(&mut self, pos_x: usize, item: &T, seq: Vec<T>) -> bool {
+        if let Ok(pair) = self.insert(item, None, Some(pos_x)) {
+            if self.detect(pair.0, pair.1, &mut FSM::<T>::new(seq)) {
+                self.remove(pair.0, pair.1);
+                return true;
+            }
+            self.remove(pair.0, pair.1);
+        }
+        return false;
+    }
+    
 
     /**
     * Prints the board with the locations of inserted items. Items will be either marked with
@@ -225,7 +256,7 @@ impl <T: Clone + Eq + Hash + Debug + Copy> Board<T> {
                     if realvals {
                         print!("{:?}", x.clone());
                     } else {
-                        print!("{}", seen[&x]);
+                        print!("{}", x.clone());
                     }
                 } else {
                     print!("_");

@@ -1,5 +1,5 @@
 use yew::prelude::*;
-
+use std::io;
 
 mod board;
 use board::*;
@@ -12,6 +12,9 @@ use boardgame::*;
 
 mod chip;
 use chip::*;
+
+mod ai;
+use ai::*;
 
 
 
@@ -93,56 +96,79 @@ fn main() {
     // //////// end testing programmable fsm ////////////
 
 
+    let mut ai = Connect4AI::new(6);
 
     let mut con4 = BoardGame::connect4(6, 8);
+    
+    loop {
+        let mut idx=0;
+        let chip = if con4.board.counter % 2 == 0 {
+            println!("Red's Turn");
+            Chip::One
+        } else {
+            println!("Yellow's Turn");
 
-    let res = con4.insert(3, Chip::One);
-    let res = con4.insert(2, Chip::Two);
-
-    let res = con4.insert(2, Chip::One);
-    let res = con4.insert(1, Chip::Two);
-
-    let res = con4.insert(4, Chip::One);
-    let res = con4.insert(1, Chip::Two);
-    //
-    let res = con4.insert(1, Chip::One);
-    let res = con4.insert(7, Chip::Two);
-    //
-    let res = con4.insert(0, Chip::One);
-    let res = con4.insert(0, Chip::Two);
-    // 
-    let res = con4.insert(0, Chip::One);
-    let res = con4.insert(7, Chip::Two);
-    //
-    let res = con4.insert(0, Chip::One);
-    // let res = con4.insert(6);
-
-
-    // let res = con4.insert(4);
-    // let res = con4.insert(4);
-
-
-
-
-
-
-
-
-    if let Ok(x) = res {
-        if let Some(y) = x {
-            if y == 1 {
-                println!("Red wins!");
-            } else {
-                println!("Yello wins!");
+            let mut scorevec = Vec::new();
+            for x in 0..con4.board.size.1 {
+                let mut board_clone = con4.board.clone();
+                board_clone.insert(&Chip::Two, None, Some(x));
+                scorevec.push(ai.mcts(&board_clone, 10000));
             }
-        } 
-    } 
+            println!("AI recommendation: {:?}", scorevec);
+            idx = 0;
+            let mut maxi = -1000000;
+            for i in 0..scorevec.len() {
+                if scorevec[i] > maxi {
+                    maxi = scorevec[i];
+                    idx = i;
+                }
+            }
 
-    if let Err(s) = res {
-        println!("{}", s);
+
+            println!("{}", idx);
+            Chip::Two
+        };
+
+
+        println!("\n\n\nYour input: ");
+
+        let mut input_line = String::new();
+        let x: i32;
+        if let Chip::One = chip {
+
+            io::stdin() // the rough equivalent of `std::cin`
+                .read_line(&mut input_line) // actually read the line
+                .expect("Failed to read line"); // which can fail, however
+            x = input_line
+                .trim() // ignore whitespace around input
+                .parse() // convert to integers
+                .expect("Input not an integer"); 
+    
+            println!("");
+
+        } else {
+            x = idx.clone() as i32;
+        }
+        let res = con4.insert(x as usize, chip);
+        
+        
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                if y == 1 {
+                    println!("Red wins!");
+                } else {
+                    println!("Yello wins!");
+                }
+            } 
+        } 
+
+        if let Err(s) = res {
+            println!("{}", s);
+        }
+
+        con4.board.debug_print(false);
     }
 
-    con4.board.debug_print(false);
 
 
 }
