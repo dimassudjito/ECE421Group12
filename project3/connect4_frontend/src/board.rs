@@ -234,12 +234,18 @@ impl <T: Clone + Eq + Hash + Debug + Copy + Display> Board<T> {
     pub fn debug_print(&self, realvals: bool) {
 
         let mut seen = HashMap::<T, String>::new(); // stores placeholder values for non-realval printing
+        
+        print!("  ");
+        for i in 0..self.size.1 {
+            print!("{} ", i);
+        }
+        println!(""); 
 
         print!("[");
         for i in 0..self.container.len() {
             if i != 0 {
                 print!(" ");
-            }
+            } 
             print!("[");
             for j in 0..self.container[i].len() {
                 if let Some(x) = &self.container[i][j] {
@@ -254,12 +260,12 @@ impl <T: Clone + Eq + Hash + Debug + Copy + Display> Board<T> {
                         };
                     } 
                     if realvals {
-                        print!("{:?}", x.clone());
+                        print!("{:?} ", x.clone());
                     } else {
-                        print!("{}", x.clone());
+                        print!("{} ", x.clone());
                     }
                 } else {
-                    print!("_");
+                    print!("_ ");
                 }
             }
             print!("]");

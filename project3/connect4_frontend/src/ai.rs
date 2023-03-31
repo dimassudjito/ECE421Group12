@@ -64,10 +64,14 @@ impl Connect4AI {
             if let Ok(pair) = board_clone.insert(&chip, None, Some(rng.gen_range(0..board.size.1))) {
                 
                 if board_clone.detect(pair.0, pair.1, &mut FSM::<Chip>::new(vec![chip, chip, chip, chip])) {
+
+                    let mut scoreval = (board.size.0 * board.size.1) as i32;
+                    scoreval /= i32::pow((board_clone.counter- ref_count) as i32, 2);
+
                     if board_clone.counter % 2  == 0 {
-                        score +=  (board.size.0 * board.size.1) as i32 / (board_clone.counter- ref_count) as i32;
+                        score +=  scoreval;
                     } else {
-                        score -= (board.size.0 * board.size.1) as i32 / (board_clone.counter - ref_count) as i32;
+                        score -= scoreval;
                     }
                     board_clone = board.clone();
 

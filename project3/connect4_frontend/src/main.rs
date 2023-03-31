@@ -106,76 +106,9 @@ fn app() -> Html {
     }
 }
 
-fn main() {
-    yew::Renderer::<App>::new().render();
 
 
-
-
-
-
-
-    // //// testing board /////
-    //
-    // let mut board = Board::<i32>::new(6, 8);
-    //
-    // let mut res = board.insert(&1, None, Some(3));
-    //
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(3));
-    //
-    //
-    // res = board.insert(&0, None, Some(4));
-    // res = board.insert(&0, None, Some(3));
-    // res = board.insert(&0, None, Some(4));
-    //
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(3));
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(4));
-    // res = board.insert(&1, None, Some(4));
-    //
-    //
-    // 
-    // let ypos = res.as_mut().ok().unwrap().0; 
-    // let xpos = res.as_mut().ok().unwrap().1;
-    //
-    // println!("y: {}, x: {}", ypos, xpos);
-    //
-    // board.detect(res.as_mut().ok().unwrap().0, res.as_mut().ok().unwrap().1, &mut FSM::<i32>::new(vec![0]));
-    // // println!("{:?}", board.container);
-    // board.debug_print(true);
-    // //// end testing board ////
-    //
-    //
-    //
-    //
-    //
-    // //// testing programmable finite state machine ///// 
-    //
-    // // creates an FSM that tries to find this sequence
-    // let mut fsm = FSM::new(vec![1, 3, 1, 3, 1]);
-    // // fsm = FSM::new(vec![3, 1, 1, 3]);
-    // let testvec = vec![0, 1, 3, 1, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 1, 3, 3, 1, 1, 3, 3, 1, 1, 3, 3 ];
-    // 
-    //
-    // 
-    // //fsm = FSM::new(vec![1, 1, 2, 2, 3, 3]);
-    //
-    // //testvec = vec![1, 1, 2, 2, 1, 1, 2, 2, 3, 3, 1, 1, 2, 2, 3, 3 ];
-    //
-    //
-    // for x in testvec.iter() {
-    //     println!("{}, {}", &x, fsm.step(&x));
-    // }
-    // 
-    //
-    // //////// end testing programmable fsm ////////////
-
-
+fn cli_debug() {
     let mut ai = Connect4AI::new(6);
 
     let mut con4 = BoardGame::connect4(6, 8);
@@ -205,17 +138,16 @@ fn main() {
             }
 
 
-            println!("{}", idx);
+            println!("{}\n", idx);
             Chip::Two
         };
 
 
-        println!("\n\n\nYour input: ");
 
         let mut input_line = String::new();
         let x: i32;
         if let Chip::One = chip {
-
+            println!("Your input (0 - {}): ", con4.board.size.1-1);
             io::stdin() // the rough equivalent of `std::cin`
                 .read_line(&mut input_line) // actually read the line
                 .expect("Failed to read line"); // which can fail, however
@@ -227,17 +159,32 @@ fn main() {
             println!("");
 
         } else {
+
             x = idx.clone() as i32;
+            if !con4.board.insertable(idx.clone()) {
+                for i in 0..con4.board.size.1 {
+                    if let Ok(something) = con4.insert(i, chip) {
+                        break;
+                    }
+                }
+            }
         }
         let res = con4.insert(x as usize, chip);
         
         
+
+
+        con4.board.debug_print(false);
+        println!("\n\n");
+
         if let Ok(x) = res {
             if let Some(y) = x {
                 if y == 1 {
                     println!("Red wins!");
+                    return;
                 } else {
                     println!("Yello wins!");
+                    return;
                 }
             } 
         } 
@@ -246,9 +193,19 @@ fn main() {
             println!("{}", s);
         }
 
-        con4.board.debug_print(false);
+
     }
 
 
+}
+
+
+
+
+fn main() {
+    // yew::Renderer::<App>::new().render();
+
+
+    cli_debug();
 
 }

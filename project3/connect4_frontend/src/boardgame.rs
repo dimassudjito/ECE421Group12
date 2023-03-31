@@ -45,10 +45,10 @@ impl BoardGame {
 
     /**
     * Returns 3 possible states:
-    *       Ok(Some(Chip)): one of the players won
+    *       Ok(Some(i32)): one of the players won
     *       Ok(None): Normal state in the game where an insertion is successful but no 
                     win state was declared
-            Err(String): Something wrong happened
+            Err(String): Something wrong happened, or tie game
     */
     pub fn insert(&mut self, pos_x: usize, chip: Chip) -> Result<Option<i32>, String> {
 
