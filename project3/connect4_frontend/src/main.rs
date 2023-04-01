@@ -1,5 +1,4 @@
 mod components;
-use crate::board::*;
 // mod routes;
 use crate::components::routes::*;
 use std::io;
@@ -233,7 +232,7 @@ fn main() {
     // board.insert(&1, None, Some(4));
 
     // println!("{:?}", board.container);
-    board.debug_print();
+    // board.debug_print();
     //// end testing board ////
 
     cli_debug();
