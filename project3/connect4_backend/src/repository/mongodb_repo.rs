@@ -7,10 +7,10 @@ use mongodb::{
     results::{ InsertOneResult, UpdateResult, DeleteResult},
     sync::{Client, Collection},
 };
-use crate::models::user_model::User;
+use crate::models::game_model::Game;
 
 pub struct MongoRepo {
-    col: Collection<User>,
+    col: Collection<Game>,
 }
 
 impl MongoRepo {
@@ -24,74 +24,80 @@ impl MongoRepo {
         let uri = String::from("mongodb://localhost:27017");
         let client = Client::with_uri_str(uri).unwrap();
         let db = client.database("rustDB");
-        let col: Collection<User> = db.collection("User");
+        let col: Collection<Game> = db.collection("Game");
         MongoRepo { col }
     }
 
-    pub fn create_user(&self, new_user: User) -> Result<InsertOneResult, Error> {
-        let new_doc = User {
+    pub fn create_game(&self, new_game: Game) -> Result<InsertOneResult, Error> {
+        let new_doc = Game {
             id: None,
-            name: new_user.name,
-            location: new_user.location,
-            title: new_user.title,
+            game_number: new_game.game_number,
+            game_type: new_game.game_type,
+            player_1_name: new_game.player_1_name,
+            player_2_name: new_game.player_2_name,
+            winner_name: new_game.winner_name,
+            game_date: new_game.game_date,
         };
-        let user = self
+        let game = self
             .col
             .insert_one(new_doc, None)
             .ok()
-            .expect("Error creating user");
-        Ok(user)
+            .expect("Error creating game");
+        Ok(game)
     }
 
-    pub fn get_user(&self, id: &String) -> Result<User, Error> {
+    pub fn get_game(&self, id: &String) -> Result<Game, Error> {
         let obj_id = ObjectId::parse_str(id).unwrap();
         let filter = doc! {"_id": obj_id};
-        let user_detail = self
+        let game_detail = self
             .col
             .find_one(filter, None)
             .ok()
-            .expect("Error getting user's detail");
-        Ok(user_detail.unwrap())
+            .expect("Error getting game's detail");
+        Ok(game_detail.unwrap())
     }
 
-    pub fn update_user(&self, id: &String, new_user: User) -> Result<UpdateResult, Error> {
+    pub fn update_game(&self, id: &String, new_game: Game) -> Result<UpdateResult, Error> {
         let obj_id = ObjectId::parse_str(id).unwrap();
         let filter = doc! {"_id": obj_id};
         let new_doc = doc! {
             "$set":
                 {
-                    "id": new_user.id,
-                    "name": new_user.name,
-                    "location": new_user.location,
-                    "title": new_user.title
+                    "id": new_game.id,
+                    "game_number": new_game.game_number,
+                    "game_type": new_game.game_type,
+                    "player_1_name": new_game.player_1_name,
+                    "player_2_name": new_game.player_2_name,
+                    "winner_name": new_game.winner_name,
+                    "game_date": new_game.game_date
                 },
         };
         let updated_doc = self
             .col
             .update_one(filter, new_doc, None)
             .ok()
-            .expect("Error updating user");
+            .expect("Error updating game");
         Ok(updated_doc)
     }
 
-    pub fn delete_user(&self, id: &String) -> Result<DeleteResult, Error> {
+    pub fn delete_game(&self, id: &String) -> Result<DeleteResult, Error> {
         let obj_id = ObjectId::parse_str(id).unwrap();
         let filter = doc! {"_id": obj_id};
-        let user_detail = self
+        let game_detail = self
             .col
             .delete_one(filter, None)
             .ok()
-            .expect("Error deleting user");
-        Ok(user_detail)
+            .expect("Error deleting game");
+        Ok(game_detail)
     }
 
-    pub fn get_all_users(&self) -> Result<Vec<User>, Error> {
+    pub fn get_all_games(&self) -> Result<Vec<Game>, Error> {
         let cursors = self
             .col
             .find(None, None)
             .ok()
-            .expect("Error getting list of users");
-        let users = cursors.map(|doc| doc.unwrap()).collect();
-        Ok(users)
+            .expect("Error getting list of games");
+        let games = cursors.map(|doc| doc.unwrap()).collect();
+        Ok(games)
     }
 }

@@ -14,7 +14,7 @@ use mongodb::{Client, options::ClientOptions};
 /*
 #[get("/hello/<name>/<age>")]
 fn hello(name: String, age: u8) -> String {
-    format!("Hello, {} year old named {}!", age, name)
+    format!("Hello, {} year old named {}!", age, name)User
 }
 
 #[get("/hello/<name>")]
@@ -28,7 +28,7 @@ fn main() {
 */
 
 //add imports below
-use api::user_api::{create_user, get_user, update_user, delete_user, get_all_users};
+use api::game_api::{create_game, get_game, update_game, delete_game, get_all_games};
 use repository::mongodb_repo::MongoRepo;
 
 #[launch]
@@ -36,9 +36,9 @@ fn rocket() -> _ {
     let db = MongoRepo::init();
     rocket::build()
         .manage(db)
-        .mount("/", routes![create_user])
-        .mount("/", routes![get_user])
-        .mount("/", routes![update_user])
-        .mount("/", routes![delete_user])
-        .mount("/", routes![get_all_users])
+        .mount("/", routes![create_game])
+        .mount("/", routes![get_game])
+        .mount("/", routes![update_game])
+        .mount("/", routes![delete_game])
+        .mount("/", routes![get_all_games])
 }
