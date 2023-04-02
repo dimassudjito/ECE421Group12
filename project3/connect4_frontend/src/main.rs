@@ -59,8 +59,8 @@ use boardgame::*;
 mod chip;
 use chip::*;
 
-mod ai;
-use ai::*;
+mod connect4ai;
+use connect4ai::*;
 
 #[function_component(App)]
 fn app() -> Html {
