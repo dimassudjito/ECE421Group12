@@ -150,21 +150,10 @@ fn cli_debug() {
         } else {
             println!("Yellow's Turn");
 
-            let mut scorevec = Vec::new();
-            for x in 0..con4.board.size.1 {
-                let mut board_clone = con4.board.clone();
-                board_clone.insert(&Chip::Two, None, Some(x));
-                scorevec.push(ai.mcts(&board_clone, 10000));
-            }
-            println!("AI recommendation: {:?}", scorevec);
-            idx = 0;
-            let mut maxi = -1000000;
-            for i in 0..scorevec.len() {
-                if scorevec[i] > maxi {
-                    maxi = scorevec[i];
-                    idx = i;
-                }
-            }
+            let mut alpha = i32::MIN + 3;
+            let mut beta = i32::MAX - 3;
+
+            idx = ai.mcts(&con4.board.clone(), 1000);
 
             println!("{}\n", idx);
             Chip::Two
@@ -217,7 +206,7 @@ fn cli_debug() {
 }
 
 fn main() {
-    yew::Renderer::<App>::new().render();
+    // yew::Renderer::<App>::new().render();
     // board.insert(&0, None, Some(4));
     // board.insert(&0, None, Some(3));
     // board.insert(&0, None, Some(4));
