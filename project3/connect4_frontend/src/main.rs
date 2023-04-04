@@ -216,24 +216,68 @@ fn cli_debug() {
     }
 }
 
+fn cli_connect4_human() {
+    let mut con4 = BoardGame::connect4(6, 8);
+
+    loop {
+        let chip = if con4.board.counter % 2 == 0 {
+            println!("Red's Turn");
+            Chip::One
+        } else {
+            println!("Yellow's Turn");
+            Chip::Two
+        };
+
+        let mut input_line = String::new();
+        let x: i32;
+        if let Chip::One = chip {
+            println!("Your input (0 - {}): ", con4.board.size.1 - 1);
+            io::stdin() // the rough equivalent of `std::cin`
+                .read_line(&mut input_line) // actually read the line
+                .expect("Failed to read line"); // which can fail, however
+            x = input_line
+                .trim() // ignore whitespace around input
+                .parse() // convert to integers
+                .expect("Input not an integer");
+
+            println!("");
+        } else {
+            println!("Your input (0 - {}): ", con4.board.size.1 - 1);
+            io::stdin() // the rough equivalent of `std::cin`
+                .read_line(&mut input_line) // actually read the line
+                .expect("Failed to read line"); // which can fail, however
+            x = input_line
+                .trim() // ignore whitespace around input
+                .parse() // convert to integers
+                .expect("Input not an integer");
+
+            println!("");
+        }
+        let res = con4.insert(x as usize, chip);
+
+        con4.board.debug_print(false);
+        println!("\n\n");
+
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                if y == 1 {
+                    println!("Red wins!");
+                    return;
+                } else {
+                    println!("Yello wins!");
+                    return;
+                }
+            }
+        }
+
+        if let Err(s) = res {
+            println!("{}", s);
+        }
+    }
+}
+
 fn main() {
     yew::Renderer::<App>::new().render();
-    // board.insert(&0, None, Some(4));
-    // board.insert(&0, None, Some(3));
-    // board.insert(&0, None, Some(4));
-
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(3));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-
-    // println!("{:?}", board.container);
-    // board.debug_print();
-    //// end testing board ////
-
-    cli_debug();
+    // cli_debug();
+    // cli_connect4_human();
 }
