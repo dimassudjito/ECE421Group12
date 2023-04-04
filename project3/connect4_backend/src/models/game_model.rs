@@ -6,7 +6,7 @@ use chrono::{DateTime, Utc};
 pub struct Game {
     #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
     pub id: Option<ObjectId>,
-    pub game_number: String,
+    pub game_number: Option<u32>,
     pub game_type: String,
     pub player_1_name: String,
     pub player_2_name: String,

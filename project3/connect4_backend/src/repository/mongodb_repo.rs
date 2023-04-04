@@ -51,6 +51,25 @@ impl MongoRepo {
         Ok(game_detail.unwrap())
     }
 
+    pub fn get_next_game_num(&self) -> u32 {
+        let games = self.get_all_games().unwrap_or_else(|_| vec![]); // Use unwrap_or_else to handle errors
+        let mut max_game_num = 0;
+    
+        for game in games {
+            match game.game_number {
+                Some(x) => {
+                    if x > max_game_num {
+                        max_game_num = x;
+                    }
+                },
+                _ => {
+                    continue;
+                }
+            }
+        }
+        max_game_num + 1
+    }
+
     pub fn update_game(&self, id: &String, new_game: Game) -> Result<UpdateResult, Error> {
         let obj_id = ObjectId::parse_str(id).unwrap();
         let filter = doc! {"_id": obj_id};
