@@ -13,3 +13,9 @@ pub struct Game {
     pub winner_name: String,
     pub game_date: String,//Option<DateTime<Utc>>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Player {
+    pub player_name: String,
+    pub wins: u32,
+}

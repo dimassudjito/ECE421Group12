@@ -1,6 +1,5 @@
 use std::env;
-//extern crate dotenv;
-//use dotenv::dotenv;
+use std::collections::HashMap;
 
 use mongodb::{
     bson::{extjson::de::Error, oid::ObjectId, doc},
@@ -8,6 +7,7 @@ use mongodb::{
     sync::{Client, Collection},
 };
 use crate::models::game_model::Game;
+use crate::models::game_model::Player;
 
 pub struct MongoRepo {
     col: Collection<Game>,
@@ -15,12 +15,6 @@ pub struct MongoRepo {
 
 impl MongoRepo {
     pub fn init() -> Self {
-        //dotenv().ok();
-        /*
-        let uri = match env::var("MONGOURI") {
-            Ok(v) => v.to_string(),
-            Err(_) => format!("Error loading env variable"),
-        };*/
         let uri = String::from("mongodb://localhost:27017");
         let client = Client::with_uri_str(uri).unwrap();
         let db = client.database("rustDB");
@@ -99,5 +93,31 @@ impl MongoRepo {
             .expect("Error getting list of games");
         let games = cursors.map(|doc| doc.unwrap()).collect();
         Ok(games)
+    }
+
+    pub fn get_rankings(&self) -> Result<Vec<Player>, Error> {
+        let games = self.get_all_games()?;
+        let mut win_count = HashMap::new();
+    
+        for game in games {
+            // An empty player name signifies the game was a tie, so ignore it as nobody won.
+            if game.winner_name.is_empty() {
+                continue;
+            }
+    
+            *win_count.entry(game.winner_name.clone()).or_insert(0) += 1;
+        }
+    
+        let mut rankings: Vec<Player> = win_count
+            .into_iter()
+            .map(|(player_name, wins)| Player {
+                player_name,
+                wins,
+            })
+            .collect();
+    
+        rankings.sort_by(|a, b| b.wins.cmp(&a.wins));
+    
+        Ok(rankings)
     }
 }
