@@ -7,9 +7,10 @@ pub fn create_game(
     db: &State<MongoRepo>,
     new_game: Json<Game>,
 ) -> Result<Json<InsertOneResult>, Status> {
+    let next_game_num = db.get_next_game_num();
     let data = Game {
         id: None,
-        game_number: new_game.game_number.to_owned(),
+        game_number: Some(next_game_num),//new_game.game_number.to_owned(),
         game_type: new_game.game_type.to_owned(),
         player_1_name: new_game.player_1_name.to_owned(),
         player_2_name: new_game.player_2_name.to_owned(),
