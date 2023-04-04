@@ -1,5 +1,6 @@
 use std::ops::Deref;
 use yew::prelude::*;
+use gloo_console::log;
 
 use crate::components::text_input::TextInput;
 use crate::components::button_input::ButtonInput;
@@ -21,54 +22,199 @@ pub fn connect4_human_page() -> Html {
     });
 
     let con4 = use_state(|| BoardGame::connect4(6, 8));
+    let over = use_state(|| false);
+    let winner = use_state(|| 0);
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_0 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(0 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(0 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
     });
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_1 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(1 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(1 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
     });
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_2 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(2 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(2 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
     });
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_3 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(3 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(3 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
     });
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_4 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(4 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(4 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
     });
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_5 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(5 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(5 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
     });
 
     let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
     let add_6 = Callback::from(move |_| {
         let mut data = cloned_con4.deref().clone();
-        data.insert(6 as usize, Chip::One);
+        let chip = if data.board.counter % 2 == 0 {
+            Chip::One
+        } else {
+            Chip::Two
+        };
+        let res = data.insert(6 as usize, chip);
         cloned_con4.set(data);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
+    });
+
+    let cloned_con4 = con4.clone();
+    let cloned_over = over.clone();
+    let cloned_winner = winner.clone();
+    let reset_board = Callback::from(move |_| {
+        let new_board = BoardGame::connect4(6, 8);
+        cloned_con4.set(new_board);
+        cloned_over.set(false);
+        cloned_winner.set(0);
     });
 
     html! {
@@ -85,13 +231,23 @@ pub fn connect4_human_page() -> Html {
             <small>{format!("(Disc Colors: {} - Red and {} - Yellow)", &*player1_name, &*player2_name)}</small>
             <br/>
             // <canvas id="gameboard" height="480" width="640"></canvas> // TODO: create board UI
-            <ButtonInput label="0" onclick={add_0} />
-            <ButtonInput label="1" onclick={add_1} />
-            <ButtonInput label="2" onclick={add_2} />
-            <ButtonInput label="3" onclick={add_3} />
-            <ButtonInput label="4" onclick={add_4} />
-            <ButtonInput label="5" onclick={add_5} />
-            <ButtonInput label="6" onclick={add_6} />
+            if *over {
+                if *winner == 1 {
+                    <p>{format!("{} wins - Click on reset button to start over", &*player1_name)}</p>
+                } else {
+                    <p>{format!("{} wins - Click on reset button to start over", &*player2_name)}</p>
+                }
+                <ButtonInput label="Reset" onclick={reset_board} />
+            } else {
+                <ButtonInput label="0" onclick={add_0} />
+                <ButtonInput label="1" onclick={add_1} />
+                <ButtonInput label="2" onclick={add_2} />
+                <ButtonInput label="3" onclick={add_3} />
+                <ButtonInput label="4" onclick={add_4} />
+                <ButtonInput label="5" onclick={add_5} />
+                <ButtonInput label="6" onclick={add_6} />
+            }
+            
             <table>
                 { for con4.board.container.iter().map(|inner_vec| {
                     html! {
