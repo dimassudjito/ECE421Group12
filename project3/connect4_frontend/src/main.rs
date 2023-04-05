@@ -65,6 +65,9 @@ use chip::*;
 mod connect4ai;
 use connect4ai::*;
 
+mod toai;
+use toai::*;
+
 #[function_component(App)]
 fn app() -> Html {
     let isSmall = use_media_query("(max-width: 1100px)");
@@ -140,7 +143,7 @@ fn app() -> Html {
     }
 }
 
-fn cli_debug() {
+fn con4_cli_debug() {
     let mut ai = Connect4AI::new(6);
 
     let mut con4 = BoardGame::connect4(6, 8);
@@ -153,21 +156,10 @@ fn cli_debug() {
         } else {
             println!("Yellow's Turn");
 
-            let mut scorevec = Vec::new();
-            for x in 0..con4.board.size.1 {
-                let mut board_clone = con4.board.clone();
-                board_clone.insert(&Chip::Two, None, Some(x));
-                scorevec.push(ai.mcts(&board_clone, 10000));
-            }
-            println!("AI recommendation: {:?}", scorevec);
-            idx = 0;
-            let mut maxi = -1000000;
-            for i in 0..scorevec.len() {
-                if scorevec[i] > maxi {
-                    maxi = scorevec[i];
-                    idx = i;
-                }
-            }
+            let mut alpha = i32::MIN + 3;
+            let mut beta = i32::MAX - 3;
+
+            idx = ai.mcts(&con4.board.clone(), 5000);
 
             println!("{}\n", idx);
             Chip::Two
@@ -219,22 +211,21 @@ fn cli_debug() {
     }
 }
 
-fn cli_connect4_human() {
-    let mut con4 = BoardGame::connect4(6, 8);
-
+fn to_cli_debug() {
+    let mut to = BoardGame::toot_otto(4, 6);
+    let mut ai = TootOttoAI::new();
     loop {
-        let chip = if con4.board.counter % 2 == 0 {
-            println!("Red's Turn");
-            Chip::One
-        } else {
-            println!("Yellow's Turn");
-            Chip::Two
-        };
+        let mut x = 0;
+        let mut chip = Chip::One;
 
-        let mut input_line = String::new();
-        let x: i32;
-        if let Chip::One = chip {
-            println!("Your input (0 - {}): ", con4.board.size.1 - 1);
+        let turn = if to.board.counter % 2 == 0 { 1 } else { 2 };
+
+        if turn == 1 {
+            println!("Player 1's Turn");
+            println!("Your input (0 - {}): ", to.board.size.1 - 1);
+
+            let mut input_line = String::new();
+
             io::stdin() // the rough equivalent of `std::cin`
                 .read_line(&mut input_line) // actually read the line
                 .expect("Failed to read line"); // which can fail, however
@@ -243,38 +234,47 @@ fn cli_connect4_human() {
                 .parse() // convert to integers
                 .expect("Input not an integer");
 
-            println!("");
-        } else {
-            println!("Your input (0 - {}): ", con4.board.size.1 - 1);
+            input_line = String::new();
+            println!("Choose \"T\" or \"O\": ");
             io::stdin() // the rough equivalent of `std::cin`
                 .read_line(&mut input_line) // actually read the line
-                .expect("Failed to read line"); // which can fail, however
-            x = input_line
-                .trim() // ignore whitespace around input
-                .parse() // convert to integers
-                .expect("Input not an integer");
+                .expect("Failed to read line");
+            chip = if input_line.trim().to_uppercase().eq(&"T") {
+                Chip::Two
+            } else {
+                Chip::One
+            };
 
-            println!("");
+            println!("{}", input_line.trim().to_uppercase());
+        } else {
+            println!("Player 2's Turn");
+            println!("AI Thinking...");
+            (x, chip) = ai.play(&mut to, 3, 2500);
+            println!("AI plays {} at {}", chip, x);
         }
-        let res = con4.insert(x as usize, chip);
 
-        con4.board.debug_print(false);
-        println!("\n\n");
+        let mut res = to.insert(x as usize, chip);
 
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                if y == 1 {
-                    println!("Red wins!");
-                    return;
+        to.board.debug_print(false);
+        println!("\n\n\n");
+
+        if let Ok(state) = res {
+            if let Some(winner) = state {
+                if winner == 1 {
+                    println!("Player 1 wins!");
                 } else {
-                    println!("Yello wins!");
-                    return;
+                    println!("Player 2 wins!");
                 }
+                return;
             }
         }
-
-        if let Err(s) = res {
-            println!("{}", s);
+        if let Err(message) = res {
+            if message == "TIE" {
+                println!("TIE!");
+                return;
+            } else {
+                println!("{}", message);
+            }
         }
     }
 }
@@ -293,4 +293,24 @@ fn main() {
     // );
     // cli_debug();
     // cli_connect4_human();
+    // yew::Renderer::<App>::new().render();
+    // board.insert(&0, None, Some(4));
+    // board.insert(&0, None, Some(3));
+    // board.insert(&0, None, Some(4));
+
+    // board.insert(&1, None, Some(4));
+    // board.insert(&1, None, Some(3));
+    // board.insert(&1, None, Some(4));
+    // board.insert(&1, None, Some(4));
+    // board.insert(&1, None, Some(4));
+    // board.insert(&1, None, Some(4));
+    // board.insert(&1, None, Some(4));
+    // board.insert(&1, None, Some(4));
+
+    // println!("{:?}", board.container);
+    // board.debug_print();
+    //// end testing board ////
+
+    // con4_cli_debug();
+    to_cli_debug();
 }

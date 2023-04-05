@@ -52,25 +52,37 @@ impl BoardGame {
     */
     pub fn insert(&mut self, pos_x: usize, chip: Chip) -> Result<Option<i32>, String> {
 
-        let mut fsm: FSM<Chip>;
-        
-        if self.get_turn() == 1 {
-            fsm = FSM::<Chip>::new(self.p1_seq.clone());
-        } else {
-            fsm = FSM::<Chip>::new(self.p2_seq.clone());
-        }
+       
+        let mut onewin = false;
+        let mut twowin = false;
 
         // insert chip into the board
         let res = self.board.insert(&chip, None, Some(pos_x))?;
         
-        if self.board.detect(res.0, res.1, &mut fsm) {
-            return Ok(Some(self.get_turn()));
+        let mut fsm1 = FSM::<Chip>::new(self.p1_seq.clone());
+        let mut fsm2 = FSM::<Chip>::new(self.p2_seq.clone());
+
+
+        if self.board.detect(res.0, res.1, &mut fsm1) {
+            onewin = true;
+        }
+        if self.board.detect(res.0, res.1, &mut fsm2) {
+            twowin = true;
         }
 
         self.count += 1;
         if self.count >= self.board.size.0 * self.board.size.1 {
             return Err("TIE".to_string());
         }
+
+        if onewin && !twowin {
+            return Ok(Some(1));
+        } else if !onewin && twowin {
+            return Ok(Some(2));
+        } else if onewin && twowin {
+            return Err("TIE".to_string());
+        }
+
         return Ok(None);
         
     }

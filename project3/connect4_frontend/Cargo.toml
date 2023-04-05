@@ -18,4 +18,12 @@ wasm-bindgen = "0.2.84"
 stylist = {version = "0.12.0", features =["yew_integration","yew_use_media_query"]}
 web-sys = "0.3.61"
 getrandom = { version = "0.2", features = ["js"]}
+
 gloo-console = "0.2.3"
+
+
+[profile.dev.package."*"]
+codegen-units = 1 # better optimizations
+opt-level = 3
+gloo-console = "0.2.3"
+
