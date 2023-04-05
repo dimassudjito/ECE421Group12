@@ -51,7 +51,7 @@ fn main() {
 */
 
 //add imports below
-use api::game_api::{create_game, get_game, update_game, delete_game, get_all_games, get_rankings};
+use api::game_api::{create_game, get_game, update_game, delete_game, get_all_games, get_rankings, get_computer_metrics,get_computer_wins};
 use repository::mongodb_repo::MongoRepo;
 
 
@@ -67,4 +67,6 @@ fn rocket() -> _ {
         .mount("/", routes![delete_game])
         .mount("/", routes![get_all_games])
         .mount("/", routes![get_rankings])
+        .mount("/", routes![get_computer_wins])
+        .mount("/", routes![get_computer_metrics])
 }

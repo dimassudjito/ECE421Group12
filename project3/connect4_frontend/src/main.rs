@@ -1,5 +1,7 @@
 mod components;
 mod env;
+mod models;
+mod requests;
 // mod routes;
 use crate::components::routes::*;
 use std::io;
@@ -279,6 +281,16 @@ fn cli_connect4_human() {
 
 fn main() {
     yew::Renderer::<App>::new().render();
+
+    // example request
+    // requests::postGame(
+    //     "connect4".to_string(),
+    //     "test66".to_string(),
+    //     "test33".to_string(),
+    //     "test33".to_string(),
+    //     "date".to_string(),
+    //     None,
+    // );
     // cli_debug();
     // cli_connect4_human();
 }

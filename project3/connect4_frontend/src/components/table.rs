@@ -3,6 +3,8 @@ use yew::prelude::*;
 pub struct Props {
     pub headers: Vec<&'static str>,
     pub data: Vec<Vec<String>>,
+    // Data moved isntead of a ref in order to ensure the table can
+    // still render after the source is dropped/moved.
 }
 
 #[function_component]
