@@ -21,6 +21,9 @@ web-sys = "0.3.61"
 getrandom = { version = "0.2", features = ["js"]}
 
 
+
 [profile.dev.package."*"]
 codegen-units = 1 # better optimizations
 opt-level = 3
+gloo-console = "0.2.3"
+

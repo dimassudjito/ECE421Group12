@@ -209,6 +209,7 @@ fn con4_cli_debug() {
 }
 
 
+
 fn to_cli_debug() {
 
     let mut to = BoardGame::toot_otto(4, 6);
@@ -225,6 +226,7 @@ fn to_cli_debug() {
             println!("Your input (0 - {}): ", to.board.size.1-1);
 
             let mut input_line = String::new();
+
             io::stdin() // the rough equivalent of `std::cin`
                 .read_line(&mut input_line) // actually read the line
                 .expect("Failed to read line"); // which can fail, however
@@ -306,4 +308,5 @@ fn main() {
 
     // con4_cli_debug();
     to_cli_debug();
+
 }
