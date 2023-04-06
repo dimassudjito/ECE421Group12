@@ -74,7 +74,6 @@ pub fn connect4_human_page() -> Html {
             <h4>{format!("New Game: {} Vs {}", &*player1_name, &*player2_name)}</h4>
             <small>{format!("(Disc Colors: {} - Red and {} - Yellow)", &*player1_name, &*player2_name)}</small>
             <br/>
-            // <canvas id="gameboard" height="480" width="640"></canvas> // TODO: create board UI
             if *over {
                 if *winner == 1 {
                     <p>{format!("{} wins - Click on reset button to start over", &*player1_name)}</p>
