@@ -97,9 +97,22 @@ pub fn connect4_human_page() -> Html {
                     html! {
                         <tr>
                             { for inner_vec.iter().map(|&value| {
-                                html! {
-                                    <td>{ value }</td>
+                                if value.is_none() {
+                                    html! {
+                                        <td></td>
+                                    }
+                                } else {
+                                    if value.unwrap() == Chip::One {
+                                        html! {
+                                            <td class="red"><center>{"R"}</center></td>
+                                        }
+                                    } else {
+                                        html! {
+                                            <td class="yellow"><center>{"Y"}</center></td>
+                                        }
+                                    }
                                 }
+                                
                             })}
                         </tr>
                     }
