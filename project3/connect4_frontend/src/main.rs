@@ -153,10 +153,7 @@ fn con4_cli_debug() {
         } else {
             println!("Yellow's Turn");
 
-            let mut alpha = i32::MIN + 3;
-            let mut beta = i32::MAX - 3;
-
-            idx = ai.mcts(&con4.board.clone(), 5000);
+            idx = ai.play(&mut con4, 1, 5000);
 
             println!("{}\n", idx);
             Chip::Two
@@ -245,7 +242,7 @@ fn to_cli_debug() {
         } else {
             println!("Player 2's Turn");
             println!("AI Thinking...");
-            (x , chip) = ai.play(&mut to, 3, 2500);
+            (x , chip) = ai.play(&mut to, 3, 2000);
             println!("AI plays {} at {}", chip, x);
             
         }

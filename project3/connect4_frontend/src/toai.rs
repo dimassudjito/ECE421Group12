@@ -58,7 +58,7 @@ impl TootOttoAI {
                     let mut won = false;
 
                     if board_clone.detect(pair.0, pair.1, &mut fsm1) {
-                        score -= scoreval;
+                        score -= 2 * scoreval;
                         won = true;
                     }    
                     if board_clone.detect(pair.0, pair.1, &mut fsm2) {
@@ -71,8 +71,7 @@ impl TootOttoAI {
                     }
 
                 } else {
-                    scoreval -= 1000 / i32::pow((board_clone.counter- ref_count + 1) as i32, 2);
-
+                    score -= 1000 / i32::pow((board_clone.counter- ref_count + 1) as i32, 2);
                 }
 
             }
@@ -110,7 +109,7 @@ impl TootOttoAI {
                     let mut won = false;
 
                     if board_clone.detect(pair.0, pair.1, &mut fsm1) {
-                        score -= scoreval;
+                        score -= 2 * scoreval;
                         won = true;
                     }    
                     if board_clone.detect(pair.0, pair.1, &mut fsm2) {
@@ -123,8 +122,7 @@ impl TootOttoAI {
                     }
 
                 } else {
-                    scoreval -= 1000 / i32::pow((board_clone.counter- ref_count + 1) as i32, 2);
-
+                    score -= 1000 / i32::pow((board_clone.counter- ref_count + 1) as i32, 2);
                 }
 
             }
@@ -139,36 +137,42 @@ impl TootOttoAI {
     // changes boardgame in-place
     pub fn play(&self, boardgame: &mut BoardGame, difficulty: usize, iters: usize) -> (usize, Chip) {
         let (tscore, oscore) = self.mcts(&mut boardgame.board, iters);
+        
+        let mut rng = thread_rng();
 
         println!("T probabilities: {:?}", tscore);
         println!("O probabilities: {:?}", oscore);
         
-        let mut idx = 0;
-        let mut maxval = i32::MIN;
-        let mut candidate_chip = Chip::One;
     
+        let mut tidx = (0..tscore.len()).collect::<Vec<_>>();
+        tidx.sort_by_key(|&i| (-tscore[i]));
 
-        for i in 0..tscore.len() {
-            let mut current_max = i32::MIN;
-            let mut current_chip = Chip::One;
+        let mut oidx = (0..oscore.len()).collect::<Vec<_>>();
+        oidx.sort_by_key(|&i| (-oscore[i]));
 
+        let pick = match difficulty {
+            1 => rng.gen_range(0..3),
+            2 => rng.gen_range(0..2),
+            3 => 0,
+            _ => 0,
+        };
 
-            if oscore[i] > tscore[i] {
-                current_chip = Chip::One;
-                current_max = oscore[i];
-            } else {
-                current_chip = Chip::Two;
-                current_max = tscore[i];
-            }
+        let mut candidate_chip = Chip::One;
+        let mut idx = 0;
 
-            if current_max > maxval {
-                maxval = current_max;
-                candidate_chip = current_chip;
-                idx = i;
-            }
-            
-
+        if tscore[tidx[pick]] > oscore[oidx[pick]] {
+            candidate_chip = Chip::Two;
+            idx = tidx[pick];
+        } else {
+            candidate_chip = Chip::One;
+            idx = oidx[pick];
         }
+
+
+        
+
+ 
+
 
         return (idx, candidate_chip); 
 
