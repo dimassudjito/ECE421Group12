@@ -1,11 +1,12 @@
 use std::ops::Deref;
 use yew::prelude::*;
-use gloo_console::log;
+use chrono::{Datelike, Timelike, Utc};
 
 use crate::components::text_input::TextInput;
 use crate::components::button_input::ButtonInput;
 use crate::boardgame::*;
 use crate::chip::*;
+use crate::requests::postGame;
 
 #[function_component(Connect4HumanPage)]
 pub fn connect4_human_page() -> Html {
@@ -28,6 +29,8 @@ pub fn connect4_human_page() -> Html {
     let cloned_con4 = con4.clone();
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
+    let cloned_player1_name = player1_name.clone();
+    let cloned_player2_name = player2_name.clone();
     let add_chip = Callback::from(move |col: usize| {
         let mut data = cloned_con4.deref().clone();
         let chip = if data.board.counter % 2 == 0 {
@@ -41,12 +44,31 @@ pub fn connect4_human_page() -> Html {
             if let Some(y) = x {
                 cloned_over.set(true);
                 if y == 1 {
-                    log!("Red wins!");
                     cloned_winner.set(1);
                 } else {
-                    log!("Yellow wins!");
                     cloned_winner.set(2);
                 }
+
+                let winner_name = if y == 1 {
+                    cloned_player1_name.deref().clone()
+                } else {
+                    cloned_player2_name.deref().clone()
+                };
+
+                let now = Utc::now();
+                let (is_pm, hour) = now.hour12();
+                let time = format!(
+                    "{:02}/{:02}/{:02} {:02}:{:02}:{:02} {}",
+                    now.month(),
+                    now.day(),
+                    now.year(),
+                    hour,
+                    now.minute(),
+                    now.second(),
+                    if is_pm { "PM" } else { "AM" }
+                );
+
+                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, time.to_string(), None);
             }
         }
     });
