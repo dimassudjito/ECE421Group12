@@ -1,4 +1,7 @@
 mod components;
+mod env;
+mod models;
+mod requests;
 // mod routes;
 use crate::components::routes::*;
 use std::io;
@@ -208,22 +211,18 @@ fn con4_cli_debug() {
     }
 }
 
-
-
 fn to_cli_debug() {
-
     let mut to = BoardGame::toot_otto(4, 6);
     let mut ai = TootOttoAI::new();
     loop {
-
         let mut x = 0;
         let mut chip = Chip::One;
 
-        let turn = if to.board.counter % 2 == 0 {1} else {2};
+        let turn = if to.board.counter % 2 == 0 { 1 } else { 2 };
 
         if turn == 1 {
             println!("Player 1's Turn");
-            println!("Your input (0 - {}): ", to.board.size.1-1);
+            println!("Your input (0 - {}): ", to.board.size.1 - 1);
 
             let mut input_line = String::new();
 
@@ -234,30 +233,27 @@ fn to_cli_debug() {
                 .trim() // ignore whitespace around input
                 .parse() // convert to integers
                 .expect("Input not an integer");
-           
+
             input_line = String::new();
             println!("Choose \"T\" or \"O\": ");
             io::stdin() // the rough equivalent of `std::cin`
                 .read_line(&mut input_line) // actually read the line
                 .expect("Failed to read line");
-            chip = if input_line.trim().to_uppercase().eq(&"T") {Chip::Two} else {Chip::One}; 
+            chip = if input_line.trim().to_uppercase().eq(&"T") {
+                Chip::Two
+            } else {
+                Chip::One
+            };
 
             println!("{}", input_line.trim().to_uppercase());
-
         } else {
             println!("Player 2's Turn");
             println!("AI Thinking...");
-            (x , chip) = ai.play(&mut to, 3, 2500);
+            (x, chip) = ai.play(&mut to, 3, 2500);
             println!("AI plays {} at {}", chip, x);
-            
         }
 
-
-
-
         let mut res = to.insert(x as usize, chip);
-
-
 
         to.board.debug_print(false);
         println!("\n\n\n");
@@ -270,8 +266,8 @@ fn to_cli_debug() {
                     println!("Player 2 wins!");
                 }
                 return;
-            } 
-        } 
+            }
+        }
         if let Err(message) = res {
             if message == "TIE" {
                 println!("TIE!");
@@ -280,14 +276,23 @@ fn to_cli_debug() {
                 println!("{}", message);
             }
         }
-
-
-
     }
 }
 
-
 fn main() {
+    yew::Renderer::<App>::new().render();
+
+    // example request
+    // requests::postGame(
+    //     "connect4".to_string(),
+    //     "test66".to_string(),
+    //     "test33".to_string(),
+    //     "test33".to_string(),
+    //     "date".to_string(),
+    //     None,
+    // );
+    // cli_debug();
+    // cli_connect4_human();
     // yew::Renderer::<App>::new().render();
     // board.insert(&0, None, Some(4));
     // board.insert(&0, None, Some(3));
@@ -308,5 +313,4 @@ fn main() {
 
     // con4_cli_debug();
     to_cli_debug();
-
 }

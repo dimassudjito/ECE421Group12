@@ -1,4 +1,7 @@
-use crate::{models::game_model::Game, models::game_model::Player, repository::mongodb_repo::MongoRepo};
+use crate::{
+    models::game_model::ComputerMetrics, models::game_model::Game, models::game_model::Player,
+    repository::mongodb_repo::MongoRepo,
+};
 use mongodb::{bson::oid::ObjectId, results::InsertOneResult};
 use rocket::{http::Status, serde::json::Json, State};
 
@@ -10,7 +13,7 @@ pub fn create_game(
     let next_game_num = db.get_next_game_num();
     let data = Game {
         id: None,
-        game_number: Some(next_game_num),//new_game.game_number.to_owned(),
+        game_number: Some(next_game_num), //new_game.game_number.to_owned(),
         game_type: new_game.game_type.to_owned(),
         player_1_name: new_game.player_1_name.to_owned(),
         player_2_name: new_game.player_2_name.to_owned(),
@@ -97,6 +100,25 @@ pub fn get_all_games(db: &State<MongoRepo>) -> Result<Json<Vec<Game>>, Status> {
     let games = db.get_all_games();
     match games {
         Ok(games) => Ok(Json(games)),
+        Err(_) => Err(Status::InternalServerError),
+    }
+}
+
+#[get("/computer/wins")]
+pub fn get_computer_wins(db: &State<MongoRepo>) -> Result<Json<Vec<Game>>, Status> {
+    // returns games won by the computer
+    let games = db.get_computer_wins();
+    match games {
+        Ok(games) => Ok(Json(games)),
+        Err(_) => Err(Status::InternalServerError),
+    }
+}
+
+#[get("/computer/metrics")]
+pub fn get_computer_metrics(db: &State<MongoRepo>) -> Result<Json<ComputerMetrics>, Status> {
+    let metrics = db.get_computer_metrics();
+    match metrics {
+        Ok(metrics) => Ok(Json(metrics)),
         Err(_) => Err(Status::InternalServerError),
     }
 }

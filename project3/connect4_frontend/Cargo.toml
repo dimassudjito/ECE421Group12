@@ -13,13 +13,13 @@ wasm-bindgen-futures = "0.4"
 
 rand = "0.8.5"
 yew-router = "0.17"
-tokio = "1.27.0"
-reqwest = "0.11.16"
+reqwest = {version = "0.11.16",features = ["json"] }
 wasm-bindgen = "0.2.84"
 stylist = {version = "0.12.0", features =["yew_integration","yew_use_media_query"]}
 web-sys = "0.3.61"
 getrandom = { version = "0.2", features = ["js"]}
 
+gloo-console = "0.2.3"
 
 
 [profile.dev.package."*"]

@@ -1,6 +1,6 @@
-use mongodb::bson::oid::ObjectId;
-use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
+use mongodb::bson::oid::ObjectId;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Game {
@@ -11,11 +11,18 @@ pub struct Game {
     pub player_1_name: String,
     pub player_2_name: String,
     pub winner_name: String,
-    pub game_date: String,//Option<DateTime<Utc>>,
+    pub game_date: String, //Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Player {
     pub player_name: String,
     pub wins: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ComputerMetrics {
+    pub total_games: u32,
+    pub games_against_comp: u32,
+    pub comp_wins: u32,
 }

@@ -1,13 +1,14 @@
-use std::env;
 use std::collections::HashMap;
+use std::env;
 
-use mongodb::{
-    bson::{extjson::de::Error, oid::ObjectId, doc},
-    results::{ InsertOneResult, UpdateResult, DeleteResult},
-    sync::{Client, Collection},
-};
+use crate::models::game_model::ComputerMetrics;
 use crate::models::game_model::Game;
 use crate::models::game_model::Player;
+use mongodb::{
+    bson::{doc, extjson::de::Error, oid::ObjectId},
+    results::{DeleteResult, InsertOneResult, UpdateResult},
+    sync::{Client, Collection},
+};
 
 pub struct MongoRepo {
     col: Collection<Game>,
@@ -54,14 +55,14 @@ impl MongoRepo {
     pub fn get_next_game_num(&self) -> u32 {
         let games = self.get_all_games().unwrap_or_else(|_| vec![]); // Use unwrap_or_else to handle errors
         let mut max_game_num = 0;
-    
+
         for game in games {
             match game.game_number {
                 Some(x) => {
                     if x > max_game_num {
                         max_game_num = x;
                     }
-                },
+                }
                 _ => {
                     continue;
                 }
@@ -114,29 +115,67 @@ impl MongoRepo {
         Ok(games)
     }
 
+    pub fn get_computer_wins(&self) -> Result<Vec<Game>, Error> {
+        let cursors = self
+            .col
+            .find(None, None)
+            .ok()
+            .expect("Error getting list of games");
+        let games: Vec<Game> = cursors.map(|doc| doc.unwrap()).collect();
+        let compGames = games
+            .into_iter()
+            .filter(|game| game.player_2_name == "Computer" && game.winner_name == "Computer")
+            .collect();
+        Ok(compGames)
+    }
+
     pub fn get_rankings(&self) -> Result<Vec<Player>, Error> {
         let games = self.get_all_games()?;
         let mut win_count = HashMap::new();
-    
+
         for game in games {
             // An empty player name signifies the game was a tie, so ignore it as nobody won.
             if game.winner_name.is_empty() {
                 continue;
             }
-    
+
             *win_count.entry(game.winner_name.clone()).or_insert(0) += 1;
         }
-    
+
         let mut rankings: Vec<Player> = win_count
             .into_iter()
-            .map(|(player_name, wins)| Player {
-                player_name,
-                wins,
-            })
+            .map(|(player_name, wins)| Player { player_name, wins })
             .collect();
-    
+
         rankings.sort_by(|a, b| b.wins.cmp(&a.wins));
-    
+
         Ok(rankings)
+    }
+
+    pub fn get_computer_metrics(&self) -> Result<ComputerMetrics, Error> {
+        let games = self.get_all_games()?;
+        let mut wins: u32 = 0;
+        let mut compGames: u32 = 0;
+
+        for game in &games {
+            // An empty player name signifies the game was a tie, so ignore it as nobody won.
+            if game.winner_name.is_empty() {
+                continue;
+            }
+
+            if &game.player_2_name == "Computer" {
+                if &game.winner_name == "Computer" {
+                    wins = wins + 1;
+                }
+                compGames = compGames + 1;
+            }
+        }
+
+        let mut compMetric = ComputerMetrics {
+            total_games: games.len() as u32,
+            games_against_comp: compGames,
+            comp_wins: wins,
+        };
+        Ok(compMetric)
     }
 }
