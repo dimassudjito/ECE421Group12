@@ -5,7 +5,7 @@ use crate::chip::*;
 
 
 
-
+#[derive(Clone)]
 pub struct BoardGame {
     pub board: Board<Chip>,
     pub count: usize,
