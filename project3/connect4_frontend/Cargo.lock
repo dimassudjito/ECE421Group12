@@ -76,7 +76,6 @@ dependencies = [
  "reqwest",
  "serde",
  "stylist",
- "tokio",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
