@@ -98,7 +98,7 @@ pub fn connect4_human_page() -> Html {
                         <tr>
                             { for inner_vec.iter().map(|&value| {
                                 html! {
-                                    <td>{"|"}{ value }</td>
+                                    <td>{ value }</td>
                                 }
                             })}
                         </tr>

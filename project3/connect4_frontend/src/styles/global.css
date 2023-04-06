@@ -1,4 +1,22 @@
 a {
-    color: #00B7FF;
-    text-decoration: none;
+  color: #00b7ff;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
 }
