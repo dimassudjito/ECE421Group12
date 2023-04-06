@@ -28,170 +28,14 @@ pub fn connect4_human_page() -> Html {
     let cloned_con4 = con4.clone();
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
-    let add_0 = Callback::from(move |_| {
+    let add_chip = Callback::from(move |col: usize| {
         let mut data = cloned_con4.deref().clone();
         let chip = if data.board.counter % 2 == 0 {
             Chip::One
         } else {
             Chip::Two
         };
-        let res = data.insert(0 as usize, chip);
-        cloned_con4.set(data);
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                cloned_over.set(true);
-                if y == 1 {
-                    log!("Red wins!");
-                    cloned_winner.set(1);
-                } else {
-                    log!("Yellow wins!");
-                    cloned_winner.set(2);
-                }
-            }
-        }
-    });
-
-    let cloned_con4 = con4.clone();
-    let cloned_over = over.clone();
-    let cloned_winner = winner.clone();
-    let add_1 = Callback::from(move |_| {
-        let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(1 as usize, chip);
-        cloned_con4.set(data);
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                cloned_over.set(true);
-                if y == 1 {
-                    log!("Red wins!");
-                    cloned_winner.set(1);
-                } else {
-                    log!("Yellow wins!");
-                    cloned_winner.set(2);
-                }
-            }
-        }
-    });
-
-    let cloned_con4 = con4.clone();
-    let cloned_over = over.clone();
-    let cloned_winner = winner.clone();
-    let add_2 = Callback::from(move |_| {
-        let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(2 as usize, chip);
-        cloned_con4.set(data);
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                cloned_over.set(true);
-                if y == 1 {
-                    log!("Red wins!");
-                    cloned_winner.set(1);
-                } else {
-                    log!("Yellow wins!");
-                    cloned_winner.set(2);
-                }
-            }
-        }
-    });
-
-    let cloned_con4 = con4.clone();
-    let cloned_over = over.clone();
-    let cloned_winner = winner.clone();
-    let add_3 = Callback::from(move |_| {
-        let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(3 as usize, chip);
-        cloned_con4.set(data);
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                cloned_over.set(true);
-                if y == 1 {
-                    log!("Red wins!");
-                    cloned_winner.set(1);
-                } else {
-                    log!("Yellow wins!");
-                    cloned_winner.set(2);
-                }
-            }
-        }
-    });
-
-    let cloned_con4 = con4.clone();
-    let cloned_over = over.clone();
-    let cloned_winner = winner.clone();
-    let add_4 = Callback::from(move |_| {
-        let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(4 as usize, chip);
-        cloned_con4.set(data);
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                cloned_over.set(true);
-                if y == 1 {
-                    log!("Red wins!");
-                    cloned_winner.set(1);
-                } else {
-                    log!("Yellow wins!");
-                    cloned_winner.set(2);
-                }
-            }
-        }
-    });
-
-    let cloned_con4 = con4.clone();
-    let cloned_over = over.clone();
-    let cloned_winner = winner.clone();
-    let add_5 = Callback::from(move |_| {
-        let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(5 as usize, chip);
-        cloned_con4.set(data);
-        if let Ok(x) = res {
-            if let Some(y) = x {
-                cloned_over.set(true);
-                if y == 1 {
-                    log!("Red wins!");
-                    cloned_winner.set(1);
-                } else {
-                    log!("Yellow wins!");
-                    cloned_winner.set(2);
-                }
-            }
-        }
-    });
-
-    let cloned_con4 = con4.clone();
-    let cloned_over = over.clone();
-    let cloned_winner = winner.clone();
-    let add_6 = Callback::from(move |_| {
-        let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(6 as usize, chip);
+        let res = data.insert(col, chip);
         cloned_con4.set(data);
         if let Ok(x) = res {
             if let Some(y) = x {
@@ -239,13 +83,13 @@ pub fn connect4_human_page() -> Html {
                 }
                 <ButtonInput label="Reset" onclick={reset_board} />
             } else {
-                <ButtonInput label="0" onclick={add_0} />
-                <ButtonInput label="1" onclick={add_1} />
-                <ButtonInput label="2" onclick={add_2} />
-                <ButtonInput label="3" onclick={add_3} />
-                <ButtonInput label="4" onclick={add_4} />
-                <ButtonInput label="5" onclick={add_5} />
-                <ButtonInput label="6" onclick={add_6} />
+                <ButtonInput label="0" onclick={add_chip.reform(|_| 0)} />
+                <ButtonInput label="1" onclick={add_chip.reform(|_| 1)} />
+                <ButtonInput label="2" onclick={add_chip.reform(|_| 2)} />
+                <ButtonInput label="3" onclick={add_chip.reform(|_| 3)} />
+                <ButtonInput label="4" onclick={add_chip.reform(|_| 4)} />
+                <ButtonInput label="5" onclick={add_chip.reform(|_| 5)} />
+                <ButtonInput label="6" onclick={add_chip.reform(|_| 6)} />
             }
             
             <table>
