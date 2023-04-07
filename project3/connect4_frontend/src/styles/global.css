@@ -54,6 +54,12 @@ h1 {
   border-radius: 7px 7px 7px 7px;
 }
 
+.btn-normal {
+  height: 37px;
+  margin-left: 5px;
+  border-radius: 7px 7px 7px 7px;
+}
+
 input {
   height: 30px;
   width: 200px;

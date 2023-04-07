@@ -22,6 +22,12 @@ pub fn connect4_computer_page() -> Html {
         cloned_start.set(true);
     });
 
+    let level = use_state(|| 1);
+    let cloned_level = level.clone();
+    let change_level = Callback::from(move |level: usize| {
+        cloned_level.set(level);
+    });
+
     let con4 = use_state(|| BoardGame::connect4(6, 7));
     let over = use_state(|| false);
     let winner = use_state(|| 0);
@@ -31,6 +37,7 @@ pub fn connect4_computer_page() -> Html {
     let cloned_con4 = con4.clone();
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
+    let cloned_level= level.clone();
     let add_chip = Callback::from(move |col: usize| {
         let mut data = cloned_con4.deref().clone();
         let res = data.insert(col, Chip::One);
@@ -38,26 +45,22 @@ pub fn connect4_computer_page() -> Html {
             if let Some(y) = x {
                 cloned_over.set(true);
                 if y == 1 {
-                    log!("Red wins!");
                     cloned_winner.set(1);
                 } else {
-                    log!("Yellow wins!");
                     cloned_winner.set(2);
                 }
             }
         }
         // @TODO: need to end callback early if game is over
-        let idx = ai.play(&mut data, 1, 5000);
+        let idx = ai.play(&mut data, cloned_level.deref().clone(), 5000);
         let res = data.insert(idx, Chip::Two);
         cloned_con4.set(data);
         if let Ok(x) = res {
             if let Some(y) = x {
                 cloned_over.set(true);
                 if y == 1 {
-                    log!("Red wins!");
                     cloned_winner.set(1);
                 } else {
-                    log!("Yellow wins!");
                     cloned_winner.set(2);
                 }
             }
@@ -80,10 +83,13 @@ pub fn connect4_computer_page() -> Html {
             <hr/>
             <TextInput handle_onchange={player1_name_changed} id="textbox1" placeholder="Your Name" />
             <ButtonInput class="btn-start" label="Start Game" onclick={start_game} />
-            // @TODO: Difficulty level
             if *start {
                 <br/>
                 <h3>{format!("New Game: {} Vs {}", &*player1_name, "Computer")}</h3>
+                <ButtonInput class={if *level == 1 {"btn-start"} else {"btn-normal"}} label="Level 1" onclick={change_level.reform(|_| 1)} />
+                <ButtonInput class={if *level == 2 {"btn-start"} else {"btn-normal"}} label="Level 2" onclick={change_level.reform(|_| 2)} />
+                <ButtonInput class={if *level == 3 {"btn-start"} else {"btn-normal"}} label="Level 3" onclick={change_level.reform(|_| 3)} />
+                <br/>
                 <small>{format!("(Disc Colors: {} - Red and {} - Yellow)", &*player1_name, "Computer")}</small>
                 <br/>
                 if *over {

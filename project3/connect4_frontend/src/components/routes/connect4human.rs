@@ -64,7 +64,7 @@ pub fn connect4_human_page() -> Html {
                 let now = Utc::now();
                 let (is_pm, hour) = now.hour12();
                 let time = format!(
-                    "{:02}/{:02}/{:02} {:02}:{:02}:{:02} {}",
+                    "{:02}/{:02}/{:02} {:02}:{:02}:{:02} {} (UTC)",
                     now.month(),
                     now.day(),
                     now.year(),
