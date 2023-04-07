@@ -46,6 +46,7 @@ pub fn connect4_computer_page() -> Html {
                 }
             }
         }
+        // @TODO: need to end callback early if game is over
         let idx = ai.play(&mut data, 1, 5000);
         let res = data.insert(idx, Chip::Two);
         cloned_con4.set(data);
@@ -79,6 +80,7 @@ pub fn connect4_computer_page() -> Html {
             <hr/>
             <TextInput handle_onchange={player1_name_changed} id="textbox1" placeholder="Your Name" />
             <ButtonInput class="btn-start" label="Start Game" onclick={start_game} />
+            // @TODO: Difficulty level
             if *start {
                 <br/>
                 <h3>{format!("New Game: {} Vs {}", &*player1_name, "Computer")}</h3>
