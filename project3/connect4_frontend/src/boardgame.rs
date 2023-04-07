@@ -31,8 +31,8 @@ impl BoardGame {
         BoardGame {
             board: Board::new(rows, cols),
             count: 0,
-            p1_seq: vec![Chip::Two, Chip::One, Chip::One, Chip::Two],
-            p2_seq: vec![Chip::One, Chip::Two, Chip::Two, Chip::One],
+            p1_seq: vec![Chip::One, Chip::Two, Chip::Two, Chip::One],
+            p2_seq: vec![Chip::Two, Chip::One, Chip::One, Chip::Two],
         }
     }
  
