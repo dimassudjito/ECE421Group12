@@ -62,7 +62,7 @@ pub fn otto_human_page() -> Html {
                 } else {
                     cloned_player2_name.deref().clone()
                 };
-                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, None);
+                postGame("toot otto".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, None);
             }
         }
     });
