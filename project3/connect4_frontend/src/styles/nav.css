@@ -10,7 +10,7 @@ body {
     width: 350px;
     font-weight: bold;
     background: #3477aa;
-    height: 100vh;
+    min-height: 100vh;
     padding: 20px;
     font-size: 18px;
 }
