@@ -1,6 +1,5 @@
 use std::ops::Deref;
 use yew::prelude::*;
-use chrono::{Datelike, Timelike, Utc};
 
 use crate::components::text_input::TextInput;
 use crate::components::button_input::ButtonInput;
@@ -60,7 +59,6 @@ pub fn connect4_human_page() -> Html {
                 } else {
                     cloned_player2_name.deref().clone()
                 };
-
                 postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, None);
             }
         }

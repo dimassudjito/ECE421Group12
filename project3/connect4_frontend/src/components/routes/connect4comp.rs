@@ -1,6 +1,6 @@
 use std::ops::Deref;
 use yew::prelude::*;
-use gloo_console::log;
+use crate::requests::postGame;
 
 use crate::components::text_input::TextInput;
 use crate::components::button_input::ButtonInput;
@@ -38,18 +38,27 @@ pub fn connect4_computer_page() -> Html {
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
     let cloned_level= level.clone();
+    let cloned_player1_name = player1_name.clone();
     let add_chip = Callback::from(move |col: usize| {
         let mut data = cloned_con4.deref().clone();
         let res = data.insert(col, Chip::One);
         if let Ok(x) = res {
             if let Some(y) = x {
                 cloned_over.set(true);
+                cloned_con4.set(data);
                 if y == 1 {
                     cloned_winner.set(1);
                 } else {
                     cloned_winner.set(2);
                 }
-                cloned_con4.set(data);
+
+                let winner_name = if y == 1 {
+                    cloned_player1_name.deref().clone()
+                } else {
+                    "Computer".to_string()
+                };
+                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), "Computer".to_string(), winner_name, None);
+                
                 return;
             }
         }
@@ -64,6 +73,13 @@ pub fn connect4_computer_page() -> Html {
                 } else {
                     cloned_winner.set(2);
                 }
+
+                let winner_name = if y == 1 {
+                    cloned_player1_name.deref().clone()
+                } else {
+                    "Computer".to_string()
+                };
+                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), "Computer".to_string(), winner_name, None);
             }
         }
     });
