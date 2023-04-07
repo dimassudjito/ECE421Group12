@@ -21,7 +21,7 @@ pub fn otto_human_page() -> Html {
         cloned_player2_name.set(username);
     });
 
-    let chip_type = use_state(|| Chip::One);
+    let chip_type = use_state(|| Chip::Two);
     let cloned_chip_type = chip_type.clone();
     let change_chip_type = Callback::from(move |chip: Chip| {
         cloned_chip_type.set(chip);
@@ -97,8 +97,8 @@ pub fn otto_human_page() -> Html {
                     }
                     <ButtonInput class="btn-reset" label="Reset" onclick={reset_board} />
                 } else {
-                    <ButtonInput class={if *chip_type == Chip::One {"btn-start"} else {"btn-normal"}} label="T" onclick={change_chip_type.reform(|_| Chip::One)} />
-                    <ButtonInput class={if *chip_type == Chip::Two {"btn-start"} else {"btn-normal"}} label="O" onclick={change_chip_type.reform(|_| Chip::Two)} />
+                    <ButtonInput class={if *chip_type == Chip::Two {"btn-start"} else {"btn-normal"}} label="T" onclick={change_chip_type.reform(|_| Chip::Two)} />
+                    <ButtonInput class={if *chip_type == Chip::One {"btn-start"} else {"btn-normal"}} label="O" onclick={change_chip_type.reform(|_| Chip::One)} />
                     <br/>
                     <ButtonInput class="btn-col" label="0" onclick={add_chip.reform(|_| 0)} />
                     <ButtonInput class="btn-col" label="1" onclick={add_chip.reform(|_| 1)} />
@@ -121,11 +121,11 @@ pub fn otto_human_page() -> Html {
                                     } else {
                                         if value.unwrap() == Chip::One {
                                             html! {
-                                                <td class="red"><center>{"T"}</center></td>
+                                                <td class="yellow"><center>{"O"}</center></td>
                                             }
                                         } else {
                                             html! {
-                                                <td class="yellow"><center>{"O"}</center></td>
+                                                <td class="red"><center>{"T"}</center></td>
                                             }
                                         }
                                     }
