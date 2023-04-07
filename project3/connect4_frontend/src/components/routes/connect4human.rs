@@ -102,15 +102,15 @@ pub fn connect4_human_page() -> Html {
                 } else {
                     <p>{format!("{} wins - Click on reset button to start over", &*player2_name)}</p>
                 }
-                <ButtonInput label="Reset" onclick={reset_board} />
+                <ButtonInput class="" label="Reset" onclick={reset_board} />
             } else {
-                <ButtonInput label="0" onclick={add_chip.reform(|_| 0)} />
-                <ButtonInput label="1" onclick={add_chip.reform(|_| 1)} />
-                <ButtonInput label="2" onclick={add_chip.reform(|_| 2)} />
-                <ButtonInput label="3" onclick={add_chip.reform(|_| 3)} />
-                <ButtonInput label="4" onclick={add_chip.reform(|_| 4)} />
-                <ButtonInput label="5" onclick={add_chip.reform(|_| 5)} />
-                <ButtonInput label="6" onclick={add_chip.reform(|_| 6)} />
+                <ButtonInput class="btn-col" label="0" onclick={add_chip.reform(|_| 0)} />
+                <ButtonInput class="btn-col" label="1" onclick={add_chip.reform(|_| 1)} />
+                <ButtonInput class="btn-col" label="2" onclick={add_chip.reform(|_| 2)} />
+                <ButtonInput class="btn-col" label="3" onclick={add_chip.reform(|_| 3)} />
+                <ButtonInput class="btn-col" label="4" onclick={add_chip.reform(|_| 4)} />
+                <ButtonInput class="btn-col" label="5" onclick={add_chip.reform(|_| 5)} />
+                <ButtonInput class="btn-col" label="6" onclick={add_chip.reform(|_| 6)} />
             }
             
             <table>

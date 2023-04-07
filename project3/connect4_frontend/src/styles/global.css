@@ -20,3 +20,42 @@ td {
 .yellow {
   background-color: yellow;
 }
+
+hr {
+  border: 5px solid #3477aa;
+  width: 50px;
+  margin-left: 0;
+  margin-bottom: 20px;
+  border-radius: 7px 7px 7px 7px;
+}
+
+h1 {
+  color: #3477aa;
+  font-size: 50px;
+}
+
+.btn-col {
+  background-color: #3477aa;
+  color: white;
+  width: 33px;
+}
+
+.btn-reset {
+  background-color: #3477aa;
+  color: white;
+  width: 231px;
+}
+
+.btn-start {
+  height: 37px;
+  background-color: #3477aa;
+  color: white;
+  margin-left: 5px;
+  border-radius: 7px 7px 7px 7px;
+}
+
+input {
+  height: 30px;
+  width: 200px;
+  border-radius: 7px 7px 7px 7px;
+}
