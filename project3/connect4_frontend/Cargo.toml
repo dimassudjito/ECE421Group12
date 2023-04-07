@@ -20,6 +20,7 @@ web-sys = "0.3.61"
 getrandom = { version = "0.2", features = ["js"]}
 
 gloo-console = "0.2.3"
+chrono = "0.4.24"
 
 
 [profile.dev.package."*"]
