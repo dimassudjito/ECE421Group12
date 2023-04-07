@@ -49,9 +49,10 @@ pub fn connect4_computer_page() -> Html {
                 } else {
                     cloned_winner.set(2);
                 }
+                cloned_con4.set(data);
+                return;
             }
         }
-        // @TODO: need to end callback early if game is over
         let idx = ai.play(&mut data, cloned_level.deref().clone(), 5000);
         let res = data.insert(idx, Chip::Two);
         cloned_con4.set(data);
@@ -71,7 +72,7 @@ pub fn connect4_computer_page() -> Html {
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
     let reset_board = Callback::from(move |_| {
-        let new_board = BoardGame::connect4(6, 8);
+        let new_board = BoardGame::connect4(6, 7);
         cloned_con4.set(new_board);
         cloned_over.set(false);
         cloned_winner.set(0);
