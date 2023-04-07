@@ -6,6 +6,7 @@ use crate::components::text_input::TextInput;
 use crate::components::button_input::ButtonInput;
 use crate::boardgame::*;
 use crate::chip::*;
+use crate::connect4ai::*;
 
 #[function_component(Connect4ComputerPage)]
 pub fn connect4_computer_page() -> Html {
@@ -19,17 +20,28 @@ pub fn connect4_computer_page() -> Html {
     let over = use_state(|| false);
     let winner = use_state(|| 0);
 
+    let mut ai = Connect4AI::new(6);
+
     let cloned_con4 = con4.clone();
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
     let add_chip = Callback::from(move |col: usize| {
         let mut data = cloned_con4.deref().clone();
-        let chip = if data.board.counter % 2 == 0 {
-            Chip::One
-        } else {
-            Chip::Two
-        };
-        let res = data.insert(col, chip);
+        let res = data.insert(col, Chip::One);
+        if let Ok(x) = res {
+            if let Some(y) = x {
+                cloned_over.set(true);
+                if y == 1 {
+                    log!("Red wins!");
+                    cloned_winner.set(1);
+                } else {
+                    log!("Yellow wins!");
+                    cloned_winner.set(2);
+                }
+            }
+        }
+        let idx = ai.play(&mut data, 1, 5000);
+        let res = data.insert(idx, Chip::Two);
         cloned_con4.set(data);
         if let Ok(x) = res {
             if let Some(y) = x {
