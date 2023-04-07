@@ -121,6 +121,11 @@ pub fn otto_comp_page() -> Html {
                     }
                     <ButtonInput class="btn-reset" label="Reset" onclick={reset_board} />
                 } else {
+                    <ButtonInput class={if *level == 1 {"btn-start"} else {"btn-normal"}} label="Level 1" onclick={change_level.reform(|_| 1)} />
+                    <ButtonInput class={if *level == 2 {"btn-start"} else {"btn-normal"}} label="Level 2" onclick={change_level.reform(|_| 2)} />
+                    <ButtonInput class={if *level == 3 {"btn-start"} else {"btn-normal"}} label="Level 3" onclick={change_level.reform(|_| 3)} />
+                    <br/>
+                    <br/>
                     <ButtonInput class={if *chip_type == Chip::One {"btn-start"} else {"btn-normal"}} label="T" onclick={change_chip_type.reform(|_| Chip::One)} />
                     <ButtonInput class={if *chip_type == Chip::Two {"btn-start"} else {"btn-normal"}} label="O" onclick={change_chip_type.reform(|_| Chip::Two)} />
                     <br/>
