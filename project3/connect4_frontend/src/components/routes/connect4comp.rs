@@ -103,10 +103,6 @@ pub fn connect4_computer_page() -> Html {
             if *start {
                 <br/>
                 <h3>{format!("New Game: {} Vs {}", &*player1_name, "Computer")}</h3>
-                <ButtonInput class={if *level == 1 {"btn-start"} else {"btn-normal"}} label="Level 1" onclick={change_level.reform(|_| 1)} />
-                <ButtonInput class={if *level == 2 {"btn-start"} else {"btn-normal"}} label="Level 2" onclick={change_level.reform(|_| 2)} />
-                <ButtonInput class={if *level == 3 {"btn-start"} else {"btn-normal"}} label="Level 3" onclick={change_level.reform(|_| 3)} />
-                <br/>
                 <small>{format!("(Disc Colors: {} - Red and {} - Yellow)", &*player1_name, "Computer")}</small>
                 <br/>
                 if *over {
@@ -117,6 +113,10 @@ pub fn connect4_computer_page() -> Html {
                     }
                     <ButtonInput class="btn-reset" label="Reset" onclick={reset_board} />
                 } else {
+                    <ButtonInput class={if *level == 1 {"btn-start"} else {"btn-normal"}} label="Level 1" onclick={change_level.reform(|_| 1)} />
+                    <ButtonInput class={if *level == 2 {"btn-start"} else {"btn-normal"}} label="Level 2" onclick={change_level.reform(|_| 2)} />
+                    <ButtonInput class={if *level == 3 {"btn-start"} else {"btn-normal"}} label="Level 3" onclick={change_level.reform(|_| 3)} />
+                    <br/>
                     <ButtonInput class="btn-col" label="0" onclick={add_chip.reform(|_| 0)} />
                     <ButtonInput class="btn-col" label="1" onclick={add_chip.reform(|_| 1)} />
                     <ButtonInput class="btn-col" label="2" onclick={add_chip.reform(|_| 2)} />
