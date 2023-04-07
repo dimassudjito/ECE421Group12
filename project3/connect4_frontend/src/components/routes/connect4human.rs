@@ -61,20 +61,7 @@ pub fn connect4_human_page() -> Html {
                     cloned_player2_name.deref().clone()
                 };
 
-                let now = Utc::now();
-                let (is_pm, hour) = now.hour12();
-                let time = format!(
-                    "{:02}/{:02}/{:02} {:02}:{:02}:{:02} {} (UTC)",
-                    now.month(),
-                    now.day(),
-                    now.year(),
-                    hour,
-                    now.minute(),
-                    now.second(),
-                    if is_pm { "PM" } else { "AM" }
-                );
-
-                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, time.to_string(), None);
+                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, None);
             }
         }
     });

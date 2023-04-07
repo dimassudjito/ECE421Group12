@@ -1,6 +1,7 @@
 use crate::models::*;
 use serde::Deserialize;
 use yew::prelude::*;
+use chrono::{Datelike, Timelike, Utc};
 
 // ====================== POSTS ============================
 async fn postGameAsync(
@@ -44,7 +45,6 @@ pub fn postGame(
     player_1_name: String,
     player_2_name: String,
     winner_name: String,
-    game_date: String,
     errCallback: Option<Callback<()>>,
 ){  
     // has one level of indirection to prevent the need for
@@ -53,7 +53,7 @@ pub fn postGame(
         player_1_name,
         player_2_name,
         winner_name,
-        game_date,
+        get_time(),
         errCallback));
 }
 
@@ -190,4 +190,21 @@ pub fn initiateScoresRequests(
     setHasRequested.emit(()); 
     wasm_bindgen_futures::spawn_local(updateScores(
     setCompGames,setCompMetrics,setScores,setFail,setFinishedRequest));
+}
+
+// ====================== UTILITIES ============================
+fn get_time() -> String {
+    let now = Utc::now();
+    let (is_pm, hour) = now.hour12();
+    let time = format!(
+        "{:02}/{:02}/{:02} {:02}:{:02}:{:02} {} (UTC)",
+        now.month(),
+        now.day(),
+        now.year(),
+        hour,
+        now.minute(),
+        now.second(),
+        if is_pm { "PM" } else { "AM" }
+    );
+    time
 }
