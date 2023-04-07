@@ -4,6 +4,7 @@ use yew::prelude::*;
 pub struct Props {
     pub label: String,
     pub onclick: Callback<()>,
+    pub class: String,
 }
 
 #[function_component(ButtonInput)]
@@ -13,6 +14,6 @@ pub fn button_input(props: &Props) -> Html {
         onclick.emit(());
     });
     html! {
-      <button onclick={button_onclick}>{&props.label}</button>
+      <button onclick={button_onclick} class={props.class.clone()}>{&props.label}</button>
     }
 }

@@ -1,6 +1,5 @@
 use std::ops::Deref;
 use yew::prelude::*;
-use chrono::{Datelike, Timelike, Utc};
 
 use crate::components::text_input::TextInput;
 use crate::components::button_input::ButtonInput;
@@ -22,7 +21,13 @@ pub fn connect4_human_page() -> Html {
         cloned_player2_name.set(username);
     });
 
-    let con4 = use_state(|| BoardGame::connect4(6, 8));
+    let start = use_state(|| false);
+    let cloned_start = start.clone();
+    let start_game = Callback::from(move |_| {
+        cloned_start.set(true);
+    });
+
+    let con4 = use_state(|| BoardGame::connect4(6, 7));
     let over = use_state(|| false);
     let winner = use_state(|| 0);
 
@@ -54,21 +59,7 @@ pub fn connect4_human_page() -> Html {
                 } else {
                     cloned_player2_name.deref().clone()
                 };
-
-                let now = Utc::now();
-                let (is_pm, hour) = now.hour12();
-                let time = format!(
-                    "{:02}/{:02}/{:02} {:02}:{:02}:{:02} {}",
-                    now.month(),
-                    now.day(),
-                    now.year(),
-                    hour,
-                    now.minute(),
-                    now.second(),
-                    if is_pm { "PM" } else { "AM" }
-                );
-
-                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, time.to_string(), None);
+                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, None);
             }
         }
     });
@@ -77,7 +68,7 @@ pub fn connect4_human_page() -> Html {
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
     let reset_board = Callback::from(move |_| {
-        let new_board = BoardGame::connect4(6, 8);
+        let new_board = BoardGame::connect4(6, 7);
         cloned_con4.set(new_board);
         cloned_over.set(false);
         cloned_winner.set(0);
@@ -85,60 +76,60 @@ pub fn connect4_human_page() -> Html {
 
     html! {
         <div>
-            <h5 class="w3-xxxlarge w3-text-red"><b>{"Enter Player Names"}</b></h5>
-            <hr style="width:50px;border:5px solid red" class="w3-round"/>
-            <form>
-                // <input id="startbutton" class="button" type="submit" value="Start Game"/> // TODO: create start button
-                <TextInput handle_onchange={player1_name_changed} id="textbox1" placeholder="Player 1's Name" />
-                <TextInput handle_onchange={player2_name_changed} id="textbox2" placeholder="Player 2's Name"/>
-            </form>
-            <br/>
-            <h4>{format!("New Game: {} Vs {}", &*player1_name, &*player2_name)}</h4>
-            <small>{format!("(Disc Colors: {} - Red and {} - Yellow)", &*player1_name, &*player2_name)}</small>
-            <br/>
-            if *over {
-                if *winner == 1 {
-                    <p>{format!("{} wins - Click on reset button to start over", &*player1_name)}</p>
+            <h1><b>{"Enter Player Names"}</b></h1>
+            <hr/>
+            <TextInput handle_onchange={player1_name_changed} id="textbox1" placeholder="Player 1's Name" />
+            <TextInput handle_onchange={player2_name_changed} id="textbox2" placeholder="Player 2's Name"/>
+            <ButtonInput class="btn-start" label="Start Game" onclick={start_game} />
+            if *start {
+                <br/>
+                <h3>{format!("New Game: {} Vs {}", &*player1_name, &*player2_name)}</h3>
+                <small>{format!("(Disc Colors: {} - Red and {} - Yellow)", &*player1_name, &*player2_name)}</small>
+                <br/>
+                if *over {
+                    if *winner == 1 {
+                        <p>{format!("{} wins - Click on reset button to start over", &*player1_name)}</p>
+                    } else {
+                        <p>{format!("{} wins - Click on reset button to start over", &*player2_name)}</p>
+                    }
+                    <ButtonInput class="btn-reset" label="Reset" onclick={reset_board} />
                 } else {
-                    <p>{format!("{} wins - Click on reset button to start over", &*player2_name)}</p>
+                    <ButtonInput class="btn-col" label="0" onclick={add_chip.reform(|_| 0)} />
+                    <ButtonInput class="btn-col" label="1" onclick={add_chip.reform(|_| 1)} />
+                    <ButtonInput class="btn-col" label="2" onclick={add_chip.reform(|_| 2)} />
+                    <ButtonInput class="btn-col" label="3" onclick={add_chip.reform(|_| 3)} />
+                    <ButtonInput class="btn-col" label="4" onclick={add_chip.reform(|_| 4)} />
+                    <ButtonInput class="btn-col" label="5" onclick={add_chip.reform(|_| 5)} />
+                    <ButtonInput class="btn-col" label="6" onclick={add_chip.reform(|_| 6)} />
                 }
-                <ButtonInput label="Reset" onclick={reset_board} />
-            } else {
-                <ButtonInput label="0" onclick={add_chip.reform(|_| 0)} />
-                <ButtonInput label="1" onclick={add_chip.reform(|_| 1)} />
-                <ButtonInput label="2" onclick={add_chip.reform(|_| 2)} />
-                <ButtonInput label="3" onclick={add_chip.reform(|_| 3)} />
-                <ButtonInput label="4" onclick={add_chip.reform(|_| 4)} />
-                <ButtonInput label="5" onclick={add_chip.reform(|_| 5)} />
-                <ButtonInput label="6" onclick={add_chip.reform(|_| 6)} />
-            }
-            
-            <table>
-                { for con4.board.container.iter().map(|inner_vec| {
-                    html! {
-                        <tr>
-                            { for inner_vec.iter().map(|&value| {
-                                if value.is_none() {
-                                    html! {
-                                        <td></td>
-                                    }
-                                } else {
-                                    if value.unwrap() == Chip::One {
+                
+                <table>
+                    { for con4.board.container.iter().map(|inner_vec| {
+                        html! {
+                            <tr>
+                                { for inner_vec.iter().map(|&value| {
+                                    if value.is_none() {
                                         html! {
-                                            <td class="red"><center>{"R"}</center></td>
+                                            <td></td>
                                         }
                                     } else {
-                                        html! {
-                                            <td class="yellow"><center>{"Y"}</center></td>
+                                        if value.unwrap() == Chip::One {
+                                            html! {
+                                                <td class="red"><center>{"R"}</center></td>
+                                            }
+                                        } else {
+                                            html! {
+                                                <td class="yellow"><center>{"Y"}</center></td>
+                                            }
                                         }
                                     }
-                                }
-                                
-                            })}
-                        </tr>
-                    }
-                })}
-            </table>
+                                    
+                                })}
+                            </tr>
+                        }
+                    })}
+                </table>
+            }
         </div>
     }
 }
