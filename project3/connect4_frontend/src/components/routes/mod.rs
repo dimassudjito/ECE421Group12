@@ -7,3 +7,4 @@ pub mod howToOtto;
 pub mod ottoComp;
 pub mod ottoHuman;
 pub mod score;
+pub mod connect3human;

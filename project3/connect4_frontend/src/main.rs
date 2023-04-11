@@ -28,6 +28,8 @@ enum Route {
     OttoComputer,
     #[at("/otto/help")]
     OttoHelp,
+    #[at("/connect3/local")]
+    Connect3Human,
 
     #[not_found]
     #[at("/404")]
@@ -46,6 +48,7 @@ fn switch(routes: Route) -> Html {
         Route::Connect4Local => html! {<connect4human::Connect4HumanPage/>},
         Route::OttoComputer => html! {<ottoComp::OttoCompPage/>},
         Route::OttoLocal => html! {<ottoHuman::OttoHumanPage/>},
+        Route::Connect3Human => html! {<connect3human::Connect3HumanPage/>},
     }
 }
 
@@ -114,6 +117,11 @@ fn app() -> Html {
                                     <Link<Route> to={Route::OttoHelp} classes="w3-padding w3-hover-white">{"How to Play TOOT-OTTO"}</Link<Route>>
                                     <Link<Route> to={Route::OttoComputer} classes="w3-padding w3-hover-white">{"Play Toot-Otto With Computer"}</Link<Route>>
                                     <Link<Route> to={Route::OttoLocal} classes="w3-padding w3-hover-white">{"Play Toot-Otto With Another Human"}</Link<Route>>
+                                </div>
+                                <br/>
+                                <br/>
+                                <div onclick={hideNav.clone()} class="nav-section">
+                                    <Link<Route> to={Route::Connect3Human} classes="w3-padding w3-hover-white">{"Game Extension Example"}</Link<Route>>
                                 </div>
                                 <br/>
                                 <br/>

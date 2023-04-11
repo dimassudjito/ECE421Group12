@@ -29,6 +29,15 @@ impl BoardGame {
         }
     }
 
+    pub fn connect3(rows: usize, cols: usize) -> Self {
+        BoardGame {
+            board: Board::new(rows, cols),
+            count: 0,
+            p1_seq: vec![Chip::One, Chip::One, Chip::One],
+            p2_seq: vec![Chip::Two, Chip::Two, Chip::Two],
+        }
+    }
+
     pub fn get_turn(&self) -> i32 {
         if self.count % 2 == 0 {
             return 1;
