@@ -12,7 +12,7 @@ pub fn HowToConnect4Page() -> Html {
 
                 <li>{"A new game describes discs of which color belongs to which player"}</li>
 
-                <li>{"Click on the desired column on the game board to place your disc"}</li>
+                <li>{"Click on the number above the desired column on the game board to place your disc"}</li>
 
                 <li>{"Try to connect 4 of your colored discs either horizontally or vertically or diagonally"}</li>
 
