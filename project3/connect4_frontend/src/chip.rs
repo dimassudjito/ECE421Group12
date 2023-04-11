@@ -6,7 +6,6 @@ pub enum Chip {
     Two,
 }
 
-
 impl Display for Chip {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {

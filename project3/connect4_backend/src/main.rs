@@ -2,17 +2,15 @@
 #![feature(proc_macro_hygiene)]
 
 //add the modules
-mod api; 
+mod api;
 mod models;
 mod repository;
 
 #[macro_use]
 extern crate rocket;
-use rocket::{get, http::Status, serde::json::Json};
-use mongodb::{Client, options::ClientOptions};
+use rocket::fairing::{Fairing, Info, Kind};
 use rocket::http::Header;
 use rocket::{Request, Response};
-use rocket::fairing::{Fairing, Info, Kind};
 
 pub struct CORS;
 
@@ -22,38 +20,27 @@ impl Fairing for CORS {
     fn info(&self) -> Info {
         Info {
             name: "Add CORS headers to responses",
-            kind: Kind::Response
+            kind: Kind::Response,
         }
     }
 
     async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
         response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
-        response.set_header(Header::new("Access-Control-Allow-Methods", "POST, GET, PATCH, OPTIONS"));
+        response.set_header(Header::new(
+            "Access-Control-Allow-Methods",
+            "POST, GET, PATCH, OPTIONS",
+        ));
         response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
         response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
     }
 }
 
-/*
-#[get("/hello/<name>/<age>")]
-fn hello(name: String, age: u8) -> String {
-    format!("Hello, {} year old named {}!", age, name)User
-}
-
-#[get("/hello/<name>")]
-fn hi(name: String) -> String {
-    name
-}
-
-fn main() {
-    rocket::ignite().mount("/", routes![hello, hi]).launch();
-}
-*/
-
 //add imports below
-use api::game_api::{create_game, get_game, update_game, delete_game, get_all_games, get_rankings, get_computer_metrics,get_computer_wins};
+use api::game_api::{
+    create_game, delete_game, get_all_games, get_computer_metrics, get_computer_wins, get_game,
+    get_rankings, update_game,
+};
 use repository::mongodb_repo::MongoRepo;
-
 
 #[launch]
 fn rocket() -> _ {

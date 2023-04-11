@@ -1,11 +1,11 @@
+use crate::requests::postGame;
 use std::ops::Deref;
 use yew::prelude::*;
-use crate::requests::postGame;
 
-use crate::components::text_input::TextInput;
-use crate::components::button_input::ButtonInput;
 use crate::boardgame::*;
 use crate::chip::*;
+use crate::components::button_input::ButtonInput;
+use crate::components::text_input::TextInput;
 use crate::connect4ai::*;
 
 #[function_component(Connect4ComputerPage)]
@@ -37,7 +37,7 @@ pub fn connect4_computer_page() -> Html {
     let cloned_con4 = con4.clone();
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
-    let cloned_level= level.clone();
+    let cloned_level = level.clone();
     let cloned_player1_name = player1_name.clone();
     let add_chip = Callback::from(move |col: usize| {
         let mut data = cloned_con4.deref().clone();
@@ -57,8 +57,14 @@ pub fn connect4_computer_page() -> Html {
                 } else {
                     "Computer".to_string()
                 };
-                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), "Computer".to_string(), winner_name, None);
-                
+                postGame(
+                    "connect4".to_string(),
+                    cloned_player1_name.deref().clone(),
+                    "Computer".to_string(),
+                    winner_name,
+                    None,
+                );
+
                 return;
             }
         }
@@ -79,7 +85,13 @@ pub fn connect4_computer_page() -> Html {
                 } else {
                     "Computer".to_string()
                 };
-                postGame("connect4".to_string(), cloned_player1_name.deref().clone(), "Computer".to_string(), winner_name, None);
+                postGame(
+                    "connect4".to_string(),
+                    cloned_player1_name.deref().clone(),
+                    "Computer".to_string(),
+                    winner_name,
+                    None,
+                );
             }
         }
     });
@@ -125,7 +137,7 @@ pub fn connect4_computer_page() -> Html {
                     <ButtonInput class="btn-col" label="5" onclick={add_chip.reform(|_| 5)} />
                     <ButtonInput class="btn-col" label="6" onclick={add_chip.reform(|_| 6)} />
                 }
-                
+
                 <table>
                     { for con4.board.container.iter().map(|inner_vec| {
                         html! {
@@ -146,7 +158,7 @@ pub fn connect4_computer_page() -> Html {
                                             }
                                         }
                                     }
-                                    
+
                                 })}
                             </tr>
                         }

@@ -1,10 +1,10 @@
 use std::ops::Deref;
 use yew::prelude::*;
 
-use crate::components::text_input::TextInput;
-use crate::components::button_input::ButtonInput;
 use crate::boardgame::*;
 use crate::chip::*;
+use crate::components::button_input::ButtonInput;
+use crate::components::text_input::TextInput;
 use crate::requests::postGame;
 
 #[function_component(OttoHumanPage)]
@@ -62,7 +62,13 @@ pub fn otto_human_page() -> Html {
                 } else {
                     cloned_player2_name.deref().clone()
                 };
-                postGame("toot otto".to_string(), cloned_player1_name.deref().clone(), cloned_player2_name.deref().clone(), winner_name, None);
+                postGame(
+                    "toot otto".to_string(),
+                    cloned_player1_name.deref().clone(),
+                    cloned_player2_name.deref().clone(),
+                    winner_name,
+                    None,
+                );
             }
         }
     });
@@ -108,7 +114,7 @@ pub fn otto_human_page() -> Html {
                     <ButtonInput class="btn-col" label="5" onclick={add_chip.reform(|_| 5)} />
                     <ButtonInput class="btn-col" label="6" onclick={add_chip.reform(|_| 6)} />
                 }
-                
+
                 <table>
                     { for toot_otto.board.container.iter().map(|inner_vec| {
                         html! {
@@ -129,7 +135,7 @@ pub fn otto_human_page() -> Html {
                                             }
                                         }
                                     }
-                                    
+
                                 })}
                             </tr>
                         }

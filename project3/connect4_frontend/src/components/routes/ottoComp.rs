@@ -1,11 +1,11 @@
+use crate::requests::postGame;
 use std::ops::Deref;
 use yew::prelude::*;
-use crate::requests::postGame;
 
-use crate::components::text_input::TextInput;
-use crate::components::button_input::ButtonInput;
 use crate::boardgame::*;
 use crate::chip::*;
+use crate::components::button_input::ButtonInput;
+use crate::components::text_input::TextInput;
 use crate::toai::*;
 
 #[function_component(OttoCompPage)]
@@ -43,7 +43,7 @@ pub fn otto_comp_page() -> Html {
     let cloned_toot_otto = toot_otto.clone();
     let cloned_over = over.clone();
     let cloned_winner = winner.clone();
-    let cloned_level= level.clone();
+    let cloned_level = level.clone();
     let cloned_player1_name = player1_name.clone();
     let cloned_chip_type = chip_type.clone();
     let add_chip = Callback::from(move |col: usize| {
@@ -65,8 +65,14 @@ pub fn otto_comp_page() -> Html {
                 } else {
                     "Computer".to_string()
                 };
-                postGame("toot otto".to_string(), cloned_player1_name.deref().clone(), "Computer".to_string(), winner_name, None);
-                
+                postGame(
+                    "toot otto".to_string(),
+                    cloned_player1_name.deref().clone(),
+                    "Computer".to_string(),
+                    winner_name,
+                    None,
+                );
+
                 return;
             }
         }
@@ -87,7 +93,13 @@ pub fn otto_comp_page() -> Html {
                 } else {
                     "Computer".to_string()
                 };
-                postGame("toot otto".to_string(), cloned_player1_name.deref().clone(), "Computer".to_string(), winner_name, None);
+                postGame(
+                    "toot otto".to_string(),
+                    cloned_player1_name.deref().clone(),
+                    "Computer".to_string(),
+                    winner_name,
+                    None,
+                );
             }
         }
     });
@@ -137,7 +149,7 @@ pub fn otto_comp_page() -> Html {
                     <ButtonInput class="btn-col" label="5" onclick={add_chip.reform(|_| 5)} />
                     <ButtonInput class="btn-col" label="6" onclick={add_chip.reform(|_| 6)} />
                 }
-                
+
                 <table>
                     { for toot_otto.board.container.iter().map(|inner_vec| {
                         html! {
@@ -158,7 +170,7 @@ pub fn otto_comp_page() -> Html {
                                             }
                                         }
                                     }
-                                    
+
                                 })}
                             </tr>
                         }
