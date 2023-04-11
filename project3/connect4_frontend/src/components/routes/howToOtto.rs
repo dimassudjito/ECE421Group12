@@ -13,7 +13,7 @@ pub fn HowToOttoPage() -> Html {
 
             <li>{"Select the disc type T or O that you want to place"}</li>
 
-            <li>{"Click on the desired column on the game board to place your disc"}</li>
+            <li>{"Click on the number above the desired column on the game board to place your disc"}</li>
 
             <li>{"Try to spell TOOT or OTTO based on your winning combination, either horizontally or vertically or diagonally"}</li>
 
