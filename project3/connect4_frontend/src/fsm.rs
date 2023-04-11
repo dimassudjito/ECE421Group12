@@ -8,7 +8,7 @@ pub struct FSM<T: Clone + PartialEq + Copy> {
     pub buffer: Vec<Option<T>>,
 }
 
-impl <T: Clone + PartialEq + Copy> FSM<T> {
+impl<T: Clone + PartialEq + Copy> FSM<T> {
     pub fn new(seq: Vec<T>) -> Self {
         let mut buf = Vec::<Option<T>>::new();
         for i in 0..seq.len() {
@@ -19,7 +19,7 @@ impl <T: Clone + PartialEq + Copy> FSM<T> {
             seq: seq.clone(),
             size: seq.len(),
             idx: 0,
-            buffer: buf.clone(), 
+            buffer: buf.clone(),
         }
     }
 
@@ -27,9 +27,7 @@ impl <T: Clone + PartialEq + Copy> FSM<T> {
         self.buffer.push(Some(*item));
         self.buffer.remove(0);
 
-
         return self.__check_eq__();
-
     }
 
     fn __check_eq__(&mut self) -> bool {
@@ -37,7 +35,7 @@ impl <T: Clone + PartialEq + Copy> FSM<T> {
             if let Some(x) = &self.buffer[i] {
                 if !(*x == self.seq[i]) {
                     return false;
-                } 
+                }
             } else {
                 return false;
             }
@@ -51,5 +49,4 @@ impl <T: Clone + PartialEq + Copy> FSM<T> {
             self.buffer.push(None);
         }
     }
-
 }

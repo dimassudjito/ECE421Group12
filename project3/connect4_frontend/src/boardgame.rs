@@ -1,9 +1,6 @@
-
-use crate::fsm::*;
 use crate::board::*;
 use crate::chip::*;
-
-
+use crate::fsm::*;
 
 #[derive(Clone)]
 pub struct BoardGame {
@@ -11,13 +8,9 @@ pub struct BoardGame {
     pub count: usize,
     p1_seq: Vec<Chip>,
     p2_seq: Vec<Chip>,
-
 }
-    
-
 
 impl BoardGame {
-
     pub fn connect4(rows: usize, cols: usize) -> Self {
         BoardGame {
             board: Board::new(rows, cols),
@@ -35,33 +28,30 @@ impl BoardGame {
             p2_seq: vec![Chip::One, Chip::Two, Chip::Two, Chip::One],
         }
     }
- 
+
     pub fn get_turn(&self) -> i32 {
-        if self.count %2 == 0 {
+        if self.count % 2 == 0 {
             return 1;
-        } 
+        }
         return 2;
     }
 
     /**
     * Returns 3 possible states:
     *       Ok(Some(i32)): one of the players won
-    *       Ok(None): Normal state in the game where an insertion is successful but no 
+    *       Ok(None): Normal state in the game where an insertion is successful but no
                     win state was declared
             Err(String): Something wrong happened, or tie game
     */
     pub fn insert(&mut self, pos_x: usize, chip: Chip) -> Result<Option<i32>, String> {
-
-       
         let mut onewin = false;
         let mut twowin = false;
 
         // insert chip into the board
         let res = self.board.insert(&chip, None, Some(pos_x))?;
-        
+
         let mut fsm1 = FSM::<Chip>::new(self.p1_seq.clone());
         let mut fsm2 = FSM::<Chip>::new(self.p2_seq.clone());
-
 
         if self.board.detect(res.0, res.1, &mut fsm1) {
             onewin = true;
@@ -84,7 +74,6 @@ impl BoardGame {
         }
 
         return Ok(None);
-        
     }
 
     pub fn get_board(self) -> Board<Chip> {

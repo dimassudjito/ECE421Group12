@@ -2,7 +2,6 @@ mod components;
 mod env;
 mod models;
 mod requests;
-// mod routes;
 use crate::components::routes::*;
 use std::io;
 use stylist::yew::use_media_query;
@@ -51,21 +50,15 @@ fn switch(routes: Route) -> Html {
 }
 
 mod board;
-use board::*;
-
-mod fsm;
-use fsm::*;
-
 mod boardgame;
-use boardgame::*;
-
 mod chip;
-use chip::*;
-
 mod connect4ai;
-use connect4ai::*;
-
+mod fsm;
 mod toai;
+
+use boardgame::*;
+use chip::*;
+use connect4ai::*;
 use toai::*;
 
 #[function_component(App)]
@@ -280,35 +273,6 @@ fn to_cli_debug() {
 fn main() {
     yew::Renderer::<App>::new().render();
 
-    // example request
-    // requests::postGame(
-    //     "connect4".to_string(),
-    //     "test66".to_string(),
-    //     "test33".to_string(),
-    //     "test33".to_string(),
-    //     "date".to_string(),
-    //     None,
-    // );
-    // cli_debug();
-    // cli_connect4_human();
-    // yew::Renderer::<App>::new().render();
-    // board.insert(&0, None, Some(4));
-    // board.insert(&0, None, Some(3));
-    // board.insert(&0, None, Some(4));
-
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(3));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-    // board.insert(&1, None, Some(4));
-
-    // println!("{:?}", board.container);
-    // board.debug_print();
-    //// end testing board ////
-
     // con4_cli_debug();
-    to_cli_debug();
+    // to_cli_debug();
 }

@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use yew::prelude::*;
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Score {
